@@ -18,6 +18,31 @@ namespace CRM
         double paginas = 0;
         int paginaActual = 1;
 
+        public void setCedula(String Result)
+        {
+            txtCedula.Text = Result;
+        }
+
+        public void setNombre(String Result)
+        {
+            txtNombre.Text = Result;
+        }
+
+        public void setDireccion(String Result)
+        {
+            txtDireccion.Text = Result;
+        }
+
+        public void setTelefono(String Result)
+        {
+            txtTelefono.Text = Result;
+        }
+
+        public void setCorreo(String Result)
+        {
+            txtCorreo.Text = Result;
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
 

@@ -131,7 +131,9 @@
     <Compile Include="empresa.aspx.designer.cs">
       <DependentUpon>empresa.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Test.cs" />
+    <Compile Include="Test.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="ventas.aspx.cs">
       <DependentUpon>ventas.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -139,6 +141,9 @@
     <Compile Include="ventas.aspx.designer.cs">
       <DependentUpon>ventas.aspx</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
