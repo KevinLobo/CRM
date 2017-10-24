@@ -18,31 +18,6 @@ namespace CRM
         double paginas = 0;
         int paginaActual = 1;
 
-        public void setCedula(String Result)
-        {
-            txtCedula.Text = Result;
-        }
-
-        public void setNombre(String Result)
-        {
-            txtNombre.Text = Result;
-        }
-
-        public void setDireccion(String Result)
-        {
-            txtDireccion.Text = Result;
-        }
-
-        public void setTelefono(String Result)
-        {
-            txtTelefono.Text = Result;
-        }
-
-        public void setCorreo(String Result)
-        {
-            txtCorreo.Text = Result;
-        }
-
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -84,74 +59,134 @@ namespace CRM
             return true;
         }
 
-        protected bool revisarDatosLLenos()
+
+        protected String revisarDatosLLenos(String pCedula, String pNombre, String pDireccion, String pTelefono, String pCorreo)
         {
             error = "";
-            lblError.Text = "";
+            //lblError.Text = "";
             bool salida = true;
-            if (txtCedula.Text.Trim() == "")
+            //if (txtCedula.Text.Trim() == "")
+            //{
+            //    error += "*El campo cedula no puede estar vacio.<br />";
+            //    salida = false;
+            //}
+            //if (txtCedula.Text.Trim().Length > 10)
+            //{
+            //    error += "*El campo cedula no puede tener mas de 80 caracteres.<br />";
+            //    salida = false;
+            //}
+            //if (txtNombre.Text.Trim() == "")
+            //{
+            //    error += "*El campo nombre no puede estar vacio.<br />";
+            //    salida = false;
+            //}
+            //if (txtNombre.Text.Trim().Length > 80)
+            //{
+            //    error += "*El campo nombre no puede tener mas de 80 caracteres.<br />";
+            //    salida = false;
+            //}
+            //if (txtDireccion.Text.Trim() == "")
+            //{
+            //    error += "*El campo direccion no puede estar vacio.<br />";
+            //    salida = false;
+            //}
+            //if (txtDireccion.Text.Trim().Length > 200)
+            //{
+            //    error += "*El campo direccion no puede tener más de 200 caracteres.<br />";
+            //    salida = false;
+            //}
+            //if (txtTelefono.Text.Trim() == "")
+            //{
+            //    error += "*El campo telefono no puede estar vacio.<br />";
+            //    salida = false;
+            //}
+            //else
+            //{
+            //    if (!IsDigitsOnly(txtTelefono.Text.Trim()))
+            //    {
+            //        error += "*El campo telefono solo puede contener numeros.<br />";
+            //        salida = false;
+            //    }
+            //}
+            //if (txtTelefono.Text.Trim().Length > 8)
+            //{
+            //    error += "*El campo telefono no puede tener más de 8 caracteres.<br />";
+            //    salida = false;
+            //}
+            //if (txtCorreo.Text.Trim() == "")
+            //{
+            //    error += "*El campo correo no puede estar vacio.<br />";
+            //    salida = false;
+            //}
+            //if (txtCorreo.Text.Trim().Length > 80)
+            //{
+            //    error += "*El campo correo no puede tener mas de 80 caracteres.<br />";
+            //    salida = false;
+            //}
+
+            if (pCedula == "")
             {
                 error += "*El campo cedula no puede estar vacio.<br />";
                 salida = false;
             }
-            if (txtCedula.Text.Trim().Length > 10)
+            if (pCedula.Length > 10)
             {
                 error += "*El campo cedula no puede tener mas de 80 caracteres.<br />";
                 salida = false;
             }
-            if (txtNombre.Text.Trim() == "")
+            if (pNombre == "")
             {
                 error += "*El campo nombre no puede estar vacio.<br />";
                 salida = false;
             }
-            if (txtNombre.Text.Trim().Length > 80)
+            if (pNombre.Length > 80)
             {
                 error += "*El campo nombre no puede tener mas de 80 caracteres.<br />";
                 salida = false;
             }
-            if (txtDireccion.Text.Trim() == "")
+            if (pDireccion == "")
             {
                 error += "*El campo direccion no puede estar vacio.<br />";
                 salida = false;
             }
-            if (txtDireccion.Text.Trim().Length > 200)
+            if (pDireccion.Length > 200)
             {
                 error += "*El campo direccion no puede tener más de 200 caracteres.<br />";
                 salida = false;
             }
-            if (txtTelefono.Text.Trim() == "")
+            if (pTelefono == "")
             {
                 error += "*El campo telefono no puede estar vacio.<br />";
                 salida = false;
             }
             else
             {
-                if (!IsDigitsOnly(txtTelefono.Text.Trim()))
+                if (!IsDigitsOnly(pTelefono))
                 {
                     error += "*El campo telefono solo puede contener numeros.<br />";
                     salida = false;
                 }
             }
-            if (txtTelefono.Text.Trim().Length > 8)
+            if (pTelefono.Length > 8)
             {
                 error += "*El campo telefono no puede tener más de 8 caracteres.<br />";
                 salida = false;
             }
-            if (txtCorreo.Text.Trim() == "")
+            if (pCorreo == "")
             {
                 error += "*El campo correo no puede estar vacio.<br />";
                 salida = false;
             }
-            if (txtCorreo.Text.Trim().Length > 80)
+            if (pCorreo.Length > 80)
             {
                 error += "*El campo correo no puede tener mas de 80 caracteres.<br />";
                 salida = false;
             }
 
-
-            lblError.Text = error;
-            lblError.Visible = true;
-            return salida;
+            //lblError.Text = error;
+            //lblError.Visible = true;
+            //return salida;
+            return error;
 
         }
 
@@ -257,7 +292,8 @@ namespace CRM
 
         protected void BtnSubmit_Click(object sender, EventArgs e)
         {
-            if (revisarDatosLLenos())
+            error = revisarDatosLLenos(txtCedula.Text, txtNombre.Text, txtDireccion.Text, txtTelefono.Text, txtCorreo.Text);
+            if (error == "")
             {
                 try
                 {
@@ -284,6 +320,10 @@ namespace CRM
                 {
                     con.Close();
                 }
+            }
+            else
+            {
+                lblError.Text = error;
             }
         }
 
@@ -338,7 +378,8 @@ namespace CRM
 
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
-            if (revisarDatosLLenos())
+            error = revisarDatosLLenos(txtCedula.Text, txtNombre.Text, txtDireccion.Text, txtTelefono.Text, txtCorreo.Text);
+            if (error == "")
             {
                 try
                 {
@@ -367,6 +408,10 @@ namespace CRM
                 {
                     con.Close();
                 }
+            }
+            else
+            {
+                lblError.Text = error;
             }
         }
 
