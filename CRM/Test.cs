@@ -56,5 +56,40 @@ namespace CRM
         {
             Assert.AreEqual("*El campo direccion no puede estar vacio.<br />", revisarDatosLLenos("116040499", "Miguel Jimenez Torres", "", "84840496", "miguelfenix16@gmail.com"));
         }
+
+        [TestCase]
+        //Prueba revisar los datos cuando el telefono es muy largo
+        public void datosPersonaTelefonoLargo()
+        {
+            Assert.AreEqual("*El campo telefono no puede tener más de 8 caracteres.<br />", revisarDatosLLenos("116040499", "Miguel Jimenez Torres", "San Jose Costa Rica", "8484049600", "miguelfenix16@gmail.com"));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando el telefono esta vacio
+        public void datosPersonaTelefonoVacio()
+        {
+            Assert.AreEqual("*El campo telefono no puede estar vacio.<br />", revisarDatosLLenos("116040499", "Miguel Jimenez Torres", "San Jose Costa Rica", "", "miguelfenix16@gmail.com"));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando el telefono no tiene solo numeros
+        public void datosPersonaTelefonoLetras()
+        {
+            Assert.AreEqual("*El campo telefono solo puede contener numeros.<br />", revisarDatosLLenos("116040499", "Miguel Jimenez Torres", "San Jose Costa Rica", "abc40496", "miguelfenix16@gmail.com"));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando el correo es muy largo
+        public void datosPersonaCorreoLargo()
+        {
+            Assert.AreEqual("*El campo correo no puede tener mas de 80 caracteres.<br />", revisarDatosLLenos("116040499", "Miguel Jimenez Torres", "San Jose Costa Rica", "84840496", "imagusunimottohandsupsooumetuatesutostanduporenaihatakagenandodatewakoroestandasumaraysodfkladsflksjd@gmail.com"));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando el correo esta vacio
+        public void datosPersonaCorreoVacio()
+        {
+            Assert.AreEqual("*El campo correo no puede estar vacio.<br />", revisarDatosLLenos("116040499", "Miguel Jimenez Torres", "San Jose Costa Rica", "84840496", ""));
+        }
     }
 }
