@@ -49,7 +49,10 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MySql.Data">
-      <HintPath>..\..\..\..\Downloads\MySql.Data.DLL</HintPath>
+      <HintPath>..\..\..\..\Users\migue\Desktop\MySql.Data.DLL</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.8.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -165,6 +168,7 @@
     <Content Include="CSS\bootstrap.css" />
     <Content Include="JS\bootstrap.js" />
     <Content Include="JS\footable.js" />
+<<<<<<< HEAD
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
@@ -175,6 +179,9 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\npm.js" />
+=======
+    <Content Include="Test.aspx" />
+>>>>>>> a151e562207e0b02d4b6c53f7fb715f68f9772bf
     <Content Include="ventas.aspx" />
     <Content Include="web.config">
       <SubType>Designer</SubType>
@@ -229,6 +236,16 @@
     <Compile Include="empresa.aspx.designer.cs">
       <DependentUpon>empresa.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Test.aspx.cs">
+      <DependentUpon>Test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Test.aspx.designer.cs">
+      <DependentUpon>Test.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Test.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="ventas.aspx.cs">
       <DependentUpon>ventas.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -236,6 +253,9 @@
     <Compile Include="ventas.aspx.designer.cs">
       <DependentUpon>ventas.aspx</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -268,7 +288,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.5\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.5\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\codeflood.nunit.aspnet.testrunner.1.1.0\build\codeflood.nunit.aspnet.testrunner.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\codeflood.nunit.aspnet.testrunner.1.1.0\build\codeflood.nunit.aspnet.testrunner.targets'))" />
   </Target>
+  <Import Project="..\packages\codeflood.nunit.aspnet.testrunner.1.1.0\build\codeflood.nunit.aspnet.testrunner.targets" Condition="Exists('..\packages\codeflood.nunit.aspnet.testrunner.1.1.0\build\codeflood.nunit.aspnet.testrunner.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
