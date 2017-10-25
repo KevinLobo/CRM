@@ -6,10 +6,13 @@
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Ventas</title>
-    <link rel="stylesheet" href="CSS/bootstrap.css" />
+    <link rel="stylesheet" href="/Content/bootstrap.css" />
+    <link rel="stylesheet" href="/Content/bootstrap-datetimepicker.css" />
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="JS/bootstrap.js"></script>
+  <script type="text/javascript" src="/scripts/jquery.min.js"></script>
+  <script type="text/javascript" src="/scripts/moment.js"></script>
+  <script type="text/javascript" src="/scripts/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/scripts/bootstrap-datetimepicker.js"></script>
 
 
     <style type="text/css">
@@ -26,12 +29,19 @@
                     <a class="navbar-brand" href="#">CRM</a>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="principal.aspx">Principal</a></li>
+                    <li><a href="principal.aspx">Principal</a></li>
                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Contactos
           <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="persona.aspx">Personas</a></li>
                             <li><a href="empresa.aspx">Empresas</a></li>
+                        </ul>
+                    </li>
+                  <li class="dropdown active"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Ventas
+                        <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li class="active"><a href="ventas.aspx">Registro Ventas</a></li>
+                            <li><a>Propuestas</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -45,27 +55,89 @@
             </div>
         </nav>
 
+<%-- Contenido --%>
+
         <div class="container">
             <div class="container col-xs-12 col-sm-6 col-md-6 col-lg-3">
 
                 <div class="form-group ">
-                    <label for="ID">ID:</label>
-                    <asp:Label ID="lblId" runat="server" Text="" Visible="false"></asp:Label>
+                    <asp:Label ID="lblIdVenta" runat="server" Visible="false" ></asp:Label>
                 </div>
                 <div class="form-group ">
-                    <label for="Nombre">Nombre:</label>
-                    <asp:TextBox ID="txtNombre" runat="server" class="form-control" placeholder="Nombre"></asp:TextBox>
+                    <label for="ID">Vendedor:</label>
+                    <asp:Label ID="lblVendedor" runat="server" ></asp:Label>
                 </div>
                 <div class="form-group ">
-                    <label for="direccion">Dirección:</label>
-                    <asp:TextBox ID="txtDireccion" runat="server" placeholder="Direción" class="form-control"
-                        TextMode="multiline" Rows="3"></asp:TextBox>
+                    <label for="Nombre">Venta:</label>
+                    <asp:TextBox ID="txtVenta" runat="server" class="form-control" placeholder="Venta"></asp:TextBox>
                 </div>
 
                 <div class="form-group ">
-                    <label for="telefono">Teléfono:</label>
-                    <asp:TextBox ID="txtTelefono" runat="server" placeholder="Teléfono" class="form-control"></asp:TextBox>
+                    <label for="fecha">Fecha:</label>
+                    <asp:TextBox ID="datetimepicker" runat="server" class="form-control"></asp:TextBox>
                 </div>
+
+
+                <div class="form-group ">
+                    <label  style="width:100%;">Cliente:</label>
+                        <asp:RadioButton id="rbPersona" GroupName="personaOempresa" Text="Persona"
+                             OnCheckedChanged="MostrarPersona" AutoPostBack="True" runat="server" />
+                        <asp:RadioButton id="rbEmpresa" GroupName="personaOempresa" Text="Empresa"
+                              OnCheckedChanged="MostrarEmpresa" AutoPostBack="True" runat ="server"/>
+                    <asp:TextBox ID="txtPersona" runat="server" class="form-control"
+                        AutoPostBack="true" OnTextChanged="VerificarPersona" 
+                        autocomplete="off" Visible ="false" placeholder="Cédula"></asp:TextBox>
+                    <asp:TextBox ID="txtEmpresa" runat="server" class="form-control"
+                        AutoPostBack="true" OnTextChanged="VerificarEmpresa"
+                        autocomplete="off" Visible ="false" placeholder="Empresa ID"></asp:TextBox>
+                    <asp:Label ID="lblCliente" runat="server" ></asp:Label>
+
+
+                </div>
+                <div class="form-group ">
+                    <label>Precio:</label>
+                    <asp:TextBox ID="txtPrecio" runat="server" class="form-control"
+                        onkeypress="return isNumberKey(event,this)" placeholder="Precio"
+                        AutoPostBack="true" OnTextChanged="CambioPrecio" autocomplete="off"></asp:TextBox>
+
+                </div>
+
+                <div class="form-group ">
+                        <label for="Descuento">Descuento:</label>
+                        <div class="form-group ">
+                        <div class="col-sm-5" style="text-align: left;">
+                            <asp:TextBox ID="txtDescuento" runat="server" class="form-control"
+                            onkeypress="return isNumberKey(event,this)" AutoPostBack="true" 
+                            OnTextChanged="CambioDescuento" autocomplete="off"></asp:TextBox>
+                        </div>
+                           <label>%</label>
+                    </div>
+                </div>
+
+                <div class="form-group ">
+                        <label for="comision">Comisión:</label>
+                        <div class="form-group ">
+                        <div class="col-sm-5" style="text-align: left;">
+                            <asp:TextBox ID="txtComision" runat="server" class="form-control"
+                            onkeypress="return isNumberKey(event,this)" AutoPostBack="true" 
+                            OnTextChanged="CambioComision" autocomplete="off"></asp:TextBox>
+                        </div>
+                           <label>%</label>
+                    </div>
+                </div>
+                
+                <div class="form-group ">
+                    <label>Precio final:</label>
+                    <asp:Label ID="lblPrecioFinal" runat="server" ></asp:Label>
+                </div>
+
+                <div class="form-group ">
+                    <label for="Respuesta">Respuesta:</label>
+                    <asp:TextBox ID="txtRespuesta" runat="server" placeholder="Respuesta" class="form-control"
+                        TextMode="multiline" Rows="3"></asp:TextBox>
+                </div>
+
+
                 <div class="form-group ">
                     <asp:Label ID="lblError" runat="server" Visible="false" ForeColor="Red"></asp:Label>
                 </div>
@@ -83,20 +155,18 @@
                     <h3>
                         <span style="float: left;">
                             <asp:Label ID="lblInfo" runat="server" /></span>
-                        <span><small>Total empresas:</small>
+                        <span><small>Total ventas:</small>
                             <asp:Label ID="lbltotalcount" runat="server" CssClass="label label-warning" /></span>
                     </h3>
 
                     <asp:GridView ID="GridViewEmpresa" runat="server" DataKeyNames="id"
                         OnSelectedIndexChanged="GridViewEmpresa_SelectedIndexChanged"
-                        OnRowDeleting="GridViewEmpresa_RowDeleting"
                         CssClass="table table-bordered bs-table">
                         <HeaderStyle BackColor="#337ab7" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
 
                         <Columns>
-                            <asp:CommandField HeaderText="Actualizar" ShowSelectButton="True" />
-                            <asp:CommandField HeaderText="Eliminar" ShowDeleteButton="True" />
+                            <asp:CommandField HeaderText="Seleccionar" ShowSelectButton="True" />
                         </Columns>
                     </asp:GridView>
                 </div>
@@ -108,9 +178,9 @@
                             </h5>
                         </div>
                         <div class="col-lg-1" style="text-align: left;">
-                            <asp:DropDownList ID="paginaDropDown" Width="60px" AutoPostBack="true" 
-                                OnSelectedIndexChanged="CambioPagina" 
-                                runat="server" 
+                            <asp:DropDownList ID="paginaDropDown" Width="60px" AutoPostBack="true"
+                                OnSelectedIndexChanged="CambioPagina"
+                                runat="server"
                                 CssClass="form-control" />
 
                         </div>
@@ -122,6 +192,31 @@
                     </div>
                 </div>
             </div>
+        </div>
     </form>
+<%-- Inicializa calendario --%>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker').datetimepicker();
+        });
+    </script>    
+
+<%-- Revisa si el caracter insertado pertenece a un numero --%>
+    <script type="text/javascript">
+        function isNumberKey(evt, obj) {
+
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            var value = obj.value;
+            var dotcontains = value.indexOf(",") != -1;
+            if (dotcontains)
+                if (charCode == 44) return false;
+            if (charCode == 44) return true;
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+    </script>
+
+
 </body>
 </html>

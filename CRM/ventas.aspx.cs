@@ -32,6 +32,7 @@ namespace CRM
 
                     LlenarListaPaginas();
                     BindGridView();
+                    CargarSession();
 
 
                 }
@@ -50,20 +51,35 @@ namespace CRM
 
         }
 
+        void CargarSession() {
+            lblVendedor.Text = Session["username"].ToString();
+        }
 
         void clear()
         {
-            lblId.Visible = false;
-            txtNombre.Text = string.Empty;
-            txtDireccion.Text = string.Empty;
-            txtTelefono.Text = string.Empty;
+            txtVenta.Text = string.Empty;
+            txtEmpresa.Text = string.Empty;
+            txtPersona.Text = string.Empty;
+            txtEmpresa.Visible = false;
+            txtPersona.Visible = false;
+            rbEmpresa.Checked = false;
+            rbPersona.Checked = false;
+            txtPrecio.Text = string.Empty;
+            txtDescuento.Text = string.Empty;
+            txtComision.Text = string.Empty;
+            lblPrecioFinal.Text = string.Empty;
+            txtRespuesta.Text = string.Empty;
+            datetimepicker.Text = string.Empty;
+
+            lblCliente.Text = string.Empty;
+
+            btnCancel.Text = "Cancelar";
             lblError.Text = string.Empty;
             btnSubmit.Visible = true;
-            btnUpdate.Visible = false;
             btnSubmit.Enabled = true;
-            btnUpdate.Enabled = false;
             lblError.Visible = false;
-            txtNombre.Focus();
+            lblIdVenta.Visible = false;
+            txtVenta.Focus();
         }
 
 
@@ -76,7 +92,7 @@ namespace CRM
                     con.Open();
                 }
 
-                MySqlCommand cmd = new MySqlCommand("Select  count(*) from empresa", con);
+                MySqlCommand cmd = new MySqlCommand("Select  count(*) from venta", con);
                 MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 adp.Fill(ds);
@@ -111,43 +127,68 @@ namespace CRM
         }
 
 
-        private void BindGridView()
+
+
+//----------------Precio/descuento/comision
+        void EstaEnRango(TextBox txtEntrada,double rangoMayor)
         {
-            try
-            {
-                if (con.State == ConnectionState.Closed)
+            if (txtEntrada.Text != "") {
+                double entrada = Convert.ToDouble(txtEntrada.Text);
+                if (entrada > rangoMayor)
                 {
-                    con.Open();
+                    txtEntrada.Text = "100";
                 }
-                double limite = paginaDropDown.SelectedIndex * filasPorPagina;
-                MySqlCommand cmd = new MySqlCommand("Select * from empresa limit " + limite + "," + filasPorPagina + "", con);
-                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                adp.Fill(ds);
-                GridViewEmpresa.DataSource = ds;
-                GridViewEmpresa.DataBind();
-
-            }
-            catch (MySqlException ex)
-            {
-                ShowMessage(ex.Message);
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
+                if (entrada < 0)
                 {
-                    con.Close();
-
+                    txtEntrada.Text = "0";
                 }
+            }
+            else
+            {
+                txtEntrada.Text = "0";
             }
         }
 
+        void CalcularPrecioFinal()
+        {
+            if (txtPrecio.Text != "" && txtDescuento.Text != "" ) {
+                double precioFinal = Convert.ToDouble(txtPrecio.Text);
+                double descuento = Convert.ToDouble(txtDescuento.Text);
+
+                descuento = 100-descuento;
+
+                precioFinal *= descuento / 100;
+
+                lblPrecioFinal.Text = precioFinal.ToString();
+            }
+
+        }
+
+        protected void CambioPrecio(object sender, EventArgs e)
+        {
+            EstaEnRango(txtPrecio, Double.MaxValue);
+            CalcularPrecioFinal();
+        }
+
+        protected void CambioComision(object sender, EventArgs e)
+        {
+            EstaEnRango(txtComision,100);
+        }
+
+        protected void CambioDescuento(object sender, EventArgs e)
+        {
+            EstaEnRango(txtDescuento,100);
+            CalcularPrecioFinal();
+        }
+
+//---------Tabla/Grid-----------------
         protected void CambioPagina(object sender, EventArgs e)
         {
             paginaActual = paginaDropDown.SelectedIndex + 1;
             LlenarListaPaginas();
             BindGridView();
         }
+
 
         protected void LinkButton1_Click(object sender, EventArgs e)
         {
@@ -171,92 +212,149 @@ namespace CRM
             error = "";
             lblError.Text = "";
             bool salida = true;
-            if (txtNombre.Text.Trim() == "")
+            //venta
+            if (txtVenta.Text.Trim() == "")
             {
-                error += "*El campo nombre no puede estar vacio.<br />";
+                error += "*El campo venta no puede estar vacio.<br />";
                 salida = false;
             }
-            if (txtNombre.Text.Trim().Length > 80)
+            if (txtVenta.Text.Trim().Length > 120)
             {
-                error += "*El campo nombre no puede tener mas de 80 caracteres.<br />";
+                error += "*El campo venta no puede tener mas de 120 caracteres.<br />";
                 salida = false;
             }
-            if (txtDireccion.Text.Trim() == "")
+            //fecha
+            if (datetimepicker.Text.Trim() == "")
             {
-                error += "*El campo direccion no puede estar vacio.<br />";
+                error += "*El campo fecha no puede estar vacio.<br />";
                 salida = false;
             }
-            if (txtDireccion.Text.Trim().Length > 200)
+
+            //Precio
+            if (txtPrecio.Text.Trim() == "")
             {
-                error += "*El campo direccion no puede tener más de 200 caracteres.<br />";
+                error += "*El campo precio no puede estar vacio.<br />";
                 salida = false;
             }
-            if (txtTelefono.Text.Trim() == "")
+            //El precio no verifica el largo, debido a que ya se hace previamente
+
+            //descuento
+            if (txtDescuento.Text.Trim() == "")
             {
-                error += "*El campo telefono no puede estar vacio.<br />";
+                error += "*El campo descuento no puede estar vacio.<br />";
                 salida = false;
             }
-            else
+            //El descuento no verifica el largo, debido a que ya se hace previamente
+
+            //comision
+            if (txtComision.Text.Trim() == "")
             {
-                if (!IsDigitsOnly(txtTelefono.Text.Trim()))
-                {
-                    error += "*El campo telefono solo puede contener numeros.<br />";
-                    salida = false;
-                }
-            }
-            if (txtTelefono.Text.Trim().Length > 8)
-            {
-                error += "*El campo telefono no puede tener más de 8 caracteres.<br />";
+                error += "*El campo comisión no puede estar vacio.<br />";
                 salida = false;
             }
+            //El descuento no verifica el largo, debido a que ya se hace previamente
+
+            //respuesta
+            if (txtRespuesta.Text.Trim() == "")
+            {
+                error += "*El campo respuesta no puede estar vacio.<br />";
+                salida = false;
+            }
+            if (txtRespuesta.Text.Trim().Length > 200)
+            {
+                error += "*El campo venta no puede tener mas de 120 caracteres.<br />";
+                salida = false;
+            }
+
+            if (lblCliente.Text == "No se encontro el cliente"|| lblCliente.Text=="")
+            {
+                error += "*No se selecciono un cliente valido.<br />";
+                salida = false;
+            }
+
+            
             lblError.Text = error;
             lblError.Visible = true;
             return salida;
 
         }
 
-        protected void BtnSubmit_Click(object sender, EventArgs e)
+// ---------------GridView-------------------
+        private void BindGridView()
         {
-            if (revisarDatosLLenos())
+            try
             {
-                try
+                if (con.State == ConnectionState.Closed)
                 {
                     con.Open();
-                    MySqlCommand cmd = new MySqlCommand("INSERT INTO empresa (Nombre,Direccion,Telefono)" +
-                        " VALUES (@Name, @Address, @Mobile);", con);
-                    cmd.Parameters.AddWithValue("@Name", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@Address", txtDireccion.Text);
-                    cmd.Parameters.AddWithValue("@Mobile", txtTelefono.Text);
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
-                    ShowMessage("Registro correcto");
-                    clear();
-                    LlenarListaPaginas();
-                    BindGridView();
                 }
-                catch (MySqlException ex)
-                {
-                    ShowMessage(ex.Message);
-                }
-                finally
+                double limite = paginaDropDown.SelectedIndex * filasPorPagina;
+                MySqlCommand cmd = new MySqlCommand("SELECT `id`,`nombreVenta`,`fecha`,`precio`," +
+                    "`descuento`,`vendedor`,`respuesta` FROM `venta` limit " + limite + "," +
+                    filasPorPagina + "", con);
+                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                adp.Fill(ds);
+                GridViewEmpresa.DataSource = ds;
+                GridViewEmpresa.DataBind();
+
+            }
+            catch (MySqlException ex)
+            {
+                ShowMessage(ex.Message);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
                 {
                     con.Close();
+
                 }
             }
         }
 
         protected void GridViewEmpresa_SelectedIndexChanged(object sender, EventArgs e)
         {
+            clear();
             GridViewRow row = GridViewEmpresa.SelectedRow;
-            lblId.Visible = true;
-            lblId.Text = row.Cells[2].Text;
-            txtNombre.Text = row.Cells[3].Text;
-            txtDireccion.Text = row.Cells[4].Text;
-            txtTelefono.Text = row.Cells[5].Text;
+            txtVenta.Text = row.Cells[3].Text;
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM `venta` where id = " + 
+                row.Cells[1].Text + "", con);
+            lblIdVenta.Text = "ID: " + row.Cells[1].Text;
+            MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
+            DataSet ds = new DataSet();
+            adp.Fill(ds);
+
+            txtVenta.Text = Convert.ToString(ds.Tables[0].Rows[0]["nombreVenta"]);
+            txtPrecio.Text = Convert.ToString(ds.Tables[0].Rows[0]["precio"]);
+            txtDescuento.Text = Convert.ToString(ds.Tables[0].Rows[0]["descuento"]);
+            txtComision.Text = Convert.ToString(ds.Tables[0].Rows[0]["comision"]);
+            datetimepicker.Text = Convert.ToString(ds.Tables[0].Rows[0]["fecha"]);
+            txtRespuesta.Text = Convert.ToString(ds.Tables[0].Rows[0]["respuesta"]);
+            string empresaID = Convert.ToString(ds.Tables[0].Rows[0]["empresaID"]);
+            string personaID = Convert.ToString(ds.Tables[0].Rows[0]["personaVenta"]);
+            if (empresaID != "")
+            {
+                txtEmpresa.Visible = true;
+                txtEmpresa.Text = empresaID;
+                VerificarCliente(txtEmpresa, "ID", "empresa");
+                rbEmpresa.Checked = true;
+            }
+            else
+            {
+                rbPersona.Checked = true;
+                txtPersona.Visible = true;
+                txtPersona.Text = personaID;
+                VerificarCliente(txtPersona, "cedula", "persona");
+                
+            }
+
+
+            CalcularPrecioFinal();
+            btnCancel.Text = "Volver";
+            lblIdVenta.Visible = true;
             btnSubmit.Visible = false;
             btnSubmit.Enabled = false;
-            btnUpdate.Visible = true;
-            btnUpdate.Enabled = true;
         }
 
         protected void GridViewEmpresa_RowDeleting(object sender, GridViewDeleteEventArgs e)
@@ -284,6 +382,79 @@ namespace CRM
 
         }
 
+// ---------------Persona/Empresa-------------------
+        protected void VerificarCliente(TextBox entrada,string columnaNombre,string tablaNombre)
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+
+                MySqlCommand cmd = new MySqlCommand("Select nombre from "+ tablaNombre + " where "+ 
+                    columnaNombre + " ='" + entrada.Text + "'", con);
+                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                adp.Fill(ds);
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    lblCliente.ForeColor = System.Drawing.Color.Green;
+                    lblCliente.Text = Convert.ToString(ds.Tables[0].Rows[0]["nombre"]);
+                }
+                else
+                {
+                    lblCliente.ForeColor = System.Drawing.Color.Red;
+                    lblCliente.Text = "No se encontro el cliente";
+                }
+
+            }
+            catch (MySqlException ex)
+            {
+                ShowMessage(ex.Message);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+
+                }
+            }
+
+        }
+
+        protected void VerificarPersona(object sender, EventArgs e)
+        {
+            txtPersona.Text = txtPersona.Text.Trim();
+            VerificarCliente(txtPersona, "cedula", "persona");
+        }
+
+        protected void VerificarEmpresa(object sender, EventArgs e)
+        {
+            txtEmpresa.Text = txtEmpresa.Text.Trim();
+            VerificarCliente(txtEmpresa, "ID", "empresa");
+        }
+
+        protected void MostrarEmpresa(object sender, EventArgs e)
+        {
+            txtPersona.Visible = false;
+            txtPersona.Text = "";
+            lblCliente.Text = "";
+            txtEmpresa.Visible = true;
+        }
+
+        protected void MostrarPersona(object sender, EventArgs e)
+        {
+            txtEmpresa.Visible = false;
+            txtEmpresa.Text = "";
+            lblCliente.Text = "";
+            txtPersona.Visible = true;
+        }
+
+
+        // ---------------Botones-------------------
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
             if (revisarDatosLLenos())
@@ -291,19 +462,7 @@ namespace CRM
                 try
                 {
                     con.Open();
-                    string ced = lblId.Text;
-                    MySqlCommand cmd = new MySqlCommand("UPDATE empresa SET Nombre = @Name,Direccion = @Address," +
-                        "Telefono=@Mobile WHERE empresa.id = @id", con);
-                    cmd.Parameters.AddWithValue("@Name", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@Address", txtDireccion.Text);
-                    cmd.Parameters.AddWithValue("@Mobile", txtTelefono.Text);
-                    cmd.Parameters.AddWithValue("@id", ced);
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
-                    ShowMessage("Empresa actualizada");
-                    GridViewEmpresa.EditIndex = -1;
-                    LlenarListaPaginas();
-                    BindGridView();
+
                     clear();
                 }
                 catch (MySqlException ex)
@@ -322,6 +481,55 @@ namespace CRM
             clear();
         }
 
+        protected void BtnSubmit_Click(object sender, EventArgs e)
+        {
 
+            if (revisarDatosLLenos())
+            {
+                try
+                {
+                    con.Open();
+                    MySqlCommand cmd = new MySqlCommand("INSERT INTO venta" +
+                        " (nombreVenta, fecha, precio, descuento, comision" +
+                        ", personaVenta, empresaID, vendedor, respuesta) " +
+                        "VALUES (@Producto, @Fecha, @Precio, @Descuento, @Comision," +
+                        " @Persona, @Empresa, @Vendedor, @Respuesta);", con);
+                    cmd.Parameters.AddWithValue("@Producto", txtVenta.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Fecha", datetimepicker.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Precio", txtPrecio.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Descuento", txtDescuento.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Comision", txtComision.Text.Trim());
+
+                    if (txtPersona.Text != "")
+                    {
+                        cmd.Parameters.AddWithValue("@Persona", txtPersona.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Empresa", null);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@Persona", null);
+                        cmd.Parameters.AddWithValue("@Empresa", txtEmpresa.Text.Trim());
+                    }
+                    cmd.Parameters.AddWithValue("@Vendedor", lblVendedor.Text);
+                    cmd.Parameters.AddWithValue("@Respuesta", txtRespuesta.Text.Trim());
+
+
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                    ShowMessage("Registro correcto.");
+                    clear();
+                    LlenarListaPaginas();
+                    BindGridView();
+                }
+                catch (MySqlException ex)
+                {
+                    ShowMessage(ex.Message);
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+        }
     }
 }
