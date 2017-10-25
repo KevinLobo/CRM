@@ -17,10 +17,9 @@ namespace CRM
         double personasPorPagina = 10;
         double paginas = 0;
         int paginaActual = 1;
-
+        
         protected void Page_Load(object sender, EventArgs e)
         {
-
             if (string.IsNullOrEmpty(Session["username"] as string))
             {
                 Response.Redirect("logIn.aspx");
@@ -113,8 +112,8 @@ namespace CRM
                 error += "*El campo correo no puede tener mas de 80 caracteres.<br />";
             }
             labelError.Text = error;
+            labelError.Visible = true;
             return error;
-
         }
 
 

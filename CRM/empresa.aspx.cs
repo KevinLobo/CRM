@@ -203,6 +203,7 @@ namespace CRM
                 error += "*El campo telefono no puede tener más de 8 caracteres.<br />";
             }
             labelError.Text = error;
+            labelError.Visible = true;
             return error;
         }
 

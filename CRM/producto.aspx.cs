@@ -75,7 +75,7 @@ namespace CRM
                     con.Open();
                 }
 
-                MySqlCommand cmd = new MySqlCommand("Select  count(*) from empresa", con);
+                MySqlCommand cmd = new MySqlCommand("Select  count(*) from producto", con);
                 MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 adp.Fill(ds);
@@ -92,7 +92,11 @@ namespace CRM
                 {
                     paginaDropDown.Items.Add((i + 1).ToString());
                 }
-                paginaDropDown.SelectedIndex = paginaActual - 1;
+                if (totalPersonas > 0)
+                {
+                    paginaDropDown.SelectedIndex = paginaActual - 1;
+                }
+
             }
             catch (MySqlException ex)
             {
@@ -119,7 +123,7 @@ namespace CRM
                     con.Open();
                 }
                 double limite = paginaDropDown.SelectedIndex * filasPorPagina;
-                MySqlCommand cmd = new MySqlCommand("Select * from empresa limit " + limite + "," + filasPorPagina + "", con);
+                MySqlCommand cmd = new MySqlCommand("Select * from producto limit " + limite + "," + filasPorPagina + "", con);
                 MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 adp.Fill(ds);
@@ -165,31 +169,33 @@ namespace CRM
             return true;
         }
 
-        protected bool revisarDatosLLenos()
+        protected String revisarDatosLLenos(string nombre,string precio,Label labelError)
         {
             error = "";
-            lblError.Text = "";
-            bool salida = true;
-            if (txtNombre.Text.Trim() == "")
+            labelError.Text = "";
+            if (nombre.Trim() == "")
             {
                 error += "*El campo nombre no puede estar vacio.<br />";
-                salida = false;
             }
-            if (txtNombre.Text.Trim().Length > 80)
+            if (nombre.Trim().Length > 80)
             {
                 error += "*El campo nombre no puede tener mas de 80 caracteres.<br />";
-                salida = false;
+            }
+            if (precio.Trim() == "")
+            {
+                error += "*El campo precio no puede estar vacio.<br />";
             }
 
-            lblError.Text = error;
-            lblError.Visible = true;
-            return salida;
+            labelError.Text = error;
+            labelError.Visible = true;
+            return error;
 
         }
 
         protected void BtnSubmit_Click(object sender, EventArgs e)
         {
-            if (revisarDatosLLenos())
+            error = revisarDatosLLenos(txtNombre.Text, txtPrecio.Text, lblError);
+            if (error == "")
             {
                 try
                 {
@@ -197,7 +203,7 @@ namespace CRM
                     MySqlCommand cmd = new MySqlCommand("INSERT INTO producto (nombre,precio)" +
                         " VALUES (@Name, @precio);", con);
                     cmd.Parameters.AddWithValue("@Name", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@Address", txtPrecio.Text);
+                    cmd.Parameters.AddWithValue("@precio", txtPrecio.Text);
                     cmd.ExecuteNonQuery();
                     cmd.Dispose();
                     ShowMessage("Registro correcto");
@@ -282,7 +288,8 @@ namespace CRM
 
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
-            if (revisarDatosLLenos())
+            error = revisarDatosLLenos(txtNombre.Text, txtPrecio.Text, lblError);
+            if (error == "")
             {
                 try
                 {
