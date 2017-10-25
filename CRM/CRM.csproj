@@ -79,6 +79,7 @@
     <Content Include="JS\bootstrap.js" />
     <Content Include="JS\footable.js" />
 <<<<<<< HEAD
+<<<<<<< HEAD
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
@@ -91,6 +92,8 @@
     <Content Include="Scripts\npm.js" />
 =======
     <Content Include="Test.aspx" />
+=======
+>>>>>>> parent of 647c973... se agrego ventas
 =======
 >>>>>>> parent of 647c973... se agrego ventas
     <Content Include="ventas.aspx" />
