@@ -20,8 +20,8 @@
                     <a class="navbar-brand" href="#">CRM</a>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Principal</a></li>
-                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Contactos
+                    <li class="active"><a href="principal.aspx">Principal</a></li>
+                    <li class="dropdown active"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Contactos
           <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="persona.aspx">Personas</a></li>
@@ -29,8 +29,9 @@
                         </ul>
                     </li>
                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Ventas
-          <span class="caret"></span></a>
+                        <span class="caret"></span></a>
                         <ul class="dropdown-menu">
+                            <li><a href="producto.aspx">Producto</a></li>
                             <li><a href="ventas.aspx">Registro Ventas</a></li>
                             <li><a>Propuestas</a></li>
                         </ul>

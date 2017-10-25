@@ -34,6 +34,7 @@
                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Ventas
                         <span class="caret"></span></a>
                         <ul class="dropdown-menu">
+                            <li><a href="producto.aspx">Producto</a></li>
                             <li><a href="ventas.aspx">Registro Ventas</a></li>
                             <li><a>Propuestas</a></li>
                         </ul>

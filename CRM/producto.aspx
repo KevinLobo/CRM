@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="empresa.aspx.cs" Inherits="CRM.WebForm3" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="producto.aspx.cs" Inherits="CRM.producto" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -30,13 +30,13 @@
           <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="persona.aspx">Personas</a></li>
-                            <li class="active"><a href="empresa.aspx">Empresas</a></li>
+                            <li><a href="empresa.aspx">Empresas</a></li>
                         </ul>
                     </li>
                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Ventas
                         <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="producto.aspx">Producto</a></li>
+                            <li class="active"><a href="producto.aspx">Producto</a></li>
                             <li><a href="ventas.aspx">Registro Ventas</a></li>
                             <li><a>Propuestas</a></li>
                         </ul>
