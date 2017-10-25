@@ -225,11 +225,11 @@ namespace CRM
                     con.Open();
                     MySqlCommand cmd = new MySqlCommand("INSERT INTO persona (cedula,Nombre,Direccion,Telefono,Correo)" +
                         " VALUES (@ID,@Name, @Address, @Mobile, @Email);", con);
-                    cmd.Parameters.AddWithValue("@ID", txtCedula.Text);
-                    cmd.Parameters.AddWithValue("@Name", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@Address", txtDireccion.Text);
-                    cmd.Parameters.AddWithValue("@Mobile", txtTelefono.Text);
-                    cmd.Parameters.AddWithValue("@Email", txtCorreo.Text);
+                    cmd.Parameters.AddWithValue("@ID", txtCedula.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Name", txtNombre.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Address", txtDireccion.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Mobile", txtTelefono.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Email", txtCorreo.Text.Trim());
                     cmd.ExecuteNonQuery();
                     cmd.Dispose();
                     ShowMessage("Registro correcto.");
