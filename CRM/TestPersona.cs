@@ -7,7 +7,7 @@ using System.Web;
 namespace CRM
 {
     [TestFixture]
-    class Test : WebForm2
+    class TestPersona : WebForm2
     {
         [TestCase]
         //Prueba revisar los datos cuando estos estan correctos
@@ -20,7 +20,8 @@ namespace CRM
         //Prueba revisar los datos cuando el nombre es muy largo
         public void datosPersonaNombreLargo()
         {
-            Assert.AreEqual("*El campo nombre no puede tener mas de 80 caracteres.<br />", revisarDatosLLenos("116040499", "Sacarias Piedras del Rio Milagro de Jesus Cuarto Rodriguez Cooper 0123456789 abcdefghijklmnopqrstuvwxyz", "San Jose Costa Rica", "84840496", "miguelfenix16@gmail.com"));
+            String nombre = new String('a', 210);
+            Assert.AreEqual("*El campo nombre no puede tener mas de 80 caracteres.<br />", revisarDatosLLenos("116040499", nombre, "San Jose Costa Rica", "84840496", "miguelfenix16@gmail.com"));
         }
 
         [TestCase]
@@ -47,7 +48,8 @@ namespace CRM
         //Prueba revisar los datos cuando la direccion es muy larga
         public void datosPersonaDireccionLarga()
         {
-            Assert.AreEqual("*El campo direccion no puede tener más de 200 caracteres.<br />", revisarDatosLLenos("116040499", "Miguel Jimenez Torres", "aaaaaaaabbbbbbbbccccccccddddddddeeeeeeeeffffffffgggggggghhhhhhhhiiiiiiiijjjjjjjjkkkkkkkkmmmmmmmmnnnnnnnnllllllllooooooooppppppppqqqqqqqqrrrrrrrrssssssssttttttttuuuuuuuuvvvvvvvvwwwwwwwwxxxxxxxxyyyyyyyyzzzzzzzz", "84840496", "miguelfenix16@gmail.com"));
+            String direccion = new String('a', 210);
+            Assert.AreEqual("*El campo direccion no puede tener más de 200 caracteres.<br />", revisarDatosLLenos("116040499", "Miguel Jimenez Torres", direccion, "84840496", "miguelfenix16@gmail.com"));
         }
 
         [TestCase]
@@ -90,6 +92,13 @@ namespace CRM
         public void datosPersonaCorreoVacio()
         {
             Assert.AreEqual("*El campo correo no puede estar vacio.<br />", revisarDatosLLenos("116040499", "Miguel Jimenez Torres", "San Jose Costa Rica", "84840496", ""));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando dos datos estan mal
+        public void datosPersonaDosErroneos()
+        {
+            Assert.AreEqual("*El campo cedula no puede tener mas de 80 caracteres.<br />*El campo telefono no puede tener más de 8 caracteres.<br />", revisarDatosLLenos("11604049900", "Miguel Jimenez Torres", "San Jose Costa Rica", "8484049600", "miguelfenix16@gmail.com"));
         }
     }
 }

@@ -167,56 +167,47 @@ namespace CRM
             return true;
         }
 
-        protected bool revisarDatosLLenos() {
+        protected String revisarDatosLLenos(String pNombre, String pDireccion, String pTelefono)
+        {
             error = "";
-            lblError.Text = "";
-            bool salida = true;
-            if (txtNombre.Text.Trim() == ""){
+            if (pNombre == "")
+            {
                 error += "*El campo nombre no puede estar vacio.<br />";
-                salida = false;
             }
-            if (txtNombre.Text.Trim().Length > 80)
+            if (pNombre.Length > 80)
             {
                 error += "*El campo nombre no puede tener mas de 80 caracteres.<br />";
-                salida = false;
             }
-            if (txtDireccion.Text.Trim() == "")
+            if (pDireccion == "")
             {
                 error += "*El campo direccion no puede estar vacio.<br />";
-                salida = false;
             }
-            if (txtDireccion.Text.Trim().Length > 200)
+            if (pDireccion.Length > 200)
             {
                 error += "*El campo direccion no puede tener más de 200 caracteres.<br />";
-                salida = false;
             }
-            if (txtTelefono.Text.Trim() == "")
+            if (pTelefono == "")
             {
                 error += "*El campo telefono no puede estar vacio.<br />";
-                salida = false;
             }
             else
             {
-                if (!IsDigitsOnly(txtTelefono.Text.Trim()))
+                if (!IsDigitsOnly(pTelefono))
                 {
                     error += "*El campo telefono solo puede contener numeros.<br />";
-                    salida = false;
                 }
             }
-            if (txtTelefono.Text.Trim().Length > 8)
+            if (pTelefono.Length > 8)
             {
                 error += "*El campo telefono no puede tener más de 8 caracteres.<br />";
-                salida = false;
             }
-            lblError.Text = error;
-            lblError.Visible = true;
-            return salida;
-
+            return error;
         }
 
         protected void BtnSubmit_Click(object sender, EventArgs e)
         {
-            if (revisarDatosLLenos())
+            error = revisarDatosLLenos(txtNombre.Text, txtDireccion.Text, txtTelefono.Text);
+            if (error  == "")
             {
                 try
                 {
@@ -241,6 +232,10 @@ namespace CRM
                 {
                     con.Close();
                 }
+            }
+            else
+            {
+                lblError.Text = error;
             }
         }
 
@@ -285,7 +280,8 @@ namespace CRM
 
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
-            if (revisarDatosLLenos())
+            error = revisarDatosLLenos(txtNombre.Text, txtDireccion.Text, txtTelefono.Text);
+            if (error == "")
             {
                 try
                 {
@@ -313,6 +309,10 @@ namespace CRM
                 {
                     con.Close();
                 }
+            }
+            else
+            {
+                lblError.Text = error;
             }
         }
 
