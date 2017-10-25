@@ -1,11 +1,11 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ventas.aspx.cs" Inherits="CRM.ventas" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="propuesta.aspx.cs" Inherits="CRM.propuesta" %>
 
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Ventas</title>
+    <title>Propuesta</title>
     <link rel="stylesheet" href="/Content/bootstrap.css" />
     <link rel="stylesheet" href="/Content/bootstrap-datetimepicker.css" />
 
@@ -41,8 +41,8 @@
                         <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="producto.aspx">Producto</a></li>
-                            <li class="active"><a href="ventas.aspx">Registro Ventas</a></li>
-                            <li><a href="propuesta.aspx">Propuestas</a></li>
+                            <li><a href="ventas.aspx">Registro Ventas</a></li>
+                            <li class="active"><a href="propuesta.aspx">Propuestas</a></li>
                         </ul>
                     </li>
                 </ul>

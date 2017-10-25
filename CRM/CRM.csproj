@@ -170,6 +170,7 @@
     <Content Include="JS\footable.js" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="producto.aspx" />
+    <Content Include="propuesta.aspx" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -240,6 +241,13 @@
     </Compile>
     <Compile Include="empresa.aspx.designer.cs">
       <DependentUpon>empresa.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="propuesta.aspx.cs">
+      <DependentUpon>propuesta.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="propuesta.aspx.designer.cs">
+      <DependentUpon>propuesta.aspx</DependentUpon>
     </Compile>
     <Compile Include="Test.aspx.cs">
       <DependentUpon>Test.aspx</DependentUpon>

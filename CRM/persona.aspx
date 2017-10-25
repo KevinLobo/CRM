@@ -36,7 +36,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="producto.aspx">Producto</a></li>
                             <li><a href="ventas.aspx">Registro Ventas</a></li>
-                            <li><a>Propuestas</a></li>
+                            <li><a href="propuesta.aspx">Propuestas</a></li>
                         </ul>
                     </li>
                 </ul>

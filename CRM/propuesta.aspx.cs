@@ -9,7 +9,7 @@ using System.Data;
 
 namespace CRM
 {
-    public partial class ventas : System.Web.UI.Page
+    public partial class propuesta : System.Web.UI.Page
     {
         MySqlConnection con = new MySqlConnection(@"Data Source = localhost;port=3306;Initial"
         + " Catalog=CRM;User Id=root;password = '' ");
@@ -51,7 +51,8 @@ namespace CRM
 
         }
 
-        void CargarSession() {
+        void CargarSession()
+        {
             lblVendedor.Text = Session["username"].ToString();
         }
 
@@ -174,9 +175,10 @@ namespace CRM
         }
 
         //----------------Precio/descuento/comision
-        void EstaEnRango(TextBox txtEntrada,double rangoMayor)
+        void EstaEnRango(TextBox txtEntrada, double rangoMayor)
         {
-            if (txtEntrada.Text != "") {
+            if (txtEntrada.Text != "")
+            {
                 double entrada = Convert.ToDouble(txtEntrada.Text);
                 if (entrada > rangoMayor)
                 {
@@ -195,11 +197,12 @@ namespace CRM
 
         void CalcularPrecioFinal()
         {
-            if (txtPrecio.Text != "" && txtDescuento.Text != "" ) {
+            if (txtPrecio.Text != "" && txtDescuento.Text != "")
+            {
                 double precioFinal = Convert.ToDouble(txtPrecio.Text);
                 double descuento = Convert.ToDouble(txtDescuento.Text);
 
-                descuento = 100-descuento;
+                descuento = 100 - descuento;
 
                 precioFinal *= descuento / 100;
 
@@ -210,16 +213,16 @@ namespace CRM
 
         protected void CambioComision(object sender, EventArgs e)
         {
-            EstaEnRango(txtComision,100);
+            EstaEnRango(txtComision, 100);
         }
 
         protected void CambioDescuento(object sender, EventArgs e)
         {
-            EstaEnRango(txtDescuento,100);
+            EstaEnRango(txtDescuento, 100);
             CalcularPrecioFinal();
         }
 
-//---------Tabla/Grid-----------------
+        //---------Tabla/Grid-----------------
         protected void CambioPagina(object sender, EventArgs e)
         {
             paginaActual = paginaDropDown.SelectedIndex + 1;
@@ -302,20 +305,20 @@ namespace CRM
                 salida = false;
             }
 
-            if (lblCliente.Text == "No se encontro el cliente"|| lblCliente.Text=="")
+            if (lblCliente.Text == "No se encontro el cliente" || lblCliente.Text == "")
             {
                 error += "*No se selecciono un cliente valido.<br />";
                 salida = false;
             }
 
-            
+
             lblError.Text = error;
             lblError.Visible = true;
             return salida;
 
         }
 
-// ---------------GridView-------------------
+        // ---------------GridView-------------------
         private void BindGridView()
         {
             try
@@ -327,7 +330,7 @@ namespace CRM
                 double limite = paginaDropDown.SelectedIndex * filasPorPagina;
                 MySqlCommand cmd = new MySqlCommand("SELECT venta.id,producto.nombre," +
                     "venta.fecha,venta.precio,venta.descuento,venta.vendedor,venta.respuesta" +
-                    " FROM venta INNER JOIN producto ON venta.idProducto = producto.ID limit " 
+                    " FROM venta INNER JOIN producto ON venta.idProducto = producto.ID limit "
                     + limite + "," + filasPorPagina + "", con);
                 MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -355,7 +358,7 @@ namespace CRM
             clear();
             GridViewRow row = GridViewEmpresa.SelectedRow;
             txtIdProducto.Text = row.Cells[3].Text;
-            MySqlCommand cmd = new MySqlCommand("SELECT * FROM `venta` where id = " + 
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM `venta` where id = " +
                 row.Cells[1].Text + "", con);
             lblIdVenta.Text = "ID: " + row.Cells[1].Text;
             MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
@@ -383,7 +386,7 @@ namespace CRM
                 txtPersona.Visible = true;
                 txtPersona.Text = personaID;
                 VerificarCliente(txtPersona, "cedula", "persona");
-                
+
             }
 
             VerificarProducto(txtIdProducto, lblNombreProducto, txtPrecio);
@@ -418,8 +421,8 @@ namespace CRM
 
         }
 
-// ---------------Persona/Empresa-------------------
-        protected void VerificarCliente(TextBox entrada,string columnaNombre,string tablaNombre)
+        // ---------------Persona/Empresa-------------------
+        protected void VerificarCliente(TextBox entrada, string columnaNombre, string tablaNombre)
         {
             try
             {
@@ -428,7 +431,7 @@ namespace CRM
                     con.Open();
                 }
 
-                MySqlCommand cmd = new MySqlCommand("Select nombre from "+ tablaNombre + " where "+ 
+                MySqlCommand cmd = new MySqlCommand("Select nombre from " + tablaNombre + " where " +
                     columnaNombre + " ='" + entrada.Text + "'", con);
                 MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
                 DataSet ds = new DataSet();

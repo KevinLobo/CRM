@@ -26,19 +26,19 @@
                 </div>
                 <ul class="nav navbar-nav">
                     <li><a href="principal.aspx">Principal</a></li>
-                    <li class="dropdown active"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Contactos
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Contactos
           <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="persona.aspx">Personas</a></li>
                             <li><a href="empresa.aspx">Empresas</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Ventas
+                    <li class="dropdown active"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Ventas
                         <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li class="active"><a href="producto.aspx">Producto</a></li>
                             <li><a href="ventas.aspx">Registro Ventas</a></li>
-                            <li><a>Propuestas</a></li>
+                            <li><a href="propuesta.aspx">Propuestas</a></li>
                         </ul>
                     </li>
                 </ul>

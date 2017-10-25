@@ -10,7 +10,7 @@
 namespace CRM {
     
     
-    public partial class ventas {
+    public partial class propuesta {
         
         /// <summary>
         /// Control form1.
