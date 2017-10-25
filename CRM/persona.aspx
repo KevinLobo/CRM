@@ -23,19 +23,12 @@
                     <a class="navbar-brand" href="#">CRM</a>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li><a href="principal.aspx">Principal</a></li>
-                    <li class="dropdown active"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Contactos
+                    <li class="active"><a href="principal.aspx">Principal</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Contactos
           <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li class="active"><a href="persona.aspx">Personas</a></li>
+                            <li><a href="persona.aspx">Personas</a></li>
                             <li><a href="empresa.aspx">Empresas</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Ventas
-                        <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="ventas.aspx">Registro Ventas</a></li>
-                            <li><a>Propuestas</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -111,24 +104,22 @@
                 </asp:GridView>
             </div>
             <div class="form-group ">
-                <div class="row" style="margin-top: 20px;">
-                    <div class="col-lg-1" style="text-align: left;">
-                        <h5>
-                            <asp:Label ID="MessageLabel" Text="Ir a la pág." runat="server" /></h5>
+                <div class="row" style="margin-top:20px;">
+                    <div class="col-lg-1" style="text-align:left;">
+                        <h5><asp:label id="MessageLabel" text="Ir a la pág." runat="server" /></h5>
                     </div>
-                    <div class="col-lg-1" style="text-align: left;">
-                        <asp:DropDownList ID="paginaDropDown" Width="60px" AutoPostBack="true"
-                            OnSelectedIndexChanged="CambioPagina"
-                            runat="server"
+                     <div class="col-lg-1" style="text-align:left;">
+                        <asp:dropdownlist id="paginaDropDown" Width="60px" autopostback="true"  
+                            OnSelectedIndexChanged="CambioPagina" 
+                            runat="server" 
                             CssClass="form-control" />
                     </div>
-                    <div class="col-lg-10" style="text-align: right;">
-                        <h3>
-                            <asp:Label ID="CurrentPageLabel" runat="server" CssClass="label label-warning" /></h3>
+                    <div class="col-lg-10" style="text-align:right;">
+                        <h3><asp:label id="CurrentPageLabel" runat="server" CssClass="label label-warning" /></h3>
                     </div>
-                </div>
+                </div>   
             </div>
-
+ 
         </div>
 
     </form>
