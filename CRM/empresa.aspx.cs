@@ -167,9 +167,10 @@ namespace CRM
             return true;
         }
 
-        protected String revisarDatosLLenos(String pNombre, String pDireccion, String pTelefono)
+        protected String revisarDatosLLenos(String pNombre, String pDireccion, String pTelefono, Label labelError)
         {
             error = "";
+            labelError.Text = "";
             if (pNombre == "")
             {
                 error += "*El campo nombre no puede estar vacio.<br />";
@@ -201,12 +202,13 @@ namespace CRM
             {
                 error += "*El campo telefono no puede tener más de 8 caracteres.<br />";
             }
+            labelError.Text = error;
             return error;
         }
 
         protected void BtnSubmit_Click(object sender, EventArgs e)
         {
-            error = revisarDatosLLenos(txtNombre.Text, txtDireccion.Text, txtTelefono.Text);
+            error = revisarDatosLLenos(txtNombre.Text, txtDireccion.Text, txtTelefono.Text,lblError);
             if (error  == "")
             {
                 try
@@ -280,7 +282,7 @@ namespace CRM
 
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
-            error = revisarDatosLLenos(txtNombre.Text, txtDireccion.Text, txtTelefono.Text);
+            error = revisarDatosLLenos(txtNombre.Text, txtDireccion.Text, txtTelefono.Text,lblError);
             if (error == "")
             {
                 try

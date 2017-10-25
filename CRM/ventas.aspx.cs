@@ -136,7 +136,7 @@ namespace CRM
                 double entrada = Convert.ToDouble(txtEntrada.Text);
                 if (entrada > rangoMayor)
                 {
-                    txtEntrada.Text = "100";
+                    txtEntrada.Text = Convert.ToString(rangoMayor);
                 }
                 if (entrada < 0)
                 {

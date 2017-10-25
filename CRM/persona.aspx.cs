@@ -60,10 +60,11 @@ namespace CRM
         }
 
 
-        protected String revisarDatosLLenos(String pCedula, String pNombre, String pDireccion, String pTelefono, String pCorreo)
+        protected String revisarDatosLLenos(String pCedula, String pNombre, String pDireccion,
+            String pTelefono, String pCorreo, Label labelError)
         {
             error = "";
-           
+            labelError.Text = "";
             if (pCedula == "")
             {
                 error += "*El campo cedula no puede estar vacio.<br />";
@@ -111,6 +112,7 @@ namespace CRM
             {
                 error += "*El campo correo no puede tener mas de 80 caracteres.<br />";
             }
+            labelError.Text = error;
             return error;
 
         }
@@ -217,7 +219,8 @@ namespace CRM
 
         protected void BtnSubmit_Click(object sender, EventArgs e)
         {
-            error = revisarDatosLLenos(txtCedula.Text, txtNombre.Text, txtDireccion.Text, txtTelefono.Text, txtCorreo.Text);
+            error = revisarDatosLLenos(txtCedula.Text, txtNombre.Text, txtDireccion.Text,
+                txtTelefono.Text, txtCorreo.Text, lblError);
             if (error == "")
             {
                 try
@@ -303,7 +306,8 @@ namespace CRM
 
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
-            error = revisarDatosLLenos(txtCedula.Text, txtNombre.Text, txtDireccion.Text, txtTelefono.Text, txtCorreo.Text);
+            error = revisarDatosLLenos(txtCedula.Text, txtNombre.Text, txtDireccion.Text, 
+                txtTelefono.Text, txtCorreo.Text,lblError);
             if (error == "")
             {
                 try

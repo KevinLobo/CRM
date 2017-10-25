@@ -63,15 +63,13 @@
                     <label for="Nombre">Nombre:</label>
                     <asp:TextBox ID="txtNombre" runat="server" class="form-control" placeholder="Nombre"></asp:TextBox>
                 </div>
-                <div class="form-group ">
-                    <label for="direccion">Dirección:</label>
-                    <asp:TextBox ID="txtDireccion" runat="server" placeholder="Direción" class="form-control"
-                        TextMode="multiline" Rows="3"></asp:TextBox>
-                </div>
+
 
                 <div class="form-group ">
-                    <label for="telefono">Teléfono:</label>
-                    <asp:TextBox ID="txtTelefono" runat="server" placeholder="Teléfono" class="form-control"></asp:TextBox>
+                    <label for="precio">Precio:</label>
+                        <asp:TextBox ID="txtPrecio" runat="server" class="form-control"
+                        onkeypress="return isNumberKey(event,this)" placeholder="Precio"
+                        AutoPostBack="true" OnTextChanged="CambioPrecio" autocomplete="off"></asp:TextBox>
                 </div>
                 <div class="form-group ">
                     <asp:Label ID="lblError" runat="server" Visible="false" ForeColor="Red"></asp:Label>
@@ -90,13 +88,13 @@
                     <h3>
                         <span style="float: left;">
                             <asp:Label ID="lblInfo" runat="server" /></span>
-                        <span><small>Total empresas:</small>
+                        <span><small>Total productos:</small>
                             <asp:Label ID="lbltotalcount" runat="server" CssClass="label label-warning" /></span>
                     </h3>
 
-                    <asp:GridView ID="GridViewEmpresa" runat="server" DataKeyNames="id"
-                        OnSelectedIndexChanged="GridViewEmpresa_SelectedIndexChanged"
-                        OnRowDeleting="GridViewEmpresa_RowDeleting"
+                    <asp:GridView ID="GridViewProductos" runat="server" DataKeyNames="id"
+                        OnSelectedIndexChanged="GridViewProducto_SelectedIndexChanged"
+                        OnRowDeleting="GridViewProducto_RowDeleting"
                         CssClass="table table-bordered bs-table">
                         <HeaderStyle BackColor="#337ab7" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
@@ -129,6 +127,24 @@
                     </div>
                 </div>
             </div>
+        </div>
     </form>
+
+<%-- Revisa si el caracter insertado pertenece a un numero --%>
+    <script type="text/javascript">
+        function isNumberKey(evt, obj) {
+
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            var value = obj.value;
+            var dotcontains = value.indexOf(",") != -1;
+            if (dotcontains)
+                if (charCode == 44) return false;
+            if (charCode == 44) return true;
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+    </script>
+
 </body>
 </html>

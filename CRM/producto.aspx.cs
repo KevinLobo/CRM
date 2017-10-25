@@ -55,8 +55,7 @@ namespace CRM
         {
             lblId.Visible = false;
             txtNombre.Text = string.Empty;
-            txtDireccion.Text = string.Empty;
-            txtTelefono.Text = string.Empty;
+            txtPrecio.Text = string.Empty;
             lblError.Text = string.Empty;
             btnSubmit.Visible = true;
             btnUpdate.Visible = false;
@@ -124,8 +123,8 @@ namespace CRM
                 MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 adp.Fill(ds);
-                GridViewEmpresa.DataSource = ds;
-                GridViewEmpresa.DataBind();
+                GridViewProductos.DataSource = ds;
+                GridViewProductos.DataBind();
 
             }
             catch (MySqlException ex)
@@ -181,34 +180,7 @@ namespace CRM
                 error += "*El campo nombre no puede tener mas de 80 caracteres.<br />";
                 salida = false;
             }
-            if (txtDireccion.Text.Trim() == "")
-            {
-                error += "*El campo direccion no puede estar vacio.<br />";
-                salida = false;
-            }
-            if (txtDireccion.Text.Trim().Length > 200)
-            {
-                error += "*El campo direccion no puede tener más de 200 caracteres.<br />";
-                salida = false;
-            }
-            if (txtTelefono.Text.Trim() == "")
-            {
-                error += "*El campo telefono no puede estar vacio.<br />";
-                salida = false;
-            }
-            else
-            {
-                if (!IsDigitsOnly(txtTelefono.Text.Trim()))
-                {
-                    error += "*El campo telefono solo puede contener numeros.<br />";
-                    salida = false;
-                }
-            }
-            if (txtTelefono.Text.Trim().Length > 8)
-            {
-                error += "*El campo telefono no puede tener más de 8 caracteres.<br />";
-                salida = false;
-            }
+
             lblError.Text = error;
             lblError.Visible = true;
             return salida;
@@ -222,11 +194,10 @@ namespace CRM
                 try
                 {
                     con.Open();
-                    MySqlCommand cmd = new MySqlCommand("INSERT INTO empresa (Nombre,Direccion,Telefono)" +
-                        " VALUES (@Name, @Address, @Mobile);", con);
+                    MySqlCommand cmd = new MySqlCommand("INSERT INTO producto (nombre,precio)" +
+                        " VALUES (@Name, @precio);", con);
                     cmd.Parameters.AddWithValue("@Name", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@Address", txtDireccion.Text);
-                    cmd.Parameters.AddWithValue("@Mobile", txtTelefono.Text);
+                    cmd.Parameters.AddWithValue("@Address", txtPrecio.Text);
                     cmd.ExecuteNonQuery();
                     cmd.Dispose();
                     ShowMessage("Registro correcto");
@@ -245,31 +216,56 @@ namespace CRM
             }
         }
 
-        protected void GridViewEmpresa_SelectedIndexChanged(object sender, EventArgs e)
+        protected void GridViewProducto_SelectedIndexChanged(object sender, EventArgs e)
         {
-            GridViewRow row = GridViewEmpresa.SelectedRow;
+            GridViewRow row = GridViewProductos.SelectedRow;
             lblId.Visible = true;
             lblId.Text = row.Cells[2].Text;
             txtNombre.Text = row.Cells[3].Text;
-            txtDireccion.Text = row.Cells[4].Text;
-            txtTelefono.Text = row.Cells[5].Text;
+            txtPrecio.Text = row.Cells[4].Text;
             btnSubmit.Visible = false;
             btnSubmit.Enabled = false;
             btnUpdate.Visible = true;
             btnUpdate.Enabled = true;
         }
 
-        protected void GridViewEmpresa_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        protected void CambioPrecio(object sender, EventArgs e)
+        {
+            EstaEnRango(txtPrecio, Double.MaxValue);
+        }
+
+
+        void EstaEnRango(TextBox txtEntrada, double rangoMayor)
+        {
+            if (txtEntrada.Text != "")
+            {
+                double entrada = Convert.ToDouble(txtEntrada.Text);
+                if (entrada > rangoMayor)
+                {
+                    txtEntrada.Text = Convert.ToString(rangoMayor);
+                }
+                if (entrada < 0)
+                {
+                    txtEntrada.Text = "0";
+                }
+            }
+            else
+            {
+                txtEntrada.Text = "0";
+            }
+        }
+
+        protected void GridViewProducto_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
             try
             {
                 con.Open();
-                string id = GridViewEmpresa.DataKeys[e.RowIndex].Value.ToString();
-                MySqlCommand cmd = new MySqlCommand("Delete From empresa where id='" + id + "'", con);
+                string id = GridViewProductos.DataKeys[e.RowIndex].Value.ToString();
+                MySqlCommand cmd = new MySqlCommand("Delete From producto where id='" + id + "'", con);
                 cmd.ExecuteNonQuery();
                 cmd.Dispose();
-                ShowMessage("Empresa eliminada");
-                GridViewEmpresa.EditIndex = -1;
+                ShowMessage("Producto eliminado");
+                GridViewProductos.EditIndex = -1;
                 LlenarListaPaginas();
                 BindGridView();
             }
@@ -291,17 +287,16 @@ namespace CRM
                 try
                 {
                     con.Open();
-                    string ced = lblId.Text;
-                    MySqlCommand cmd = new MySqlCommand("UPDATE empresa SET Nombre = @Name,Direccion = @Address," +
-                        "Telefono=@Mobile WHERE empresa.id = @id", con);
+                    string id = lblId.Text;
+                    MySqlCommand cmd = new MySqlCommand("UPDATE producto SET nombre = @Name,precio = @Precio " +
+                        " WHERE producto.id = @id", con);
                     cmd.Parameters.AddWithValue("@Name", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@Address", txtDireccion.Text);
-                    cmd.Parameters.AddWithValue("@Mobile", txtTelefono.Text);
-                    cmd.Parameters.AddWithValue("@id", ced);
+                    cmd.Parameters.AddWithValue("@Precio", txtPrecio.Text);
+                    cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                     cmd.Dispose();
-                    ShowMessage("Empresa actualizada");
-                    GridViewEmpresa.EditIndex = -1;
+                    ShowMessage("Producto actualizado");
+                    GridViewProductos.EditIndex = -1;
                     LlenarListaPaginas();
                     BindGridView();
                     clear();
