@@ -151,5 +151,7 @@ namespace CRM
                 "San Jose Costa Rica", "84840496", "", labelError);
             Assert.That(labelError.Text=="*El campo correo no puede estar vacio.<br />");
         }
+
+
     }
 }

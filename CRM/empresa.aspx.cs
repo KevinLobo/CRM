@@ -244,17 +244,26 @@ namespace CRM
 
         protected void GridViewEmpresa_SelectedIndexChanged(object sender, EventArgs e)
         {
-            GridViewRow row = GridViewEmpresa.SelectedRow;
-            lblId.Visible = true;
-            lblId.Text = row.Cells[2].Text;
-            txtNombre.Text = row.Cells[3].Text;
-            txtDireccion.Text = row.Cells[4].Text;
-            txtTelefono.Text = row.Cells[5].Text;
-            btnSubmit.Visible = false;
-            btnSubmit.Enabled = false;
-            btnUpdate.Visible = true;
-            btnUpdate.Enabled = true;
+            filaSeleccionada(lblId, txtNombre, txtTelefono, txtDireccion, btnSubmit, btnUpdate, GridViewEmpresa);
         }
+
+        protected void filaSeleccionada(Label pLblID, TextBox pTxtNombre, TextBox pTxtTelefono,
+            TextBox pTxtDireccion,Button pBtnSubmit, Button pBtnUpdate, GridView pGV)
+        {
+            GridViewRow row = pGV.SelectedRow;
+
+            pLblID.Visible = true;
+            pLblID.Text = row.Cells[2].Text;
+            pTxtNombre.Text = row.Cells[3].Text;
+            pTxtDireccion.Text = row.Cells[4].Text;
+            pTxtTelefono.Text = row.Cells[5].Text;
+            pBtnSubmit.Visible = false;
+            pBtnSubmit.Enabled = false;
+            pBtnUpdate.Visible = true;
+            pBtnUpdate.Enabled = true;
+
+        }
+
 
         protected void GridViewEmpresa_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
