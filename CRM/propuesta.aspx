@@ -62,6 +62,7 @@
             <div class="container col-xs-12 col-sm-6 col-md-6 col-lg-3">
 
                 <div class="form-group ">
+                    <label>ID:</label>
                     <asp:Label ID="lblIdVenta" runat="server" Visible="false" ></asp:Label>
                 </div>
                 <div class="form-group ">
@@ -135,6 +136,13 @@
                 </div>
 
                 <div class="form-group ">
+                    <label>Estado:</label>
+                        <asp:RadioButton id="rbAprovado" GroupName="estadoRespuesta" Text="Aprobado"
+                             AutoPostBack="True" runat="server" />
+                        <asp:RadioButton id="rbRechazado" GroupName="estadoRespuesta" Text="Rechazado"
+                              AutoPostBack="True" runat ="server"/>
+                </div>
+                <div class="form-group ">
                     <label for="Respuesta">Respuesta:</label>
                     <asp:TextBox ID="txtRespuesta" runat="server" placeholder="Respuesta" class="form-control"
                         TextMode="multiline" Rows="3"></asp:TextBox>
@@ -164,12 +172,13 @@
 
                     <asp:GridView ID="GridViewEmpresa" runat="server" DataKeyNames="id"
                         OnSelectedIndexChanged="GridViewEmpresa_SelectedIndexChanged"
+                        OnRowDeleting ="GridViewPropuesta_RowDeleting"
                         CssClass="table table-bordered bs-table">
                         <HeaderStyle BackColor="#337ab7" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
-
                         <Columns>
                             <asp:CommandField HeaderText="Seleccionar" ShowSelectButton="True" />
+                            <asp:CommandField HeaderText="Eliminar" ShowDeleteButton="True" />
                         </Columns>
                     </asp:GridView>
                 </div>

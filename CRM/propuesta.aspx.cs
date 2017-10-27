@@ -65,6 +65,8 @@ namespace CRM
             txtPersona.Visible = false;
             rbEmpresa.Checked = false;
             rbPersona.Checked = false;
+            rbAprovado.Checked = false;
+            rbRechazado.Checked = false;
             txtPrecio.Text = string.Empty;
             txtDescuento.Text = string.Empty;
             txtComision.Text = string.Empty;
@@ -74,10 +76,11 @@ namespace CRM
             lblNombreProducto.Text = string.Empty;
             lblCliente.Text = string.Empty;
 
-            btnCancel.Text = "Cancelar";
             lblError.Text = string.Empty;
             btnSubmit.Visible = true;
             btnSubmit.Enabled = true;
+            btnUpdate.Visible = false;
+            btnUpdate.Enabled = false;
             lblError.Visible = false;
             lblIdVenta.Visible = false;
             txtIdProducto.Focus();
@@ -93,7 +96,7 @@ namespace CRM
                     con.Open();
                 }
 
-                MySqlCommand cmd = new MySqlCommand("Select  count(*) from venta", con);
+                MySqlCommand cmd = new MySqlCommand("Select  count(*) from propuesta", con);
                 MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 adp.Fill(ds);
@@ -173,6 +176,8 @@ namespace CRM
             VerificarProducto(txtIdProducto, lblNombreProducto, txtPrecio);
             CalcularPrecioFinal();
         }
+
+
 
         //----------------Precio/descuento/comision
         void EstaEnRango(TextBox txtEntrada, double rangoMayor)
@@ -311,6 +316,12 @@ namespace CRM
                 salida = false;
             }
 
+            if (!rbAprovado.Checked && !rbRechazado.Checked)
+            {
+                error += "*No se selecciono un estado.<br />";
+                salida = false;
+            }
+
 
             lblError.Text = error;
             lblError.Visible = true;
@@ -328,9 +339,9 @@ namespace CRM
                     con.Open();
                 }
                 double limite = paginaDropDown.SelectedIndex * filasPorPagina;
-                MySqlCommand cmd = new MySqlCommand("SELECT venta.id,producto.nombre," +
-                    "venta.fecha,venta.precio,venta.descuento,venta.vendedor,venta.respuesta" +
-                    " FROM venta INNER JOIN producto ON venta.idProducto = producto.ID limit "
+                MySqlCommand cmd = new MySqlCommand("SELECT propuesta.id,producto.nombre," +
+                    "propuesta.fecha,propuesta.precio,propuesta.descuento,propuesta.vendedor,propuesta.respuesta" +
+                    " FROM propuesta INNER JOIN producto ON propuesta.idProducto = producto.ID limit "
                     + limite + "," + filasPorPagina + "", con);
                 MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -358,9 +369,9 @@ namespace CRM
             clear();
             GridViewRow row = GridViewEmpresa.SelectedRow;
             txtIdProducto.Text = row.Cells[3].Text;
-            MySqlCommand cmd = new MySqlCommand("SELECT * FROM `venta` where id = " +
-                row.Cells[1].Text + "", con);
-            lblIdVenta.Text = "ID: " + row.Cells[1].Text;
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM `propuesta` where id = " +
+                row.Cells[2].Text + "", con);
+            lblIdVenta.Text = row.Cells[2].Text;
             MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
             DataSet ds = new DataSet();
             adp.Fill(ds);
@@ -373,6 +384,7 @@ namespace CRM
             txtRespuesta.Text = Convert.ToString(ds.Tables[0].Rows[0]["respuesta"]);
             string empresaID = Convert.ToString(ds.Tables[0].Rows[0]["empresaID"]);
             string personaID = Convert.ToString(ds.Tables[0].Rows[0]["personaVenta"]);
+            int estado = Convert.ToInt32(ds.Tables[0].Rows[0]["estado"]);
             if (empresaID != "")
             {
                 txtEmpresa.Visible = true;
@@ -389,23 +401,28 @@ namespace CRM
 
             }
 
+            if (estado == 1) rbAprovado.Checked = true;
+            if (estado == 0) rbRechazado.Checked = true;
+
+
             VerificarProducto(txtIdProducto, lblNombreProducto, txtPrecio);
-            btnCancel.Text = "Volver";
             lblIdVenta.Visible = true;
             btnSubmit.Visible = false;
             btnSubmit.Enabled = false;
+            btnUpdate.Visible = true;
+            btnUpdate.Enabled = true;
         }
 
-        protected void GridViewEmpresa_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        protected void GridViewPropuesta_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
             try
             {
                 con.Open();
                 string id = GridViewEmpresa.DataKeys[e.RowIndex].Value.ToString();
-                MySqlCommand cmd = new MySqlCommand("Delete From empresa where id='" + id + "'", con);
+                MySqlCommand cmd = new MySqlCommand("Delete From propuesta where id='" + id + "'", con);
                 cmd.ExecuteNonQuery();
                 cmd.Dispose();
-                ShowMessage("Empresa eliminada");
+                ShowMessage("Propuesta eliminada");
                 GridViewEmpresa.EditIndex = -1;
                 LlenarListaPaginas();
                 BindGridView();
@@ -501,8 +518,45 @@ namespace CRM
                 try
                 {
                     con.Open();
+                    MySqlCommand cmd = new MySqlCommand("UPDATE propuesta SET idProducto = @Producto," +
+                        "fecha = @Fecha, precio = @Precio, descuento = @Descuento, comision = @Comision," +
+                        "empresaID = @Empresa, personaVenta = @Persona, vendedor = @Vendedor," +
+                        "estado = @estado, respuesta = @Respuesta WHERE propuesta.id = "+lblIdVenta.Text+";", con);
+                    cmd.Parameters.AddWithValue("@Producto", txtIdProducto.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Fecha", datetimepicker.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Precio", txtPrecio.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Descuento", txtDescuento.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Comision", txtComision.Text.Trim());
 
+                    if (txtPersona.Text != "")
+                    {
+                        cmd.Parameters.AddWithValue("@Persona", txtPersona.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Empresa", null);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@Persona", null);
+                        cmd.Parameters.AddWithValue("@Empresa", txtEmpresa.Text.Trim());
+                    }
+                    cmd.Parameters.AddWithValue("@Vendedor", lblVendedor.Text);
+                    cmd.Parameters.AddWithValue("@Respuesta", txtRespuesta.Text.Trim());
+
+                    if (rbAprovado.Checked)
+                    {
+                        cmd.Parameters.AddWithValue("@estado", "1");
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@estado", "0");
+                    }
+
+
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                    ShowMessage("Actualización correcta.");
                     clear();
+                    LlenarListaPaginas();
+                    BindGridView();
                 }
                 catch (MySqlException ex)
                 {
@@ -528,11 +582,11 @@ namespace CRM
                 try
                 {
                     con.Open();
-                    MySqlCommand cmd = new MySqlCommand("INSERT INTO venta" +
+                    MySqlCommand cmd = new MySqlCommand("INSERT INTO propuesta" +
                         " (idProducto, fecha, precio, descuento, comision" +
-                        ", personaVenta, empresaID, vendedor, respuesta) " +
+                        ", personaVenta, empresaID, vendedor,estado, respuesta) " +
                         "VALUES (@Producto, @Fecha, @Precio, @Descuento, @Comision," +
-                        " @Persona, @Empresa, @Vendedor, @Respuesta);", con);
+                        " @Persona, @Empresa, @Vendedor,@estado,@Respuesta);", con);
                     cmd.Parameters.AddWithValue("@Producto", txtIdProducto.Text.Trim());
                     cmd.Parameters.AddWithValue("@Fecha", datetimepicker.Text.Trim());
                     cmd.Parameters.AddWithValue("@Precio", txtPrecio.Text.Trim());
@@ -552,6 +606,15 @@ namespace CRM
                     cmd.Parameters.AddWithValue("@Vendedor", lblVendedor.Text);
                     cmd.Parameters.AddWithValue("@Respuesta", txtRespuesta.Text.Trim());
 
+                    if (rbAprovado.Checked)
+                    {
+                        cmd.Parameters.AddWithValue("@estado", "1");
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@estado", "0");
+                    }
+                    
 
                     cmd.ExecuteNonQuery();
                     cmd.Dispose();
