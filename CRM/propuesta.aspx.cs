@@ -11,8 +11,19 @@ namespace CRM
 {
     public partial class propuesta : System.Web.UI.Page
     {
-        MySqlConnection con = new MySqlConnection(@"Data Source = localhost;port=3306;Initial"
-        + " Catalog=CRM;User Id=root;password = '' ");
+        IBaseDatos con;
+        string conexion = @"Data Source = localhost;port=3306;Initial"
+            + " Catalog=CRM;User Id=root;password = '' ";
+        public propuesta()
+        {
+            con = new baseDatos(conexion);
+        }
+
+        public propuesta(IBaseDatos bd)
+        {
+            con = new baseDatos("sd");
+        }
+
         string error = "";
         double filasPorPagina = 10;
         double paginas = 0;
@@ -91,16 +102,14 @@ namespace CRM
         {
             try
             {
-                if (con.State == ConnectionState.Closed)
+                con.Abrir();
+                con.cargarQuery("Select  count(*) from propuesta");
+                IDataReader reader = con.getSalida();
+                double totalPersonas = 0;
+                if (reader.Read())
                 {
-                    con.Open();
+                    totalPersonas = Convert.ToDouble(reader["count(*)"]);
                 }
-
-                MySqlCommand cmd = new MySqlCommand("Select  count(*) from propuesta", con);
-                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                adp.Fill(ds);
-                double totalPersonas = Convert.ToDouble(ds.Tables[0].Rows[0]["count(*)"]);
                 lbltotalcount.Text = totalPersonas.ToString();
                 paginas = totalPersonas / filasPorPagina;
                 paginas = Math.Ceiling(paginas);
@@ -121,11 +130,7 @@ namespace CRM
             }
             finally
             {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-
-                }
+                con.Cerrar();
             }
 
         }
@@ -134,21 +139,15 @@ namespace CRM
         {
             try
             {
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
+                con.Abrir();
+                con.cargarQuery("Select * from producto where id ='" + entrada.Text + "'");
+                IDataReader reader = con.getSalida();
 
-                MySqlCommand cmd = new MySqlCommand("Select * from producto where id ='" + entrada.Text + "'", con);
-                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                adp.Fill(ds);
-
-                if (ds.Tables[0].Rows.Count > 0)
+                if (reader.Read())
                 {
                     lblDatos.ForeColor = System.Drawing.Color.Green;
-                    lblDatos.Text = Convert.ToString(ds.Tables[0].Rows[0]["nombre"]);
-                    pTxtPrecio.Text = Convert.ToString(ds.Tables[0].Rows[0]["precio"]);
+                    lblDatos.Text = Convert.ToString(reader["nombre"]);
+                    pTxtPrecio.Text = Convert.ToString(reader["precio"]);
                 }
                 else
                 {
@@ -163,11 +162,7 @@ namespace CRM
             }
             finally
             {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-
-                }
+                con.Cerrar();
             }
         }
 
@@ -252,80 +247,71 @@ namespace CRM
             return true;
         }
 
-        protected bool revisarDatosLLenos()
+        protected string revisarDatosLLenos(TextBox pTxtIdProducto,TextBox pDatetimepicker, TextBox pTxtPrecio,
+            TextBox pTxtDescuento, TextBox pTxtComision, TextBox pTxtRespuesta, Label pLblCliente,
+            RadioButton pRbAprovado, RadioButton pRbRechazado, Label pLblError)
         {
             error = "";
             lblError.Text = "";
-            bool salida = true;
             //venta
-            if (txtIdProducto.Text.Trim() == "")
+            if (pTxtIdProducto.Text.Trim() == "")
             {
                 error += "*El campo producto no puede estar vacio.<br />";
-                salida = false;
             }
-            if (txtIdProducto.Text.Trim().Length > 8)
+            if (pTxtIdProducto.Text.Trim().Length > 8)
             {
                 error += "*El campo producto no puede tener mas de 8 caracteres.<br />";
-                salida = false;
             }
             //fecha
-            if (datetimepicker.Text.Trim() == "")
+            if (pDatetimepicker.Text.Trim() == "")
             {
                 error += "*El campo fecha no puede estar vacio.<br />";
-                salida = false;
             }
 
             //Precio
-            if (txtPrecio.Text.Trim() == "")
+            if (pTxtPrecio.Text.Trim() == "")
             {
                 error += "*El campo precio no puede estar vacio.<br />";
-                salida = false;
             }
 
             //descuento
-            if (txtDescuento.Text.Trim() == "")
+            if (pTxtDescuento.Text.Trim() == "")
             {
                 error += "*El campo descuento no puede estar vacio.<br />";
-                salida = false;
             }
             //El descuento no verifica el largo, debido a que ya se hace previamente
 
             //comision
-            if (txtComision.Text.Trim() == "")
+            if (pTxtComision.Text.Trim() == "")
             {
                 error += "*El campo comisión no puede estar vacio.<br />";
-                salida = false;
             }
             //El descuento no verifica el largo, debido a que ya se hace previamente
 
             //respuesta
-            if (txtRespuesta.Text.Trim() == "")
+            if (pTxtRespuesta.Text.Trim() == "")
             {
                 error += "*El campo respuesta no puede estar vacio.<br />";
-                salida = false;
             }
-            if (txtRespuesta.Text.Trim().Length > 200)
+            if (pTxtRespuesta.Text.Trim().Length > 200)
             {
                 error += "*El campo venta no puede tener mas de 120 caracteres.<br />";
-                salida = false;
             }
 
-            if (lblCliente.Text == "No se encontro el cliente" || lblCliente.Text == "")
+            if (pLblCliente.Text == "No se encontro el cliente" || lblCliente.Text == "")
             {
                 error += "*No se selecciono un cliente valido.<br />";
-                salida = false;
             }
 
-            if (!rbAprovado.Checked && !rbRechazado.Checked)
+            if (!pRbAprovado.Checked && !pRbRechazado.Checked)
             {
                 error += "*No se selecciono un estado.<br />";
-                salida = false;
             }
 
 
-            lblError.Text = error;
-            lblError.Visible = true;
-            return salida;
+            pLblError.Text = error;
+            pLblError.Visible = true;
+            return error;
 
         }
 
@@ -334,19 +320,16 @@ namespace CRM
         {
             try
             {
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
                 double limite = paginaDropDown.SelectedIndex * filasPorPagina;
-                MySqlCommand cmd = new MySqlCommand("SELECT propuesta.id,producto.nombre," +
+                con.Abrir();
+                con.cargarQuery("SELECT propuesta.id,producto.nombre," +
                     "propuesta.fecha,propuesta.precio,propuesta.descuento,propuesta.vendedor,propuesta.respuesta" +
                     " FROM propuesta INNER JOIN producto ON propuesta.idProducto = producto.ID limit "
-                    + limite + "," + filasPorPagina + "", con);
-                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                adp.Fill(ds);
-                GridViewEmpresa.DataSource = ds;
+                    + limite + "," + filasPorPagina + "");
+                IDataReader reader = con.getSalida();
+                DataTable table = new DataTable();
+                table.Load(reader);
+                GridViewEmpresa.DataSource = table;
                 GridViewEmpresa.DataBind();
 
             }
@@ -356,11 +339,7 @@ namespace CRM
             }
             finally
             {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-
-                }
+                con.Cerrar();
             }
         }
 
@@ -368,23 +347,26 @@ namespace CRM
         {
             clear();
             GridViewRow row = GridViewEmpresa.SelectedRow;
-            txtIdProducto.Text = row.Cells[3].Text;
-            MySqlCommand cmd = new MySqlCommand("SELECT * FROM `propuesta` where id = " +
-                row.Cells[2].Text + "", con);
+            con.Abrir();
+            con.cargarQuery("SELECT * FROM `propuesta` where id = " +
+                row.Cells[2].Text + "");
+            IDataReader reader = con.getSalida();
             lblIdVenta.Text = row.Cells[2].Text;
-            MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
-            DataSet ds = new DataSet();
-            adp.Fill(ds);
-
-            txtIdProducto.Text = Convert.ToString(ds.Tables[0].Rows[0]["idProducto"]);
-            lblPrecioFinal.Text = Convert.ToString(ds.Tables[0].Rows[0]["precio"]);
-            txtDescuento.Text = Convert.ToString(ds.Tables[0].Rows[0]["descuento"]);
-            txtComision.Text = Convert.ToString(ds.Tables[0].Rows[0]["comision"]);
-            datetimepicker.Text = Convert.ToString(ds.Tables[0].Rows[0]["fecha"]);
-            txtRespuesta.Text = Convert.ToString(ds.Tables[0].Rows[0]["respuesta"]);
-            string empresaID = Convert.ToString(ds.Tables[0].Rows[0]["empresaID"]);
-            string personaID = Convert.ToString(ds.Tables[0].Rows[0]["personaVenta"]);
-            int estado = Convert.ToInt32(ds.Tables[0].Rows[0]["estado"]);
+            txtIdProducto.Text = row.Cells[3].Text;
+            string empresaID = "";
+            string personaID = "";
+            int estado = 0;
+            if (reader.Read()) {
+                txtIdProducto.Text = Convert.ToString(reader["idProducto"]);
+                lblPrecioFinal.Text = Convert.ToString(reader["precio"]);
+                txtDescuento.Text = Convert.ToString(reader["descuento"]);
+                txtComision.Text = Convert.ToString(reader["comision"]);
+                datetimepicker.Text = Convert.ToString(reader["fecha"]);
+                txtRespuesta.Text = Convert.ToString(reader["respuesta"]);
+                empresaID = Convert.ToString(reader["empresaID"]);
+                personaID = Convert.ToString(reader["personaVenta"]);
+                estado = Convert.ToInt32(reader["estado"]);
+            }
             if (empresaID != "")
             {
                 txtEmpresa.Visible = true;
@@ -411,17 +393,18 @@ namespace CRM
             btnSubmit.Enabled = false;
             btnUpdate.Visible = true;
             btnUpdate.Enabled = true;
+
+            con.Cerrar();
         }
 
         protected void GridViewPropuesta_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
             try
             {
-                con.Open();
+                con.Abrir();
                 string id = GridViewEmpresa.DataKeys[e.RowIndex].Value.ToString();
-                MySqlCommand cmd = new MySqlCommand("Delete From propuesta where id='" + id + "'", con);
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
+                con.cargarQuery("Delete From propuesta where id='" + id + "'");
+                con.getSalida().Close();
                 ShowMessage("Propuesta eliminada");
                 GridViewEmpresa.EditIndex = -1;
                 LlenarListaPaginas();
@@ -433,7 +416,7 @@ namespace CRM
             }
             finally
             {
-                con.Close();
+                con.Cerrar();
             }
 
         }
@@ -443,21 +426,15 @@ namespace CRM
         {
             try
             {
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
+                con.Abrir();
+                con.cargarQuery("Select nombre from " + tablaNombre + " where " +
+                    columnaNombre + " ='" + entrada.Text + "'");
+                IDataReader reader = con.getSalida();
 
-                MySqlCommand cmd = new MySqlCommand("Select nombre from " + tablaNombre + " where " +
-                    columnaNombre + " ='" + entrada.Text + "'", con);
-                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                adp.Fill(ds);
-
-                if (ds.Tables[0].Rows.Count > 0)
+                if (reader.Read())
                 {
                     lblCliente.ForeColor = System.Drawing.Color.Green;
-                    lblCliente.Text = Convert.ToString(ds.Tables[0].Rows[0]["nombre"]);
+                    lblCliente.Text = Convert.ToString(reader["nombre"]);
                 }
                 else
                 {
@@ -472,11 +449,7 @@ namespace CRM
             }
             finally
             {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-
-                }
+                con.Cerrar();
             }
 
         }
@@ -513,46 +486,41 @@ namespace CRM
         // ---------------Botones-------------------
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
-            if (revisarDatosLLenos())
+            string error = revisarDatosLLenos(txtIdProducto, datetimepicker, txtPrecio, txtDescuento,
+                txtComision, txtRespuesta, lblCliente, rbAprovado, rbRechazado, lblError);
+            if (error == "")
             {
                 try
                 {
-                    con.Open();
-                    MySqlCommand cmd = new MySqlCommand("UPDATE propuesta SET idProducto = @Producto," +
-                        "fecha = @Fecha, precio = @Precio, descuento = @Descuento, comision = @Comision," +
-                        "empresaID = @Empresa, personaVenta = @Persona, vendedor = @Vendedor," +
-                        "estado = @estado, respuesta = @Respuesta WHERE propuesta.id = "+lblIdVenta.Text+";", con);
-                    cmd.Parameters.AddWithValue("@Producto", txtIdProducto.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Fecha", datetimepicker.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Precio", txtPrecio.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Descuento", txtDescuento.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Comision", txtComision.Text.Trim());
+                    con.Abrir();
+
+                    string estado = "";
+                    if (rbAprovado.Checked)
+                    {
+                        estado = "1";
+                    }
+                    else
+                    {
+                        estado = "0";
+                    }
 
                     if (txtPersona.Text != "")
                     {
-                        cmd.Parameters.AddWithValue("@Persona", txtPersona.Text.Trim());
-                        cmd.Parameters.AddWithValue("@Empresa", null);
+                        con.cargarQuery("UPDATE propuesta SET idProducto = '"+ txtIdProducto.Text + "'," +
+                        "fecha = '"+ datetimepicker.Text + "', precio = '"+ txtPrecio.Text + 
+                        "', descuento = '"+ txtDescuento.Text + "', comision = '" + txtComision.Text + "'," +
+                        "empresaID = null, personaVenta = '"+ txtPersona.Text + "', vendedor = '"+ lblVendedor.Text + "'," +
+                        "estado = '"+ estado +"', respuesta = '"+ txtRespuesta.Text + "' WHERE propuesta.id = " + lblIdVenta.Text + ";");
                     }
                     else
                     {
-                        cmd.Parameters.AddWithValue("@Persona", null);
-                        cmd.Parameters.AddWithValue("@Empresa", txtEmpresa.Text.Trim());
+                        con.cargarQuery("UPDATE propuesta SET idProducto = '" + txtIdProducto.Text + "'," +
+                        "fecha = '" + datetimepicker.Text + "', precio = '" + txtPrecio.Text +
+                        "', descuento = '" + txtDescuento.Text + "', comision = '" + txtComision.Text + "'," +
+                        "empresaID = '"+ txtEmpresa.Text +"', personaVenta = null, vendedor = '" + lblVendedor.Text + "'," +
+                        "estado = '" + estado + "', respuesta = '" + txtRespuesta.Text + "' WHERE propuesta.id = " + lblIdVenta.Text + ";");
                     }
-                    cmd.Parameters.AddWithValue("@Vendedor", lblVendedor.Text);
-                    cmd.Parameters.AddWithValue("@Respuesta", txtRespuesta.Text.Trim());
-
-                    if (rbAprovado.Checked)
-                    {
-                        cmd.Parameters.AddWithValue("@estado", "1");
-                    }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@estado", "0");
-                    }
-
-
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                    con.getSalida().Close();
                     ShowMessage("Actualización correcta.");
                     clear();
                     LlenarListaPaginas();
@@ -564,7 +532,7 @@ namespace CRM
                 }
                 finally
                 {
-                    con.Close();
+                    con.Cerrar();
                 }
             }
         }
@@ -576,48 +544,42 @@ namespace CRM
 
         protected void BtnSubmit_Click(object sender, EventArgs e)
         {
-
-            if (revisarDatosLLenos())
+            string error = revisarDatosLLenos(txtIdProducto, datetimepicker, txtPrecio, txtDescuento,
+                txtComision, txtRespuesta, lblCliente, rbAprovado, rbRechazado, lblError);
+            if (error == "")
             {
                 try
                 {
-                    con.Open();
-                    MySqlCommand cmd = new MySqlCommand("INSERT INTO propuesta" +
-                        " (idProducto, fecha, precio, descuento, comision" +
-                        ", personaVenta, empresaID, vendedor,estado, respuesta) " +
-                        "VALUES (@Producto, @Fecha, @Precio, @Descuento, @Comision," +
-                        " @Persona, @Empresa, @Vendedor,@estado,@Respuesta);", con);
-                    cmd.Parameters.AddWithValue("@Producto", txtIdProducto.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Fecha", datetimepicker.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Precio", txtPrecio.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Descuento", txtDescuento.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Comision", txtComision.Text.Trim());
-
-                    if (txtPersona.Text != "")
-                    {
-                        cmd.Parameters.AddWithValue("@Persona", txtPersona.Text.Trim());
-                        cmd.Parameters.AddWithValue("@Empresa", null);
-                    }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@Persona", null);
-                        cmd.Parameters.AddWithValue("@Empresa", txtEmpresa.Text.Trim());
-                    }
-                    cmd.Parameters.AddWithValue("@Vendedor", lblVendedor.Text);
-                    cmd.Parameters.AddWithValue("@Respuesta", txtRespuesta.Text.Trim());
-
+                    con.Abrir();
+                    string estado = "";
                     if (rbAprovado.Checked)
                     {
-                        cmd.Parameters.AddWithValue("@estado", "1");
+                        estado = "1";
                     }
                     else
                     {
-                        cmd.Parameters.AddWithValue("@estado", "0");
+                        estado = "0";
                     }
-                    
+                    if (txtPersona.Text != "")
+                    {
+                        con.cargarQuery("INSERT INTO propuesta" +
+                        " (idProducto, fecha, precio, descuento, comision" +
+                        ", personaVenta, empresaID, vendedor,estado, respuesta) " +
+                        "VALUES ('"+txtIdProducto.Text+"', '"+datetimepicker+"', '"+txtPrecio.Text+
+                        "', '"+txtDescuento.Text+"', '"+txtComision.Text+"'," +
+                        " '"+txtPersona.Text+"', null, '"+lblVendedor.Text+ "','" + estado + "','" + txtRespuesta.Text + "');");
+                    }
+                    else
+                    {
+                        con.cargarQuery("INSERT INTO propuesta" +
+                        " (idProducto, fecha, precio, descuento, comision" +
+                        ", personaVenta, empresaID, vendedor,estado, respuesta) " +
+                        "VALUES ('" + txtIdProducto.Text + "', '" + datetimepicker + "', '" + txtPrecio.Text +
+                        "', '" + txtDescuento.Text + "', '" + txtComision.Text + "'," +
+                        " null, '"+txtEmpresa.Text+"', '" + lblVendedor.Text + "','" + estado + "','" + txtRespuesta.Text + "');");
+                    }
 
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                    con.getSalida().Close();
                     ShowMessage("Registro correcto.");
                     clear();
                     LlenarListaPaginas();
@@ -629,7 +591,7 @@ namespace CRM
                 }
                 finally
                 {
-                    con.Close();
+                    con.Cerrar();
                 }
             }
         }
