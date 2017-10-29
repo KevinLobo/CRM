@@ -242,7 +242,7 @@ namespace CRM
             TextBox pTxtDescuento, TextBox pTxtComision, TextBox pTxtRespuesta, Label pLblCliente, Label pLblError)
         {
             error = "";
-            lblError.Text = "";
+            pLblError.Text = "";
             //venta
             if (pTxtIdProducto.Text.Trim() == "")
             {
@@ -276,7 +276,7 @@ namespace CRM
             {
                 error += "*El campo comisión no puede estar vacio.<br />";
             }
-            //El descuento no verifica el largo, debido a que ya se hace previamente
+            //La comision no verifica el largo, debido a que ya se hace previamente
 
             //respuesta
             if (pTxtRespuesta.Text.Trim() == "")
@@ -288,7 +288,7 @@ namespace CRM
                 error += "*El campo venta no puede tener mas de 120 caracteres.<br />";
             }
 
-            if (pLblCliente.Text == "No se encontro el cliente"|| lblCliente.Text=="")
+            if (pLblCliente.Text == "No se encontro el cliente"|| pLblCliente.Text=="")
             {
                 error += "*No se selecciono un cliente valido.<br />";
             }

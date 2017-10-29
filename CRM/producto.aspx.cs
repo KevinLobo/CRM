@@ -158,7 +158,7 @@ namespace CRM
             Response.Redirect("principal.aspx");
         }
 
-        bool IsDigitsOnly(string str)
+        public bool IsDigitsOnly(string str)
         {
             foreach (char c in str)
             {

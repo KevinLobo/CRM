@@ -62,7 +62,20 @@ namespace CRM
             revisarDatosLLenos("", "30000", labelError);
             Assert.That(labelError.Text == "*El campo nombre no puede estar vacio.<br />");
         }
-        
+
+        [TestCase]
+        //Prueba la funcion isDigit cuando el dato son solo numeros
+        public void isDigitTrue()
+        {
+            Assert.IsTrue(IsDigitsOnly("123"));
+        }
+
+        [TestCase]
+        //Prueba la funcion isDigit cuando el dato no son solo numeros
+        public void isDigitFalse()
+        {
+            Assert.IsFalse(IsDigitsOnly("123abc"));
+        }
 
     }
 }
