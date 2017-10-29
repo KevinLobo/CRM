@@ -16,15 +16,14 @@ namespace CRM
 
         [TestCase]
         //Prueba revisar los datos cuando estos estan correctos
-        public void datosEmpresaCorrectos()
+        public void datosProductoCorrectos()
         {
-
             Assert.AreEqual("",revisarDatosLLenos("Mesas","30000", labelError));
         }
 
         [TestCase]
         //Prueba revisar los datos cuando el nombre es muy largo
-        public void datosEmpresaNombreLargo()
+        public void datosProductoNombreLargo()
         {
             String nombre = new String('a', 81);
             Assert.AreEqual("*El campo nombre no puede tener mas de 80 caracteres.<br />",
@@ -33,23 +32,31 @@ namespace CRM
 
         [TestCase]
         //Prueba revisar los datos cuando el nombre esta vacio
-        public void datosEmpresaNombreVacio()
+        public void datosProductoNombreVacio()
         {
             Assert.AreEqual("*El campo nombre no puede estar vacio.<br />",
                 revisarDatosLLenos("", "30000", labelError));
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando la precio es vacio
-        public void datosEmpresaDireccionVacia()
+        //Prueba revisar los datos cuando el precio es vacio
+        public void datosProductoDireccionVacia()
         {
             Assert.AreEqual("*El campo precio no puede estar vacio.<br />", 
                 revisarDatosLLenos("Mesas", "", labelError));
         }
 
         [TestCase]
+        //Prueba revisar los datos cuando el precio no tiene solo numeros
+        public void datosProductoPrecioNoSoloNumeros()
+        {
+            Assert.AreEqual("*El campo precio solo puede contener numeros.<br />",
+                revisarDatosLLenos("Mesas", "123abc", labelError));
+        }
+
+        [TestCase]
         //Prueba revisar los datos cuando dos datos estan mal
-        public void datosEmpresaDosErroneos()
+        public void datosProductoDosErroneos()
         {
             Assert.AreEqual("*El campo nombre no puede estar vacio.<br />*El campo precio no puede estar vacio.<br />",
                 revisarDatosLLenos("", "", labelError));

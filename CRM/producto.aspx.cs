@@ -185,6 +185,10 @@ namespace CRM
             {
                 error += "*El campo precio no puede estar vacio.<br />";
             }
+            if (!IsDigitsOnly(precio))
+            {
+                error += "*El campo precio solo puede contener numeros.<br />";
+            }
 
             labelError.Text = error;
             labelError.Visible = true;
