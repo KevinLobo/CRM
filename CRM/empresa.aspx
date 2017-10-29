@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="empresa.aspx.cs" Inherits="CRM.WebForm3" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="empresa.aspx.cs" Inherits="CRM.empresa" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">

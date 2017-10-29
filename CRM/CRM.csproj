@@ -206,6 +206,9 @@
     <Content Include="persona.aspx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="baseDatos.cs" />
+    <Compile Include="fakeBaseDatos.cs" />
+    <Compile Include="IBaseDatos.cs" />
     <Compile Include="logIn.aspx.cs">
       <DependentUpon>logIn.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

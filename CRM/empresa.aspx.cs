@@ -10,10 +10,21 @@ using System.Data;
 
 namespace CRM
 {
-    public partial class WebForm3 : System.Web.UI.Page
+    public partial class empresa : System.Web.UI.Page
     {
-        MySqlConnection con = new MySqlConnection(@"Data Source = localhost;port=3306;Initial"
-        + " Catalog=CRM;User Id=root;password = '' ");
+        IBaseDatos con;
+        string  conexion =@"Data Source = localhost;port=3306;Initial"
+            + " Catalog=CRM;User Id=root;password = '' ";
+        public empresa() {
+            con = new baseDatos(conexion);
+        }
+
+        public empresa(IBaseDatos bd)
+        {
+            con = new baseDatos("sd");
+        }
+
+
         string error = "";
         double filasPorPagina = 10;
         double paginas = 0;
@@ -72,16 +83,14 @@ namespace CRM
         {
             try
             {
-                if (con.State == ConnectionState.Closed)
+                con.Abrir();
+                con.cargarQuery("Select  count(*) from empresa");
+                IDataReader reader = con.getSalida();
+                double totalPersonas = 0;
+                if (reader.Read())
                 {
-                    con.Open();
+                    totalPersonas = Convert.ToDouble(reader["count(*)"]);
                 }
-
-                MySqlCommand cmd = new MySqlCommand("Select  count(*) from empresa", con);
-                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                adp.Fill(ds);
-                double totalPersonas = Convert.ToDouble(ds.Tables[0].Rows[0]["count(*)"]);
                 lbltotalcount.Text = totalPersonas.ToString();
                 paginas = totalPersonas / filasPorPagina;
                 paginas = Math.Ceiling(paginas);
@@ -102,11 +111,7 @@ namespace CRM
             }
             finally
             {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-
-                }
+                con.Cerrar();
             }
 
         }
@@ -116,16 +121,13 @@ namespace CRM
         {
             try
             {
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
+                con.Abrir();
                 double limite = paginaDropDown.SelectedIndex * filasPorPagina;
-                MySqlCommand cmd = new MySqlCommand("Select * from empresa limit " + limite + "," + filasPorPagina + "", con);
-                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                adp.Fill(ds);
-                GridViewEmpresa.DataSource = ds;
+                con.cargarQuery("Select * from empresa limit " + limite + "," + filasPorPagina + "");
+                IDataReader reader = con.getSalida();
+                DataTable table = new DataTable();
+                table.Load(reader);
+                GridViewEmpresa.DataSource = table;
                 GridViewEmpresa.DataBind();
 
             }
@@ -135,11 +137,7 @@ namespace CRM
             }
             finally
             {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-
-                }
+                con.Cerrar();
             }
         }
 
@@ -214,14 +212,10 @@ namespace CRM
             {
                 try
                 {
-                    con.Open();
-                    MySqlCommand cmd = new MySqlCommand("INSERT INTO empresa (Nombre,Direccion,Telefono)" +
-                        " VALUES (@Name, @Address, @Mobile);", con);
-                    cmd.Parameters.AddWithValue("@Name", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@Address", txtDireccion.Text);
-                    cmd.Parameters.AddWithValue("@Mobile", txtTelefono.Text);
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                    con.Abrir();
+                    con.cargarQuery("INSERT INTO empresa (Nombre,Direccion,Telefono)" +
+                        " VALUES ('" + txtNombre.Text + "','" + txtDireccion.Text + "', '" + txtTelefono.Text + "');");
+                    con.getSalida().Close();
                     ShowMessage("Registro correcto");
                     clear();
                     LlenarListaPaginas();
@@ -233,7 +227,7 @@ namespace CRM
                 }
                 finally
                 {
-                    con.Close();
+                    con.Cerrar();
                 }
             }
             else
@@ -269,11 +263,10 @@ namespace CRM
         {
             try
             {
-                con.Open();
+                con.Abrir();
                 string id = GridViewEmpresa.DataKeys[e.RowIndex].Value.ToString();
-                MySqlCommand cmd = new MySqlCommand("Delete From empresa where id='" + id + "'", con);
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
+                con.cargarQuery("Delete From empresa where id='" + id + "'");
+                con.getSalida().Close();
                 ShowMessage("Empresa eliminada");
                 GridViewEmpresa.EditIndex = -1;
                 LlenarListaPaginas();
@@ -285,7 +278,7 @@ namespace CRM
             }
             finally
             {
-                con.Close();
+                con.Cerrar();
             }
 
         }
@@ -297,16 +290,13 @@ namespace CRM
             {
                 try
                 {
-                    con.Open();
+                    con.Abrir();
                     string ced = lblId.Text;
-                    MySqlCommand cmd = new MySqlCommand("UPDATE empresa SET Nombre = @Name,Direccion = @Address," +
-                        "Telefono=@Mobile WHERE empresa.id = @id", con);
-                    cmd.Parameters.AddWithValue("@Name", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@Address", txtDireccion.Text);
-                    cmd.Parameters.AddWithValue("@Mobile", txtTelefono.Text);
-                    cmd.Parameters.AddWithValue("@id", ced);
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                    string query = "UPDATE empresa SET Nombre = '" + txtNombre.Text +
+                        "',Direccion ='" + txtDireccion.Text + "', Telefono='" + txtTelefono.Text +
+                        "' WHERE empresa.id = '" + ced + "'";
+                    con.cargarQuery(query);
+                    con.getSalida().Close();
                     ShowMessage("Empresa actualizada");
                     GridViewEmpresa.EditIndex = -1;
                     LlenarListaPaginas();
@@ -319,7 +309,7 @@ namespace CRM
                 }
                 finally
                 {
-                    con.Close();
+                    con.Cerrar();
                 }
             }
             else

@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 namespace CRM
 {
     [TestFixture]
-    class TestPersona : WebForm2
+    class TestPersona : persona
     {
         [TestCase]
         //Prueba revisar los datos cuando estos estan correctos
