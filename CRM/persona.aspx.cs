@@ -9,10 +9,21 @@ using System.Data;
 
 namespace CRM
 {
-    public partial class WebForm2 : System.Web.UI.Page
+    public partial class persona : System.Web.UI.Page
     {
-        MySqlConnection con = new MySqlConnection(@"Data Source = localhost;port=3306;Initial"
-        + " Catalog=CRM;User Id=root;password = '' ");
+        IBaseDatos con;
+        string conexion = @"Data Source = localhost;port=3306;Initial"
+            + " Catalog=CRM;User Id=root;password = '' ";
+        public persona()
+        {
+            con = new baseDatos(conexion);
+        }
+
+        public persona(IBaseDatos bd)
+        {
+            con = new baseDatos("sd");
+        }
+
         string error = "";
         double personasPorPagina = 10;
         double paginas = 0;
@@ -138,16 +149,15 @@ namespace CRM
         {
             try
             {
-                if (con.State == ConnectionState.Closed)
+                con.Abrir();
+                con.cargarQuery("Select  count(*) from persona");
+                IDataReader reader = con.getSalida();
+                double totalPersonas = 0;
+                if (reader.Read())
                 {
-                    con.Open();
+                    totalPersonas = Convert.ToDouble(reader["count(*)"]);
                 }
-
-                MySqlCommand cmd = new MySqlCommand("Select  count(*) from persona", con);
-                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                adp.Fill(ds);
-                double totalPersonas = Convert.ToDouble(ds.Tables[0].Rows[0]["count(*)"]);
+                
                 lbltotalcount.Text = totalPersonas.ToString();
                 paginas = totalPersonas / personasPorPagina;
                 paginas = Math.Ceiling(paginas);
@@ -168,11 +178,7 @@ namespace CRM
             }
             finally
             {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-
-                }
+                con.Cerrar();
             }
 
         }
@@ -181,17 +187,13 @@ namespace CRM
         {
             try
             {
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
-
+                con.Abrir();
                 double limite = paginaDropDown.SelectedIndex * personasPorPagina;
-                MySqlCommand cmd = new MySqlCommand("Select * from persona limit "+limite+","+personasPorPagina+"", con);
-                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                adp.Fill(ds);
-                GridViewPersona.DataSource = ds;
+                con.cargarQuery("Select * from persona limit " + limite + "," + personasPorPagina + "");
+                IDataReader reader = con.getSalida();
+                DataTable table = new DataTable();
+                table.Load(reader);
+                GridViewPersona.DataSource = table;
                 GridViewPersona.DataBind();
 
             }
@@ -201,11 +203,7 @@ namespace CRM
             }
             finally
             {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-
-                }
+                con.Cerrar();
             }
         }
 
@@ -224,16 +222,12 @@ namespace CRM
             {
                 try
                 {
-                    con.Open();
-                    MySqlCommand cmd = new MySqlCommand("INSERT INTO persona (cedula,Nombre,Direccion,Telefono,Correo)" +
-                        " VALUES (@ID,@Name, @Address, @Mobile, @Email);", con);
-                    cmd.Parameters.AddWithValue("@ID", txtCedula.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Name", txtNombre.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Address", txtDireccion.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Mobile", txtTelefono.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Email", txtCorreo.Text.Trim());
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                    con.Abrir();
+                    con.cargarQuery("INSERT INTO persona (cedula,Nombre,Direccion,Telefono,Correo)" +
+                        " VALUES ('"+ txtCedula.Text.Trim() + "','"+ txtNombre.Text.Trim() + 
+                        "', '"+ txtDireccion.Text.Trim()+ "','"+ txtTelefono.Text.Trim() +
+                        "', '"+ txtCorreo.Text.Trim() + "');");
+                    con.getSalida().Close();
                     ShowMessage("Registro correcto.");
                     clear();
                     LlenarListaPaginas();
@@ -245,13 +239,14 @@ namespace CRM
                 }
                 finally
                 {
-                    con.Close();
+                    con.Cerrar();
                 }
             }
             else
             {
                 lblError.Text = error;
             }
+
         }
 
         protected void GridViewPersona_SelectedIndexChanged(object sender, EventArgs e)
@@ -275,11 +270,10 @@ namespace CRM
         {
             try
             {
-                con.Open();
+                con.Abrir();
                 string ced = GridViewPersona.DataKeys[e.RowIndex].Value.ToString();
-                MySqlCommand cmd = new MySqlCommand("Delete From persona where cedula='" + ced + "'", con);
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
+                con.cargarQuery("Delete From persona where cedula='" + ced + "'");
+                con.getSalida().Close();
                 ShowMessage("Persona eliminada");
                 GridViewPersona.EditIndex = -1;
                 LlenarListaPaginas();
@@ -291,7 +285,7 @@ namespace CRM
             }
             finally
             {
-                con.Close();
+                con.Cerrar();
             }
 
         }
@@ -311,17 +305,11 @@ namespace CRM
             {
                 try
                 {
-                    con.Open();
+                    con.Abrir();
                     string ced = lblCedula.Text;
-                    MySqlCommand cmd = new MySqlCommand("UPDATE persona SET Nombre = @Name,Direccion = @Address," +
-                        "Telefono=@Mobile ,Correo = @Email WHERE persona.cedula = @Cedula", con);
-                    cmd.Parameters.AddWithValue("@Name", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@Address", txtDireccion.Text);
-                    cmd.Parameters.AddWithValue("@Mobile", txtTelefono.Text);
-                    cmd.Parameters.AddWithValue("@Email", txtCorreo.Text);
-                    cmd.Parameters.AddWithValue("@Cedula", ced);
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                    con.cargarQuery("UPDATE persona SET Nombre = '"+ txtNombre.Text + "',Direccion = '"+ txtDireccion.Text + "'," +
+                        "Telefono='"+ txtTelefono.Text + "' ,Correo = '"+ txtCorreo.Text + "' WHERE persona.cedula = '"+ ced + "'");
+                    con.getSalida().Close();
                     ShowMessage("Persona actualizada");
                     GridViewPersona.EditIndex = -1;
                     LlenarListaPaginas();
@@ -334,7 +322,7 @@ namespace CRM
                 }
                 finally
                 {
-                    con.Close();
+                    con.Cerrar();
                 }
             }
             else

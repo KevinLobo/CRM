@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 namespace CRM
 {
     [TestFixture]
-    class TestEmpresa : WebForm3
+    class TestEmpresa : empresa
     {
 
         Label labelError = new Label();
@@ -120,12 +120,16 @@ namespace CRM
 
             gridTest.SelectedIndex = 0;
 
-
             filaSeleccionada(tLblId, tTxtNombre, tTxtTelefono, tTxtDireccion, tBtnSubmit, tBtnUpdate, gridTest);
             
             Assert.That(tLblId.Text == "1" && tTxtNombre.Text == "NombreTest" && tTxtTelefono.Text == "TelefonoTest" &&
                 tTxtDireccion.Text == "DescripcionTest" && tLblId.Visible && tBtnUpdate.Visible && !tBtnSubmit.Visible);
         }
+
+
+
+
+
         
 
     }

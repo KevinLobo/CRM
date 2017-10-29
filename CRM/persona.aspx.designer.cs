@@ -10,7 +10,7 @@
 namespace CRM {
     
     
-    public partial class WebForm2 {
+    public partial class persona {
         
         /// <summary>
         /// Control form1.

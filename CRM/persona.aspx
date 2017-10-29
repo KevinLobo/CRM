@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="persona.aspx.cs" Inherits="CRM.WebForm2" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="persona.aspx.cs" Inherits="CRM.persona" %>
 
 <!DOCTYPE html>
 

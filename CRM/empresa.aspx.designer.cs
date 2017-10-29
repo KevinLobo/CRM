@@ -10,7 +10,7 @@
 namespace CRM {
     
     
-    public partial class WebForm3 {
+    public partial class empresa {
         
         /// <summary>
         /// Control form1.
