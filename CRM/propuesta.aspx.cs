@@ -367,6 +367,7 @@ namespace CRM
                 personaID = Convert.ToString(reader["personaVenta"]);
                 estado = Convert.ToInt32(reader["estado"]);
             }
+            con.Cerrar();
             if (empresaID != "")
             {
                 txtEmpresa.Visible = true;
@@ -394,7 +395,7 @@ namespace CRM
             btnUpdate.Visible = true;
             btnUpdate.Enabled = true;
 
-            con.Cerrar();
+
         }
 
         protected void GridViewPropuesta_RowDeleting(object sender, GridViewDeleteEventArgs e)
@@ -565,7 +566,7 @@ namespace CRM
                         con.cargarQuery("INSERT INTO propuesta" +
                         " (idProducto, fecha, precio, descuento, comision" +
                         ", personaVenta, empresaID, vendedor,estado, respuesta) " +
-                        "VALUES ('"+txtIdProducto.Text+"', '"+datetimepicker+"', '"+txtPrecio.Text+
+                        "VALUES ('"+txtIdProducto.Text+"', '"+datetimepicker.Text+"', '"+txtPrecio.Text+
                         "', '"+txtDescuento.Text+"', '"+txtComision.Text+"'," +
                         " '"+txtPersona.Text+"', null, '"+lblVendedor.Text+ "','" + estado + "','" + txtRespuesta.Text + "');");
                     }
