@@ -227,7 +227,7 @@ namespace CRM
             Response.Redirect("principal.aspx");
         }
 
-        bool IsDigitsOnly(string str)
+        public bool IsDigitsOnly(string str)
         {
             foreach (char c in str)
             {
@@ -262,6 +262,11 @@ namespace CRM
             if (pTxtPrecio.Text.Trim() == "")
             {
                 error += "*El campo precio no puede estar vacio.<br />";
+            }
+
+            if (!IsDigitsOnly(pTxtPrecio.Text.Trim()))
+            {
+                error += "*El campo precio debe contener solo numeros.<br />";
             }
 
             //descuento
