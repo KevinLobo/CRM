@@ -133,7 +133,7 @@ namespace CRM
         {
             con.Abrir();
             double limite = pIndex * filasPorPagina;
-            con.cargarQuery("Select * from empresa limit " + limite + "," + filasPorPagina + "");
+            con.cargarQuery("Select * from empresa limit " + pIndex + "," + filasPorPagina + "");
             IDataReader reader = con.getSalida();
             DataTable table = new DataTable();
             table.Load(reader);
@@ -339,10 +339,10 @@ namespace CRM
             try
             {
                 con.Abrir();
-                string ced = pLblID.Text;
+                string id = pLblID.Text;
                 con.cargarQuery("UPDATE empresa SET Nombre = '" + pTxtNobmre.Trim() +
                         "',Direccion ='" + pTxtDireccion.Trim() + "', Telefono='" + pTxtTelefono.Trim() +
-                        "' WHERE empresa.id = '" + ced + "'");
+                        "' WHERE empresa.id = '" + id + "'");
                 con.getSalida().Close();
                 con.Cerrar();
                 return true;

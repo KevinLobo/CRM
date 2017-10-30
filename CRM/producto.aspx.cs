@@ -123,24 +123,25 @@ namespace CRM
         {
             try
             {
-                double limite = paginaDropDown.SelectedIndex * filasPorPagina;
-                con.Abrir();
-                con.cargarQuery("Select * from producto limit " + limite + "," + filasPorPagina + "");
-                DataTable table = new DataTable();
-                IDataReader reader = con.getSalida();
-                table.Load(reader);
-                GridViewProductos.DataSource = table;
-                GridViewProductos.DataBind();
-
+                CargarProductos(paginaDropDown.SelectedIndex,GridViewProductos);
             }
             catch (MySqlException ex)
             {
                 ShowMessage(ex.Message);
             }
-            finally
-            {
-                con.Cerrar();
-            }
+        }
+
+        public void CargarProductos(int pIndex, GridView pGrid)
+        {
+            con.Abrir();
+            double limite = pIndex * filasPorPagina;
+            con.cargarQuery("Select * from producto limit " + pIndex + "," + filasPorPagina + "");
+            IDataReader reader = con.getSalida();
+            DataTable table = new DataTable();
+            table.Load(reader);
+            pGrid.DataSource = table;
+            pGrid.DataBind();
+            con.Cerrar();
         }
 
         protected void CambioPagina(object sender, EventArgs e)
@@ -201,10 +202,7 @@ namespace CRM
             {
                 try
                 {
-                    con.Abrir();
-                    con.cargarQuery("INSERT INTO producto (nombre,precio)" +
-                        " VALUES ('" + txtNombre.Text + "', '" + txtPrecio.Text + "');");
-                    con.getSalida().Close();
+                    InsertarProducto(txtNombre.Text, txtPrecio.Text);
                     ShowMessage("Registro correcto");
                     clear();
                     LlenarListaPaginas();
@@ -214,12 +212,27 @@ namespace CRM
                 {
                     ShowMessage(ex.Message);
                 }
-                finally
-                {
-                    con.Cerrar();
-                }
             }
         }
+
+        public bool InsertarProducto(string pTxtNobmre, string pTxtPrecio)
+        {
+            try
+            {
+                con.Abrir();
+                con.cargarQuery("INSERT INTO producto (nombre,precio)" +
+                        " VALUES ('" + pTxtNobmre.Trim() + "', '" + pTxtPrecio.Trim() + "');");
+                con.getSalida().Close();
+                con.Cerrar();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
+            }
+        }
+
+
 
         protected void GridViewProducto_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -265,9 +278,7 @@ namespace CRM
             try
             {
                 string id = GridViewProductos.DataKeys[e.RowIndex].Value.ToString();
-                con.Abrir();
-                con.cargarQuery("Delete From producto where id='" + id + "'");
-                con.getSalida().Close();
+                BorrarPersona(id);
                 ShowMessage("Producto eliminado");
                 GridViewProductos.EditIndex = -1;
                 LlenarListaPaginas();
@@ -277,12 +288,24 @@ namespace CRM
             {
                 ShowMessage(ex.Message);
             }
-            finally
-            {
-                con.Cerrar();
-            }
-
         }
+
+        public bool BorrarPersona(string id)
+        {
+            try
+            {
+                con.Abrir();
+                con.cargarQuery("Delete From producto where id='" + id + "'");
+                con.getSalida().Close();
+                con.Cerrar();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
+            }
+        }
+
 
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
@@ -291,11 +314,8 @@ namespace CRM
             {
                 try
                 {
-                    con.Abrir();
-                    string id = lblId.Text;
-                    con.cargarQuery("UPDATE producto SET nombre = '"+txtNombre.Text+"',precio = '"+txtPrecio.Text+"' " +
-                        " WHERE producto.id = '"+id+"'");
-                    con.getSalida().Close();
+                    ActualizarProducto(lblId, txtNombre.Text, txtPrecio.Text);
+ 
                     ShowMessage("Producto actualizado");
                     GridViewProductos.EditIndex = -1;
                     LlenarListaPaginas();
@@ -306,10 +326,24 @@ namespace CRM
                 {
                     ShowMessage(ex.Message);
                 }
-                finally
-                {
-                    con.Cerrar();
-                }
+            }
+        }
+
+        public bool ActualizarProducto(Label pLblID, string pTxtNobmre, string pTxtPrecio)
+        {
+            try
+            {
+                con.Abrir();
+                string id = pLblID.Text;
+                con.cargarQuery("UPDATE producto SET nombre = '" + pTxtNobmre.Trim() + "',precio = '" + pTxtPrecio.Trim() + "' " +
+                    " WHERE producto.id = '" + id + "'");
+                con.getSalida().Close();
+                con.Cerrar();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
             }
         }
 
