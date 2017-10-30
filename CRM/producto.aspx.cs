@@ -11,8 +11,20 @@ namespace CRM
 {
     public partial class producto : System.Web.UI.Page
     {
-        MySqlConnection con = new MySqlConnection(@"Data Source = localhost;port=3306;Initial"
-        + " Catalog=CRM;User Id=root;password = '' ");
+
+
+        IBaseDatos con;
+        string conexion = @"Data Source = localhost;port=3306;Initial"
+            + " Catalog=CRM;User Id=root;password = '' ";
+        public producto()
+        {
+            con = new baseDatos(conexion);
+        }
+
+        public producto(IBaseDatos bd)
+        {
+            con = new baseDatos("sd");
+        }
         string error = "";
         double filasPorPagina = 10;
         double paginas = 0;
@@ -70,16 +82,13 @@ namespace CRM
         {
             try
             {
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
+                con.Abrir();
+                con.cargarQuery("Select  count(*) from producto");
+                IDataReader reader = con.getSalida();
+                double totalPersonas = 0;
+                if (reader.Read()) {
+                    totalPersonas = Convert.ToDouble(reader["count(*)"]);
                 }
-
-                MySqlCommand cmd = new MySqlCommand("Select  count(*) from producto", con);
-                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                adp.Fill(ds);
-                double totalPersonas = Convert.ToDouble(ds.Tables[0].Rows[0]["count(*)"]);
                 lbltotalcount.Text = totalPersonas.ToString();
                 paginas = totalPersonas / filasPorPagina;
                 paginas = Math.Ceiling(paginas);
@@ -104,11 +113,7 @@ namespace CRM
             }
             finally
             {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-
-                }
+                con.Cerrar();
             }
 
         }
@@ -118,16 +123,13 @@ namespace CRM
         {
             try
             {
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
                 double limite = paginaDropDown.SelectedIndex * filasPorPagina;
-                MySqlCommand cmd = new MySqlCommand("Select * from producto limit " + limite + "," + filasPorPagina + "", con);
-                MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                adp.Fill(ds);
-                GridViewProductos.DataSource = ds;
+                con.Abrir();
+                con.cargarQuery("Select * from producto limit " + limite + "," + filasPorPagina + "");
+                DataTable table = new DataTable();
+                IDataReader reader = con.getSalida();
+                table.Load(reader);
+                GridViewProductos.DataSource = table;
                 GridViewProductos.DataBind();
 
             }
@@ -137,11 +139,7 @@ namespace CRM
             }
             finally
             {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-
-                }
+                con.Cerrar();
             }
         }
 
@@ -203,13 +201,10 @@ namespace CRM
             {
                 try
                 {
-                    con.Open();
-                    MySqlCommand cmd = new MySqlCommand("INSERT INTO producto (nombre,precio)" +
-                        " VALUES (@Name, @precio);", con);
-                    cmd.Parameters.AddWithValue("@Name", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@precio", txtPrecio.Text);
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                    con.Abrir();
+                    con.cargarQuery("INSERT INTO producto (nombre,precio)" +
+                        " VALUES ('" + txtNombre.Text + "', '" + txtPrecio.Text + "');");
+                    con.getSalida().Close();
                     ShowMessage("Registro correcto");
                     clear();
                     LlenarListaPaginas();
@@ -221,7 +216,7 @@ namespace CRM
                 }
                 finally
                 {
-                    con.Close();
+                    con.Cerrar();
                 }
             }
         }
@@ -269,11 +264,10 @@ namespace CRM
         {
             try
             {
-                con.Open();
                 string id = GridViewProductos.DataKeys[e.RowIndex].Value.ToString();
-                MySqlCommand cmd = new MySqlCommand("Delete From producto where id='" + id + "'", con);
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
+                con.Abrir();
+                con.cargarQuery("Delete From producto where id='" + id + "'");
+                con.getSalida().Close();
                 ShowMessage("Producto eliminado");
                 GridViewProductos.EditIndex = -1;
                 LlenarListaPaginas();
@@ -285,7 +279,7 @@ namespace CRM
             }
             finally
             {
-                con.Close();
+                con.Cerrar();
             }
 
         }
@@ -297,15 +291,11 @@ namespace CRM
             {
                 try
                 {
-                    con.Open();
+                    con.Abrir();
                     string id = lblId.Text;
-                    MySqlCommand cmd = new MySqlCommand("UPDATE producto SET nombre = @Name,precio = @Precio " +
-                        " WHERE producto.id = @id", con);
-                    cmd.Parameters.AddWithValue("@Name", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@Precio", txtPrecio.Text);
-                    cmd.Parameters.AddWithValue("@id", id);
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                    con.cargarQuery("UPDATE producto SET nombre = '"+txtNombre.Text+"',precio = '"+txtPrecio.Text+"' " +
+                        " WHERE producto.id = '"+id+"'");
+                    con.getSalida().Close();
                     ShowMessage("Producto actualizado");
                     GridViewProductos.EditIndex = -1;
                     LlenarListaPaginas();
@@ -318,7 +308,7 @@ namespace CRM
                 }
                 finally
                 {
-                    con.Close();
+                    con.Cerrar();
                 }
             }
         }
