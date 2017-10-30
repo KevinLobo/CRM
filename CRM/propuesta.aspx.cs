@@ -177,6 +177,7 @@ namespace CRM
         //----------------Precio/descuento/comision
         void EstaEnRango(TextBox txtEntrada, double rangoMayor)
         {
+
             if (txtEntrada.Text != "")
             {
                 double entrada = Convert.ToDouble(txtEntrada.Text);
