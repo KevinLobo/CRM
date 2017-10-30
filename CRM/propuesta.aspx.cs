@@ -169,7 +169,7 @@ namespace CRM
         protected void CambioID(object sender, EventArgs e)
         {
             VerificarProducto(txtIdProducto, lblNombreProducto, txtPrecio);
-            CalcularPrecioFinal();
+            CalcularPrecioFinal(txtPrecio,txtDescuento,lblPrecioFinal);
         }
 
 
@@ -196,18 +196,18 @@ namespace CRM
             }
         }
 
-        void CalcularPrecioFinal()
+        void CalcularPrecioFinal(TextBox pTxtPrecio, TextBox pTxtDescuento, Label pLabelPrecioFinal)
         {
-            if (txtPrecio.Text != "" && txtDescuento.Text != "")
+            if (pTxtPrecio.Text != "" && pTxtDescuento.Text != "")
             {
-                double precioFinal = Convert.ToDouble(txtPrecio.Text);
-                double descuento = Convert.ToDouble(txtDescuento.Text);
+                double precioFinal = Convert.ToDouble(pTxtPrecio.Text);
+                double descuento = Convert.ToDouble(pTxtDescuento.Text);
 
                 descuento = 100 - descuento;
 
                 precioFinal *= descuento / 100;
 
-                lblPrecioFinal.Text = precioFinal.ToString();
+                pLabelPrecioFinal.Text = precioFinal.ToString();
             }
 
         }
@@ -220,7 +220,7 @@ namespace CRM
         protected void CambioDescuento(object sender, EventArgs e)
         {
             EstaEnRango(txtDescuento, 100);
-            CalcularPrecioFinal();
+            CalcularPrecioFinal(txtPrecio, txtDescuento, lblPrecioFinal);
         }
 
         //---------Tabla/Grid-----------------
