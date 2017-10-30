@@ -310,28 +310,32 @@ namespace CRM
         {
             try
             {
-                double limite = paginaDropDown.SelectedIndex * filasPorPagina;
-                con.Abrir();
-                con.cargarQuery("SELECT venta.id,producto.nombre," +
-                    "venta.fecha,venta.precio,venta.descuento,venta.vendedor,venta.respuesta" +
-                    " FROM venta INNER JOIN producto ON venta.idProducto = producto.ID limit "
-                    + limite + "," + filasPorPagina + "");
-                IDataReader rader = con.getSalida();
-                DataTable table = new DataTable();
-                table.Load(rader);
-                GridViewEmpresa.DataSource = table;
-                GridViewEmpresa.DataBind();
+                CargarVenta(paginaDropDown.SelectedIndex, GridViewEmpresa);
 
             }
             catch (MySqlException ex)
             {
                 ShowMessage(ex.Message);
             }
-            finally
-            {
-                con.Cerrar();
-            }
+
         }
+
+        public void CargarVenta(int pIndex, GridView pGrid)
+        {
+            con.Abrir();
+            double limite = pIndex * filasPorPagina;
+            con.cargarQuery("SELECT venta.id,producto.nombre," +
+                "venta.fecha,venta.precio,venta.descuento,venta.vendedor,venta.respuesta" +
+                " FROM venta INNER JOIN producto ON venta.idProducto = producto.ID limit "
+                + pIndex + "," + filasPorPagina + "");
+            IDataReader reader = con.getSalida();
+            DataTable table = new DataTable();
+            table.Load(reader);
+            pGrid.DataSource = table;
+            pGrid.DataBind();
+            con.Cerrar();
+        }
+
 
         protected void GridViewEmpresa_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -386,14 +390,7 @@ namespace CRM
         {
             try
             {
-                con.Abrir();
-                string id = GridViewEmpresa.DataKeys[e.RowIndex].Value.ToString();
-                con.cargarQuery("Delete From empresa where id='" + id + "'");
-                con.getSalida().Close();
-                ShowMessage("Empresa eliminada");
-                GridViewEmpresa.EditIndex = -1;
-                LlenarListaPaginas();
-                BindGridView();
+
             }
             catch (MySqlException ex)
             {
@@ -487,27 +484,9 @@ namespace CRM
             {
                 try
                 {
-                    con.Abrir();
-                    if (txtPersona.Text != "")
-                    {
-                        con.cargarQuery("INSERT INTO venta (idProducto, fecha, precio, descuento, comision" +
-                        ", personaVenta, empresaID, vendedor, respuesta) VALUES " +
-                        "('" + txtIdProducto.Text.Trim() + "', '" + datetimepicker.Text.Trim() +
-                        "', '" + txtPrecio.Text.Trim() + "', '" + txtDescuento.Text.Trim() +
-                        "', '" + txtComision.Text.Trim() + "'," + " '"+ txtPersona.Text + "', null, '"
-                        + lblVendedor.Text + "', '"+ txtRespuesta.Text.Trim() + "');");
-                    }
-                    else
-                    {
-                        con.cargarQuery("INSERT INTO venta (idProducto, fecha, precio, descuento, comision" +
-                        ", personaVenta, empresaID, vendedor, respuesta) VALUES " +
-                        "('" + txtIdProducto.Text.Trim() + "', '" + datetimepicker.Text.Trim() +
-                        "', '" + txtPrecio.Text.Trim() + "', '" + txtDescuento.Text.Trim() +
-                        "', '" + txtComision.Text.Trim() + "'," + " null, '" + txtEmpresa.Text + "', '"
-                        + lblVendedor.Text + "', '" + txtRespuesta.Text.Trim() + "');");
-                    }
-
-                    con.getSalida().Close();
+                    InsertarVenta(txtIdProducto.Text, datetimepicker.Text, txtPrecio.Text, 
+                        txtDescuento.Text, txtComision.Text, txtPersona.Text, txtEmpresa.Text,
+                        lblVendedor.Text, txtRespuesta.Text);
                     ShowMessage("Registro correcto.");
                     clear();
                     LlenarListaPaginas();
@@ -517,10 +496,42 @@ namespace CRM
                 {
                     ShowMessage(ex.Message);
                 }
-                finally
+            }
+        }
+
+        public bool InsertarVenta(string pTxtIDProducto, string pFecha, string pPrecio, string pDescuento,
+            string pComision, string pPersona, string pEmpresa, string pVendedor,string pRespuesta)
+        {
+            try
+            {
+                con.Abrir();
+                if (txtPersona.Text != "")
                 {
-                    con.Cerrar();
+                    con.cargarQuery("INSERT INTO venta (idProducto, fecha, precio, descuento, comision" +
+                    ", personaVenta, empresaID, vendedor, respuesta) VALUES " +
+                    "('" + pTxtIDProducto.Trim() + "', '" + pFecha.Trim() +
+                    "', '" + pPrecio.Trim() + "', '" + pDescuento.Trim() +
+                    "', '" + pComision.Trim() + "'," + " '" + pPersona.Trim() + "', null, '"
+                    + pVendedor.Trim() + "', '" + pRespuesta.Trim() + "');");
                 }
+                else
+                {
+                    con.cargarQuery("INSERT INTO venta (idProducto, fecha, precio, descuento, comision" +
+                    ", personaVenta, empresaID, vendedor, respuesta) VALUES " +
+                    "('" + pTxtIDProducto.Trim() + "', '" + pFecha.Trim() +
+                    "', '" + pPrecio.Trim() + "', '" + pDescuento.Trim() +
+                    "', '" + pComision.Trim() + "',null, '"+ pEmpresa.Trim() +"', '"
+                    + pVendedor.Trim() + "', '" + pRespuesta.Trim() + "');");
+
+                }
+
+                con.getSalida().Close();
+                con.Cerrar();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
             }
         }
     }
