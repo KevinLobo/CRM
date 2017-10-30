@@ -259,6 +259,9 @@
     <Compile Include="Test.aspx.designer.cs">
       <DependentUpon>Test.aspx</DependentUpon>
     </Compile>
+    <Compile Include="TestPropuesta.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="TestVentas.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

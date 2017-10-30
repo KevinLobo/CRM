@@ -103,6 +103,23 @@ namespace CRM
         }
 
         [TestCase]
+        //Prueba revisar los datos cuando el precio no son solo numeros
+        public void datosVentasPrecioNoSoloNumeros()
+        {
+            txtid.Text = "01";
+            txtdate.Text = "29/10/17";
+            txtprecio.Text = "123abc";
+            txtdescuento.Text = "10";
+            txtcomision.Text = "10";
+            txtrespuesta.Text = "Respuesta";
+            labelCliente.Text = "Cliente";
+
+            Assert.AreEqual("*El campo precio debe contener solo numeros.<br />",
+                revisarDatosLLenos(txtid, txtdate, txtprecio, txtdescuento, txtcomision, txtrespuesta, labelCliente,
+                labelError));
+        }
+
+        [TestCase]
         //Prueba revisar los datos cuando el descuento esta vacio
         public void datosVentasDescuentoVacio()
         {
@@ -186,6 +203,54 @@ namespace CRM
             Assert.AreEqual("*No se selecciono un cliente valido.<br />", 
                 revisarDatosLLenos(txtid, txtdate, txtprecio, txtdescuento, txtcomision, txtrespuesta, labelCliente, 
                 labelError));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando dos datos son incorrectos
+        public void datosVentasDosDatosMal()
+        {
+            txtid.Text = "";
+            txtdate.Text = "";
+            txtprecio.Text = "30000";
+            txtdescuento.Text = "10";
+            txtcomision.Text = "10";
+            txtrespuesta.Text = "Respuesta";
+            labelCliente.Text = "Cliente";
+
+            Assert.AreEqual("*El campo producto no puede estar vacio.<br />*El campo fecha no puede estar vacio.<br />",
+                revisarDatosLLenos(txtid, txtdate, txtprecio, txtdescuento, txtcomision, txtrespuesta, labelCliente,
+                labelError));
+        }
+
+        [TestCase]
+        //Prueba revisar que el label de error sea igual error
+        public void datosVentasLabelError()
+        {
+            txtid.Text = "01";
+            txtdate.Text = "29/10/17";
+            txtprecio.Text = "30000";
+            txtdescuento.Text = "10";
+            txtcomision.Text = "10";
+            txtrespuesta.Text = "Respuesta";
+            labelCliente.Text = "";
+
+            revisarDatosLLenos(txtid, txtdate, txtprecio, txtdescuento, txtcomision, txtrespuesta, labelCliente,
+                 labelError);
+            Assert.That(labelError.Text == "*No se selecciono un cliente valido.<br />");
+        }
+
+        [TestCase]
+        //Prueba la funcion isDigit cuando el dato son solo numeros
+        public void isDigitTrue()
+        {
+            Assert.IsTrue(IsDigitsOnly("123"));
+        }
+
+        [TestCase]
+        //Prueba la funcion isDigit cuando el dato no son solo numeros
+        public void isDigitFalse()
+        {
+            Assert.IsFalse(IsDigitsOnly("123abc"));
         }
     }
 }

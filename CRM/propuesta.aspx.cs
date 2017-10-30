@@ -236,7 +236,7 @@ namespace CRM
             Response.Redirect("principal.aspx");
         }
 
-        bool IsDigitsOnly(string str)
+        public bool IsDigitsOnly(string str)
         {
             foreach (char c in str)
             {
@@ -252,7 +252,7 @@ namespace CRM
             RadioButton pRbAprovado, RadioButton pRbRechazado, Label pLblError)
         {
             error = "";
-            lblError.Text = "";
+            pLblError.Text = "";
             //venta
             if (pTxtIdProducto.Text.Trim() == "")
             {
@@ -272,6 +272,11 @@ namespace CRM
             if (pTxtPrecio.Text.Trim() == "")
             {
                 error += "*El campo precio no puede estar vacio.<br />";
+            }
+
+            if (!IsDigitsOnly(pTxtPrecio.Text.Trim()))
+            {
+                error += "*El campo precio debe tener solo numeros.<br />";
             }
 
             //descuento
@@ -298,7 +303,7 @@ namespace CRM
                 error += "*El campo venta no puede tener mas de 120 caracteres.<br />";
             }
 
-            if (pLblCliente.Text == "No se encontro el cliente" || lblCliente.Text == "")
+            if (pLblCliente.Text == "No se encontro el cliente" || pLblCliente.Text == "")
             {
                 error += "*No se selecciono un cliente valido.<br />";
             }
