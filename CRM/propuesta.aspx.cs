@@ -175,7 +175,7 @@ namespace CRM
 
 
         //----------------Precio/descuento/comision
-        void EstaEnRango(TextBox txtEntrada, double rangoMayor)
+        public void EstaEnRango(TextBox txtEntrada, double rangoMayor)
         {
 
             if (txtEntrada.Text != "")
@@ -196,7 +196,7 @@ namespace CRM
             }
         }
 
-        void CalcularPrecioFinal(TextBox pTxtPrecio, TextBox pTxtDescuento, Label pLabelPrecioFinal)
+        public void CalcularPrecioFinal(TextBox pTxtPrecio, TextBox pTxtDescuento, Label pLabelPrecioFinal)
         {
             if (pTxtPrecio.Text != "" && pTxtDescuento.Text != "")
             {

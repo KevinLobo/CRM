@@ -283,5 +283,90 @@ namespace CRM
         {
             Assert.IsFalse(IsDigitsOnly("123abc"));
         }
+
+        [TestCase]
+        //Prueba la funcion esta en rango cuando la entrada esta en el limite maximo
+        public void RangoMayorLimite()
+        {
+            TextBox txtEntrada = new TextBox();
+            double entrada = double.MaxValue;
+            txtEntrada.Text = entrada.ToString();
+            EstaEnRango(txtEntrada, 10);
+            Assert.That(txtEntrada.Text == "10");
+        }
+
+        [TestCase]
+        //Prueba la funcion esta en rango cuando la entrada esta en el limite minimo
+        public void RangoMenorLimite()
+        {
+            TextBox txtEntrada = new TextBox();
+            double entrada = double.MinValue;
+            txtEntrada.Text = entrada.ToString();
+            EstaEnRango(txtEntrada, 10);
+            Assert.That(txtEntrada.Text == "0");
+        }
+
+        [TestCase]
+        //Prueba la funcion esta en rango cuando la entrada es mayor al rango
+        public void RangoMayor()
+        {
+            TextBox txtEntrada = new TextBox();
+            txtEntrada.Text = "100";
+            EstaEnRango(txtEntrada, 10);
+            Assert.That(txtEntrada.Text == "10");
+        }
+
+        [TestCase]
+        //Prueba la funcion esta en rango cuando la entrada es mnor al rango
+        public void RangoMenor()
+        {
+            TextBox txtEntrada = new TextBox();
+            txtEntrada.Text = "10";
+            EstaEnRango(txtEntrada, 100);
+            Assert.That(txtEntrada.Text == "10");
+        }
+
+        [TestCase]
+        //Prueba la funcion esta en rango cuando la entrada es menor a cero
+        public void MenorCero()
+        {
+            TextBox txtEntrada = new TextBox();
+            txtEntrada.Text = "-100";
+            EstaEnRango(txtEntrada, 10);
+            Assert.That(txtEntrada.Text == "0");
+        }
+
+        [TestCase]
+        //Prueba la funcion esta en rango cuando la entrada es vacia
+        public void EntradaVacia()
+        {
+            TextBox txtEntrada = new TextBox();
+            txtEntrada.Text = "";
+            EstaEnRango(txtEntrada, 10);
+            Assert.That(txtEntrada.Text == "0");
+        }
+
+        [TestCase]
+        //Prueba la funcion calcular precio final con datos normales
+        public void precioFinalNormal()
+        {
+            txtPrecio.Text = "30000";
+            txtDescuento.Text = "10";
+            Label pLabelPrecioFinal = new Label();
+            CalcularPrecioFinal(txtPrecio, txtDescuento, pLabelPrecioFinal);
+            Assert.That(pLabelPrecioFinal.Text == "27000");
+        }
+
+        [TestCase]
+        //Prueba la funcion calcular precio final con precio en limite mayor
+        public void precioFinalLimiteMayor()
+        {
+            int precio = int.MaxValue;
+            txtPrecio.Text = precio.ToString();
+            txtDescuento.Text = "10";
+            Label pLabelPrecioFinal = new Label();
+            CalcularPrecioFinal(txtPrecio, txtDescuento, pLabelPrecioFinal);
+            Assert.That(pLabelPrecioFinal.Text == "27000");
+        }
     }
 }
