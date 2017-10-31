@@ -165,6 +165,59 @@ namespace CRM
         {
             Assert.IsFalse(IsDigitsOnly("123abc"));
         }
+    }
 
+    [TestFixture]
+    class TestPersonaBD
+    {
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void personaCargaGridView()
+        {
+            fakeBaseDatos fBD = new fakeBaseDatos(true,true,true,true,false);
+            persona personaI = new persona(fBD);
+            GridView grid = new GridView();
+            personaI.CargarPersona(0, grid);
+            Assert.That(grid.Rows[0].Cells[0].Text == "OK");
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void personaAgregarBaseDatos()
+        {
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
+            persona personaI = new persona(fBD);
+            Assert.AreEqual(true, personaI.InsertarPersona("", "", "", "", ""));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void personaElminarBaseDatos()
+        {
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
+            persona personaI = new persona(fBD);
+            Assert.AreEqual(true, personaI.BorrarPersona("1"));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void personaActualizarBaseDatos()
+        {
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
+            persona personaI = new persona(fBD);
+            Label lblID = new Label();
+            lblID.Text = "1";
+            Assert.AreEqual(true, personaI.ActualizarPersona(lblID,"", "", "", "", ""));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void personaErrorEnBaseDatos()
+        {
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true);
+            persona personaI = new persona(fBD);
+            var ex = Assert.Throws<Exception>(() => personaI.BorrarPersona("1"));
+            Assert.That(ex.Message, Is.EqualTo("Error al acceder a la base de datos."));
+        }
     }
 }

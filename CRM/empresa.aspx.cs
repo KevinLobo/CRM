@@ -121,25 +121,27 @@ namespace CRM
         {
             try
             {
-                con.Abrir();
-                double limite = paginaDropDown.SelectedIndex * filasPorPagina;
-                con.cargarQuery("Select * from empresa limit " + limite + "," + filasPorPagina + "");
-                IDataReader reader = con.getSalida();
-                DataTable table = new DataTable();
-                table.Load(reader);
-                GridViewEmpresa.DataSource = table;
-                GridViewEmpresa.DataBind();
-
+                CargarEmpresa(paginaDropDown.SelectedIndex, GridViewEmpresa);
             }
             catch (MySqlException ex)
             {
                 ShowMessage(ex.Message);
             }
-            finally
-            {
-                con.Cerrar();
-            }
         }
+
+        public void CargarEmpresa(int pIndex, GridView pGrid)
+        {
+            con.Abrir();
+            double limite = pIndex * filasPorPagina;
+            con.cargarQuery("Select * from empresa limit " + pIndex + "," + filasPorPagina + "");
+            IDataReader reader = con.getSalida();
+            DataTable table = new DataTable();
+            table.Load(reader);
+            pGrid.DataSource = table;
+            pGrid.DataBind();
+            con.Cerrar();
+        }
+
 
         protected void CambioPagina(object sender, EventArgs e)
         {
@@ -212,10 +214,7 @@ namespace CRM
             {
                 try
                 {
-                    con.Abrir();
-                    con.cargarQuery("INSERT INTO empresa (Nombre,Direccion,Telefono)" +
-                        " VALUES ('" + txtNombre.Text + "','" + txtDireccion.Text + "', '" + txtTelefono.Text + "');");
-                    con.getSalida().Close();
+                    InsertarEmpresa(txtNombre.Text, txtDireccion.Text, txtTelefono.Text);
                     ShowMessage("Registro correcto");
                     clear();
                     LlenarListaPaginas();
@@ -225,16 +224,30 @@ namespace CRM
                 {
                     ShowMessage(ex.Message);
                 }
-                finally
-                {
-                    con.Cerrar();
-                }
             }
             else
             {
                 lblError.Text = error;
             }
         }
+
+        public bool InsertarEmpresa(string pTxtNobmre, string pTxtDireccion, string pTxtTelefono)
+        {
+            try
+            {
+                con.Abrir();
+                con.cargarQuery("INSERT INTO empresa (Nombre,Direccion,Telefono)" +
+                    " VALUES ('" + pTxtNobmre.Trim() + "','" + pTxtDireccion.Trim() + "', '" + pTxtTelefono.Trim() + "');");
+                con.getSalida().Close();
+                con.Cerrar();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
+            }
+        }
+
 
         protected void GridViewEmpresa_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -263,10 +276,8 @@ namespace CRM
         {
             try
             {
-                con.Abrir();
                 string id = GridViewEmpresa.DataKeys[e.RowIndex].Value.ToString();
-                con.cargarQuery("Delete From empresa where id='" + id + "'");
-                con.getSalida().Close();
+                BorrarPersona(id);
                 ShowMessage("Empresa eliminada");
                 GridViewEmpresa.EditIndex = -1;
                 LlenarListaPaginas();
@@ -276,11 +287,22 @@ namespace CRM
             {
                 ShowMessage(ex.Message);
             }
-            finally
-            {
-                con.Cerrar();
-            }
+        }
 
+        public bool BorrarPersona(string id)
+        {
+            try
+            {
+                con.Abrir();
+                con.cargarQuery("Delete From empresa where id='" + id + "'");
+                con.getSalida().Close();
+                con.Cerrar();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
+            }
         }
 
         protected void BtnUpdate_Click(object sender, EventArgs e)
@@ -290,13 +312,7 @@ namespace CRM
             {
                 try
                 {
-                    con.Abrir();
-                    string ced = lblId.Text;
-                    string query = "UPDATE empresa SET Nombre = '" + txtNombre.Text +
-                        "',Direccion ='" + txtDireccion.Text + "', Telefono='" + txtTelefono.Text +
-                        "' WHERE empresa.id = '" + ced + "'";
-                    con.cargarQuery(query);
-                    con.getSalida().Close();
+                    ActualizarEmpresa(lblId, txtNombre.Text, txtDireccion.Text, txtTelefono.Text);
                     ShowMessage("Empresa actualizada");
                     GridViewEmpresa.EditIndex = -1;
                     LlenarListaPaginas();
@@ -315,6 +331,25 @@ namespace CRM
             else
             {
                 lblError.Text = error;
+            }
+        }
+
+        public bool ActualizarEmpresa(Label pLblID,string pTxtNobmre, string pTxtDireccion, string pTxtTelefono)
+        {
+            try
+            {
+                con.Abrir();
+                string id = pLblID.Text;
+                con.cargarQuery("UPDATE empresa SET Nombre = '" + pTxtNobmre.Trim() +
+                        "',Direccion ='" + pTxtDireccion.Trim() + "', Telefono='" + pTxtTelefono.Trim() +
+                        "' WHERE empresa.id = '" + id + "'");
+                con.getSalida().Close();
+                con.Cerrar();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
             }
         }
 

@@ -19,9 +19,9 @@ namespace CRM
             con = new baseDatos(conexion);
         }
 
-        public persona(IBaseDatos bd)
+        public persona(fakeBaseDatos fakeDB)
         {
-            con = new baseDatos("sd");
+            con = fakeDB;
         }
 
         string error = "";
@@ -187,24 +187,25 @@ namespace CRM
         {
             try
             {
-                con.Abrir();
-                double limite = paginaDropDown.SelectedIndex * personasPorPagina;
-                con.cargarQuery("Select * from persona limit " + limite + "," + personasPorPagina + "");
-                IDataReader reader = con.getSalida();
-                DataTable table = new DataTable();
-                table.Load(reader);
-                GridViewPersona.DataSource = table;
-                GridViewPersona.DataBind();
-
+                CargarPersona(paginaDropDown.SelectedIndex, GridViewPersona);
             }
             catch (MySqlException ex)
             {
                 ShowMessage(ex.Message);
             }
-            finally
-            {
-                con.Cerrar();
-            }
+        }
+
+        public void CargarPersona(int pIndex,GridView pGrid)
+        {
+            con.Abrir();
+            double limite = pIndex * personasPorPagina;
+            con.cargarQuery("Select * from persona limit " + limite + "," + personasPorPagina + "");
+            IDataReader reader = con.getSalida();
+            DataTable table = new DataTable();
+            table.Load(reader);
+            pGrid.DataSource = table;
+            pGrid.DataBind();
+            con.Cerrar();
         }
 
 
@@ -222,12 +223,8 @@ namespace CRM
             {
                 try
                 {
-                    con.Abrir();
-                    con.cargarQuery("INSERT INTO persona (cedula,Nombre,Direccion,Telefono,Correo)" +
-                        " VALUES ('"+ txtCedula.Text.Trim() + "','"+ txtNombre.Text.Trim() + 
-                        "', '"+ txtDireccion.Text.Trim()+ "','"+ txtTelefono.Text.Trim() +
-                        "', '"+ txtCorreo.Text.Trim() + "');");
-                    con.getSalida().Close();
+                    InsertarPersona(txtCedula.Text,txtNombre.Text, txtDireccion.Text,
+                        txtTelefono.Text, txtCorreo.Text);
                     ShowMessage("Registro correcto.");
                     clear();
                     LlenarListaPaginas();
@@ -237,16 +234,32 @@ namespace CRM
                 {
                     ShowMessage(ex.Message);
                 }
-                finally
-                {
-                    con.Cerrar();
-                }
             }
             else
             {
                 lblError.Text = error;
             }
 
+        }
+
+        public bool InsertarPersona(string pTxtCedula, string pTxtNombre, string pTxtDireccion , string pTxtTelefono,
+            string pTxtCorreo)
+        {
+            try
+            {
+                con.Abrir();
+                con.cargarQuery("INSERT INTO persona (cedula,Nombre,Direccion,Telefono,Correo)" +
+                    " VALUES ('" + pTxtCedula.Trim() + "','" + pTxtNombre.Trim() +
+                    "', '" + pTxtDireccion.Trim() + "','" + pTxtTelefono.Trim() +
+                    "', '" + pTxtCorreo.Trim() + "');");
+                con.getSalida().Close();
+                con.Cerrar();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
+            }
         }
 
         protected void GridViewPersona_SelectedIndexChanged(object sender, EventArgs e)
@@ -270,10 +283,8 @@ namespace CRM
         {
             try
             {
-                con.Abrir();
                 string ced = GridViewPersona.DataKeys[e.RowIndex].Value.ToString();
-                con.cargarQuery("Delete From persona where cedula='" + ced + "'");
-                con.getSalida().Close();
+                BorrarPersona(ced);
                 ShowMessage("Persona eliminada");
                 GridViewPersona.EditIndex = -1;
                 LlenarListaPaginas();
@@ -283,11 +294,23 @@ namespace CRM
             {
                 ShowMessage(ex.Message);
             }
-            finally
-            {
-                con.Cerrar();
-            }
 
+        }
+
+        public bool BorrarPersona(string id)
+        {
+            try
+            {
+                con.Abrir();
+                con.cargarQuery("Delete From persona where cedula='" + id + "'");
+                con.getSalida().Close();
+                con.Cerrar();
+                return true;
+            }
+            catch(MySqlException ex)
+            {
+                throw ex;
+            }
         }
 
         protected void CambioPagina(object sender, EventArgs e)
@@ -305,11 +328,8 @@ namespace CRM
             {
                 try
                 {
-                    con.Abrir();
-                    string ced = lblCedula.Text;
-                    con.cargarQuery("UPDATE persona SET Nombre = '"+ txtNombre.Text + "',Direccion = '"+ txtDireccion.Text + "'," +
-                        "Telefono='"+ txtTelefono.Text + "' ,Correo = '"+ txtCorreo.Text + "' WHERE persona.cedula = '"+ ced + "'");
-                    con.getSalida().Close();
+                    ActualizarPersona(lblCedula,txtCedula.Text, txtNombre.Text, txtDireccion.Text,
+                        txtTelefono.Text, txtCorreo.Text);
                     ShowMessage("Persona actualizada");
                     GridViewPersona.EditIndex = -1;
                     LlenarListaPaginas();
@@ -320,14 +340,30 @@ namespace CRM
                 {
                     ShowMessage(ex.Message);
                 }
-                finally
-                {
-                    con.Cerrar();
-                }
+
             }
             else
             {
                 lblError.Text = error;
+            }
+        }
+
+        public bool ActualizarPersona(Label pLblCedula, string pTxtCedula, string pTxtNombre, string pTxtDireccion, string pTxtTelefono,
+            string pTxtCorreo)
+        {
+            try
+            {
+                con.Abrir();
+                string ced = pLblCedula.Text;
+                con.cargarQuery("UPDATE persona SET Nombre = '" + pTxtNombre.Trim() + "',Direccion = '" + pTxtDireccion.Trim() + "'," +
+                    "Telefono='" + pTxtTelefono.Trim() + "' ,Correo = '" + pTxtCorreo.Trim() + "' WHERE persona.cedula = '" + pTxtCedula.Trim() + "'");
+                con.getSalida().Close();
+                con.Cerrar();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
             }
         }
 
