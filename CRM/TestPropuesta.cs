@@ -110,7 +110,7 @@ namespace CRM
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba revisar los datos cuando el precio no son solo numeros
         public void datosPropuestaPrecioNoSoloNumeros()
         {
             txtId.Text = "01";
