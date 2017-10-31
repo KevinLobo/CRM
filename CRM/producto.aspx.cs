@@ -21,10 +21,11 @@ namespace CRM
             con = new baseDatos(conexion);
         }
 
-        public producto(IBaseDatos bd)
+        public producto(fakeBaseDatos fakeDB)
         {
-            con = new baseDatos("sd");
+            con = fakeDB;
         }
+
         string error = "";
         double filasPorPagina = 10;
         double paginas = 0;

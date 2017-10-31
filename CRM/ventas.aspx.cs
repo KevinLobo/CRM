@@ -19,10 +19,11 @@ namespace CRM
             con = new baseDatos(conexion);
         }
 
-        public ventas(IBaseDatos bd)
+        public ventas(fakeBaseDatos fakeDB)
         {
-            con = new baseDatos("sd");
+            con = fakeDB;
         }
+
         string error = "";
         double filasPorPagina = 10;
         double paginas = 0;

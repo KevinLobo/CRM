@@ -369,4 +369,46 @@ namespace CRM
             Assert.That(pLabelPrecioFinal.Text == "27000");
         }
     }
+
+    [TestFixture]
+    class TestPropuestaBD
+    {
+        fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void propuestaCargarGridView()
+        {
+            GridView grid = new GridView();
+            propuesta propuestaI = new propuesta(fBD);
+            propuestaI.CargarPropuesta(0, grid);
+            Assert.That(grid.Rows[0].Cells[0].Text == "OK");
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void propuestaAgregarBaseDatos()
+        {
+            propuesta propuestaI = new propuesta(fBD);
+            Assert.AreEqual(true, propuestaI.InsertarPropuesta("", "", "", "", "", "", "", "", "", ""));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void propuestaElminarBaseDatos()
+        {
+            propuesta propuestaI = new propuesta(fBD);
+            Assert.AreEqual(true, propuestaI.BorrarPropuesta("1"));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void propuestaErrorEnBaseDatos()
+        {
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true);
+            propuesta propuestaI = new propuesta(fBD);
+            var ex = Assert.Throws<Exception>(() => propuestaI.BorrarPropuesta("1"));
+            Assert.That(ex.Message, Is.EqualTo("Error al acceder a la base de datos."));
+        }
+    }
 }

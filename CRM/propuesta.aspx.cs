@@ -19,9 +19,9 @@ namespace CRM
             con = new baseDatos(conexion);
         }
 
-        public propuesta(IBaseDatos bd)
+        public propuesta(fakeBaseDatos fakeDB)
         {
-            con = new baseDatos("sd");
+            con = fakeDB;
         }
 
         string error = "";
@@ -326,7 +326,7 @@ namespace CRM
         {
             try
             {
-                CargarProducto(paginaDropDown.SelectedIndex, GridViewEmpresa);
+                CargarPropuesta(paginaDropDown.SelectedIndex, GridViewEmpresa);
 
             }
             catch (MySqlException ex)
@@ -335,7 +335,7 @@ namespace CRM
             }
         }
 
-        public void CargarProducto(int pIndex, GridView pGrid)
+        public void CargarPropuesta(int pIndex, GridView pGrid)
         {
             con.Abrir();
             double limite = pIndex * filasPorPagina;
@@ -412,7 +412,7 @@ namespace CRM
             {
 
                 string id = GridViewEmpresa.DataKeys[e.RowIndex].Value.ToString();
-                BorrarProducto(id);
+                BorrarPropuesta(id);
                 ShowMessage("Propuesta eliminada");
                 GridViewEmpresa.EditIndex = -1;
                 LlenarListaPaginas();
@@ -426,7 +426,7 @@ namespace CRM
 
         }
 
-        public bool BorrarProducto(string id)
+        public bool BorrarPropuesta(string id)
         {
             try
             {
@@ -605,7 +605,7 @@ namespace CRM
             try
             {
                 con.Abrir();
-                if (txtPersona.Text != "")
+                if (pPersona != "")
                 {
                     con.cargarQuery("INSERT INTO propuesta" +
                     " (idProducto, fecha, precio, descuento, comision" +

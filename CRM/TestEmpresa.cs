@@ -139,12 +139,57 @@ namespace CRM
             Assert.That(tLblId.Text == "1" && tTxtNombre.Text == "NombreTest" && tTxtTelefono.Text == "TelefonoTest" &&
                 tTxtDireccion.Text == "DescripcionTest" && tLblId.Visible && tBtnUpdate.Visible && !tBtnSubmit.Visible);
         }
+    }
 
+    [TestFixture]
+    class TestEmpresaBD
+    {
+        fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);            
 
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void empresaCargarGridView()
+        {
+            GridView grid = new GridView();
+            empresa empresaI = new empresa(fBD);
+            empresaI.CargarEmpresa(0, grid);
+            Assert.That(grid.Rows[0].Cells[0].Text == "OK");
+        }
 
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void empresaAgregarBaseDatos()
+        {
+            empresa empresaI = new empresa(fBD);
+            Assert.AreEqual(true, empresaI.InsertarEmpresa("", "", ""));
+        }
 
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void empresaElminarBaseDatos()
+        {
+            empresa empresaI = new empresa(fBD); 
+            Assert.AreEqual(true, empresaI.BorrarEmpresa("1"));
+        }
 
-        
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void empresaActualizarBaseDatos()
+        {
+            empresa empresaI = new empresa(fBD);
+            Label lblID = new Label();
+            lblID.Text = "1";
+            Assert.AreEqual(true, empresaI.ActualizarEmpresa(lblID, "", "", ""));
+        }
 
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void empresaErrorEnBaseDatos()
+        {
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true);
+            empresa empresaI = new empresa(fBD);
+            var ex = Assert.Throws<Exception>(() => empresaI.BorrarEmpresa("1"));
+            Assert.That(ex.Message, Is.EqualTo("Error al acceder a la base de datos."));
+        }
     }
 }

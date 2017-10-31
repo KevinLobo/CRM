@@ -315,4 +315,38 @@ namespace CRM
             Assert.That(txtEntrada.Text == "0");
         }
     }
+
+    [TestFixture]
+    class TestVentasBD
+    {
+        fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void ventasCargarGridView()
+        {
+            GridView grid = new GridView();
+            ventas ventasI = new ventas(fBD);
+            ventasI.CargarVenta(0, grid);
+            Assert.That(grid.Rows[0].Cells[0].Text == "OK");
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void ventasAgregarBaseDatos()
+        {
+            ventas ventasI = new ventas(fBD);
+            Assert.AreEqual(true, ventasI.InsertarVenta("", "", "", "", "", "", "", "", ""));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void ventasErrorEnBaseDatos()
+        {
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true);
+            ventas ventasI = new ventas(fBD);
+            var ex = Assert.Throws<Exception>(() => ventasI.InsertarVenta("", "", "", "", "", "", "", "", ""));
+            Assert.That(ex.Message, Is.EqualTo("Error al acceder a la base de datos."));
+        }
+    }
 }

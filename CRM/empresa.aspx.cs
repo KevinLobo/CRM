@@ -19,9 +19,9 @@ namespace CRM
             con = new baseDatos(conexion);
         }
 
-        public empresa(IBaseDatos bd)
+        public empresa(fakeBaseDatos fakeDB)
         {
-            con = new baseDatos("sd");
+            con = fakeDB;
         }
 
 
@@ -277,7 +277,7 @@ namespace CRM
             try
             {
                 string id = GridViewEmpresa.DataKeys[e.RowIndex].Value.ToString();
-                BorrarPersona(id);
+                BorrarEmpresa(id);
                 ShowMessage("Empresa eliminada");
                 GridViewEmpresa.EditIndex = -1;
                 LlenarListaPaginas();
@@ -289,7 +289,7 @@ namespace CRM
             }
         }
 
-        public bool BorrarPersona(string id)
+        public bool BorrarEmpresa(string id)
         {
             try
             {

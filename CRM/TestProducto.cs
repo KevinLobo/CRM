@@ -85,4 +85,56 @@ namespace CRM
         }
 
     }
+
+    [TestFixture]
+    class TestProductoBD
+    {
+        fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void productoCargarGridView()
+        {
+            GridView grid = new GridView();
+            producto productoI = new producto(fBD);
+            productoI.CargarProductos(0, grid);
+            Assert.That(grid.Rows[0].Cells[0].Text == "OK");
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void productoAgregarBaseDatos()
+        {
+            producto productoI = new producto(fBD);
+            Assert.AreEqual(true, productoI.InsertarProducto("", ""));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void productoElminarBaseDatos()
+        {
+            producto productoI = new producto(fBD);
+            Assert.AreEqual(true, productoI.BorrarProducto("1"));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void productoActualizarBaseDatos()
+        {
+            producto productoI = new producto(fBD);
+            Label lblID = new Label();
+            lblID.Text = "1";
+            Assert.AreEqual(true, productoI.ActualizarProducto(lblID, "",""));
+        }
+
+        [TestCase]
+        //Prueba revisar los datos cuando estos estan correctos
+        public void productoErrorEnBaseDatos()
+        {
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true);
+            producto productoI = new producto(fBD);
+            var ex = Assert.Throws<Exception>(() => productoI.BorrarProducto("1"));
+            Assert.That(ex.Message, Is.EqualTo("Error al acceder a la base de datos."));
+        }
+    }
 }
