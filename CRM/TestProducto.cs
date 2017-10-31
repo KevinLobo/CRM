@@ -92,7 +92,7 @@ namespace CRM
         fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba de cargar productos de la base de datos
         public void productoCargarGridView()
         {
             GridView grid = new GridView();
@@ -102,7 +102,7 @@ namespace CRM
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba de insetar producto a la base de datos
         public void productoAgregarBaseDatos()
         {
             producto productoI = new producto(fBD);
@@ -110,7 +110,7 @@ namespace CRM
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba de borrar producto de la base de datos
         public void productoElminarBaseDatos()
         {
             producto productoI = new producto(fBD);
@@ -118,7 +118,7 @@ namespace CRM
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba de actualizar producto de la base de datos
         public void productoActualizarBaseDatos()
         {
             producto productoI = new producto(fBD);
@@ -128,7 +128,7 @@ namespace CRM
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba cuando da error
         public void productoErrorEnBaseDatos()
         {
             fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true);

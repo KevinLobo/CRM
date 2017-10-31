@@ -171,7 +171,7 @@ namespace CRM
     class TestPersonaBD
     {
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba de cargar persona de la base de datos
         public void personaCargaGridView()
         {
             fakeBaseDatos fBD = new fakeBaseDatos(true,true,true,true,false);
@@ -182,7 +182,7 @@ namespace CRM
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba de insertar persona nueva a la base de datos
         public void personaAgregarBaseDatos()
         {
             fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
@@ -191,7 +191,7 @@ namespace CRM
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba de borrar borrar persona de la base de datos
         public void personaElminarBaseDatos()
         {
             fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
@@ -200,7 +200,7 @@ namespace CRM
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba de actualizar persona de la base de datos
         public void personaActualizarBaseDatos()
         {
             fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
@@ -211,7 +211,7 @@ namespace CRM
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba cuando da error
         public void personaErrorEnBaseDatos()
         {
             fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true);

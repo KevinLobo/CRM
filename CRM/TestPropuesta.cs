@@ -376,7 +376,7 @@ namespace CRM
         fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba de cargar propuestas de la base de datos
         public void propuestaCargarGridView()
         {
             GridView grid = new GridView();
@@ -386,7 +386,7 @@ namespace CRM
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba de insertar propuesta a la base de datos
         public void propuestaAgregarBaseDatos()
         {
             propuesta propuestaI = new propuesta(fBD);
@@ -394,7 +394,7 @@ namespace CRM
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba de borrar propuesta de la base de datos
         public void propuestaElminarBaseDatos()
         {
             propuesta propuestaI = new propuesta(fBD);
@@ -402,7 +402,7 @@ namespace CRM
         }
 
         [TestCase]
-        //Prueba revisar los datos cuando estos estan correctos
+        //Prueba cuando da error
         public void propuestaErrorEnBaseDatos()
         {
             fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true);
