@@ -278,7 +278,7 @@ namespace CRM
             try
             {
                 string id = GridViewProductos.DataKeys[e.RowIndex].Value.ToString();
-                BorrarPersona(id);
+                BorrarProducto(id);
                 ShowMessage("Producto eliminado");
                 GridViewProductos.EditIndex = -1;
                 LlenarListaPaginas();
@@ -290,7 +290,7 @@ namespace CRM
             }
         }
 
-        public bool BorrarPersona(string id)
+        public bool BorrarProducto(string id)
         {
             try
             {

@@ -505,7 +505,7 @@ namespace CRM
             try
             {
                 con.Abrir();
-                if (txtPersona.Text != "")
+                if (pPersona != "")
                 {
                     con.cargarQuery("INSERT INTO venta (idProducto, fecha, precio, descuento, comision" +
                     ", personaVenta, empresaID, vendedor, respuesta) VALUES " +

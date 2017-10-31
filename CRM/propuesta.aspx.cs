@@ -326,27 +326,29 @@ namespace CRM
         {
             try
             {
-                double limite = paginaDropDown.SelectedIndex * filasPorPagina;
-                con.Abrir();
-                con.cargarQuery("SELECT propuesta.id,producto.nombre," +
-                    "propuesta.fecha,propuesta.precio,propuesta.descuento,propuesta.vendedor,propuesta.respuesta" +
-                    " FROM propuesta INNER JOIN producto ON propuesta.idProducto = producto.ID limit "
-                    + limite + "," + filasPorPagina + "");
-                IDataReader reader = con.getSalida();
-                DataTable table = new DataTable();
-                table.Load(reader);
-                GridViewEmpresa.DataSource = table;
-                GridViewEmpresa.DataBind();
+                CargarProducto(paginaDropDown.SelectedIndex, GridViewEmpresa);
 
             }
             catch (MySqlException ex)
             {
                 ShowMessage(ex.Message);
             }
-            finally
-            {
-                con.Cerrar();
-            }
+        }
+
+        public void CargarProducto(int pIndex, GridView pGrid)
+        {
+            con.Abrir();
+            double limite = pIndex * filasPorPagina;
+            con.cargarQuery("SELECT propuesta.id,producto.nombre," +
+                "propuesta.fecha,propuesta.precio,propuesta.descuento,propuesta.vendedor,propuesta.respuesta" +
+                " FROM propuesta INNER JOIN producto ON propuesta.idProducto = producto.ID limit "
+                + pIndex + "," + filasPorPagina + "");
+            IDataReader reader = con.getSalida();
+            DataTable table = new DataTable();
+            table.Load(reader);
+            pGrid.DataSource = table;
+            pGrid.DataBind();
+            con.Cerrar();
         }
 
         protected void GridViewEmpresa_SelectedIndexChanged(object sender, EventArgs e)
@@ -408,10 +410,9 @@ namespace CRM
         {
             try
             {
-                con.Abrir();
+
                 string id = GridViewEmpresa.DataKeys[e.RowIndex].Value.ToString();
-                con.cargarQuery("Delete From propuesta where id='" + id + "'");
-                con.getSalida().Close();
+                BorrarProducto(id);
                 ShowMessage("Propuesta eliminada");
                 GridViewEmpresa.EditIndex = -1;
                 LlenarListaPaginas();
@@ -421,11 +422,24 @@ namespace CRM
             {
                 ShowMessage(ex.Message);
             }
-            finally
-            {
-                con.Cerrar();
-            }
+ 
 
+        }
+
+        public bool BorrarProducto(string id)
+        {
+            try
+            {
+                con.Abrir();
+                con.cargarQuery("Delete From propuesta where id='" + id + "'");
+                con.getSalida().Close();
+                con.Cerrar();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
+            }
         }
 
         // ---------------Persona/Empresa-------------------
@@ -567,26 +581,8 @@ namespace CRM
                     {
                         estado = "0";
                     }
-                    if (txtPersona.Text != "")
-                    {
-                        con.cargarQuery("INSERT INTO propuesta" +
-                        " (idProducto, fecha, precio, descuento, comision" +
-                        ", personaVenta, empresaID, vendedor,estado, respuesta) " +
-                        "VALUES ('"+txtIdProducto.Text+"', '"+datetimepicker.Text+"', '"+txtPrecio.Text+
-                        "', '"+txtDescuento.Text+"', '"+txtComision.Text+"'," +
-                        " '"+txtPersona.Text+"', null, '"+lblVendedor.Text+ "','" + estado + "','" + txtRespuesta.Text + "');");
-                    }
-                    else
-                    {
-                        con.cargarQuery("INSERT INTO propuesta" +
-                        " (idProducto, fecha, precio, descuento, comision" +
-                        ", personaVenta, empresaID, vendedor,estado, respuesta) " +
-                        "VALUES ('" + txtIdProducto.Text + "', '" + datetimepicker + "', '" + txtPrecio.Text +
-                        "', '" + txtDescuento.Text + "', '" + txtComision.Text + "'," +
-                        " null, '"+txtEmpresa.Text+"', '" + lblVendedor.Text + "','" + estado + "','" + txtRespuesta.Text + "');");
-                    }
-
-                    con.getSalida().Close();
+                    InsertarPropuesta(txtIdProducto.Text, datetimepicker.Text, txtPrecio.Text, txtDescuento.Text, txtComision.Text, txtPersona.Text,
+                        txtEmpresa.Text, lblVendedor.Text, txtRespuesta.Text, estado);
                     ShowMessage("Registro correcto.");
                     clear();
                     LlenarListaPaginas();
@@ -600,6 +596,41 @@ namespace CRM
                 {
                     con.Cerrar();
                 }
+            }
+        }
+
+        public bool InsertarPropuesta(string pTxtIDProducto, string pFecha, string pPrecio, string pDescuento,
+            string pComision, string pPersona, string pEmpresa, string pVendedor, string pRespuesta,string estado)
+        {
+            try
+            {
+                con.Abrir();
+                if (txtPersona.Text != "")
+                {
+                    con.cargarQuery("INSERT INTO propuesta" +
+                    " (idProducto, fecha, precio, descuento, comision" +
+                    ", personaVenta, empresaID, vendedor,estado, respuesta) " +
+                    "VALUES ('" + pTxtIDProducto.Trim() + "', '" + pFecha.Trim() + "', '" + pPrecio.Trim() +
+                    "', '" + pDescuento.Trim() + "', '" + pComision.Trim() + "'," +
+                    " '" + pPersona.Trim() + "', null, '" + pVendedor.Trim() + "','" + estado + "','" + pRespuesta.Trim() + "');");
+                }
+                else
+                {
+                    con.cargarQuery("INSERT INTO propuesta" +
+                    " (idProducto, fecha, precio, descuento, comision" +
+                    ", personaVenta, empresaID, vendedor,estado, respuesta) " +
+                    "VALUES ('" + pTxtIDProducto.Trim() + "', '" + pFecha.Trim() + "', '" + pPrecio.Trim() +
+                    "', '" + pDescuento.Trim() + "', '" + pComision.Trim() + "'," +
+                    " null, '"+ pEmpresa.Trim() + "', '" + pVendedor.Trim() + "','" + estado + "','" + pRespuesta.Trim() + "');");
+                }
+
+                con.getSalida().Close();
+                con.Cerrar();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
             }
         }
     }
