@@ -255,7 +255,7 @@ namespace CRM
 
         [TestCase]
         //Prueba la funcion esta en rango cuando la entrada esta en el limite maximo
-        public void RangoMayorLimite()
+        public void RangoMayorLimiteVenta()
         {
             TextBox txtEntrada = new TextBox();
             double entrada = double.MaxValue;
@@ -266,7 +266,7 @@ namespace CRM
 
         [TestCase]
         //Prueba la funcion esta en rango cuando la entrada esta en el limite minimo
-        public void RangoMenorLimite()
+        public void RangoMenorLimiteVenta()
         {
             TextBox txtEntrada = new TextBox();
             double entrada = double.MinValue;
@@ -277,7 +277,7 @@ namespace CRM
 
         [TestCase]
         //Prueba la funcion esta en rango cuando la entrada es mayor al rango
-        public void RangoMayor()
+        public void RangoMayorVentas()
         {
             TextBox txtEntrada = new TextBox();
             txtEntrada.Text = "100";
@@ -287,7 +287,7 @@ namespace CRM
 
         [TestCase]
         //Prueba la funcion esta en rango cuando la entrada es mnor al rango
-        public void RangoMenor()
+        public void RangoMenorVentas()
         {
             TextBox txtEntrada = new TextBox();
             txtEntrada.Text = "10";
@@ -297,7 +297,7 @@ namespace CRM
 
         [TestCase]
         //Prueba la funcion esta en rango cuando la entrada es menor a cero
-        public void MenorCero()
+        public void MenorCeroVentas()
         {
             TextBox txtEntrada = new TextBox();
             txtEntrada.Text = "-100";
@@ -307,7 +307,7 @@ namespace CRM
 
         [TestCase]
         //Prueba la funcion esta en rango cuando la entrada es vacia
-        public void EntradaVacia()
+        public void EntradaVaciaVentas()
         {
             TextBox txtEntrada = new TextBox();
             txtEntrada.Text = "";
