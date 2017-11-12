@@ -63,6 +63,12 @@
                     <label for="telefono">Teléfono:</label>
                     <asp:TextBox ID="txtTelefono" runat="server" placeholder="Teléfono" class="form-control"></asp:TextBox>
                 </div>
+
+                <div class="form-group ">
+                    <label for="correo">Correo:</label>
+                    <asp:TextBox ID="txtCorreo" runat="server" placeholder="Correo" class="form-control"></asp:TextBox>
+                </div>
+
                 <div class="form-group ">
                     <asp:Label ID="lblError" runat="server" Visible="false" ForeColor="Red"></asp:Label>
                 </div>

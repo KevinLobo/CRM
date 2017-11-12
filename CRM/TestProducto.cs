@@ -106,7 +106,7 @@ namespace CRM
         public void productoAgregarBaseDatos()
         {
             producto productoI = new producto(fBD);
-            Assert.AreEqual(true, productoI.InsertarProducto("", ""));
+            Assert.AreEqual(true, productoI.InsertarProducto("", "", ""));
         }
 
         [TestCase]
@@ -124,7 +124,7 @@ namespace CRM
             producto productoI = new producto(fBD);
             Label lblID = new Label();
             lblID.Text = "1";
-            Assert.AreEqual(true, productoI.ActualizarProducto(lblID, "",""));
+            Assert.AreEqual(true, productoI.ActualizarProducto(lblID, "","", ""));
         }
 
         [TestCase]

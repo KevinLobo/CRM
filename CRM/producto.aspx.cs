@@ -15,7 +15,7 @@ namespace CRM
 
         IBaseDatos con;
         string conexion = @"Data Source = sql9.freesqldatabase.com;port=3306;Initial"
-            + " Catalog=sql9203199;User Id=sql9203199;password = '4xtW6PBmRm' ";
+            + " Catalog=sql9203199;User Id=sql9203199;password = '4xtW6PBmRm'";
         public producto()
         {
             con = new baseDatos(conexion);
@@ -42,7 +42,7 @@ namespace CRM
             {
                 if (!Page.IsPostBack)
                 {
-
+                    CargarCategorias();
                     LlenarListaPaginas();
                     BindGridView();
 
@@ -84,7 +84,7 @@ namespace CRM
             try
             {
                 con.Abrir();
-                con.cargarQuery("Select  count(*) from producto");
+                con.cargarQuery("Select count(*) from producto");
                 IDataReader reader = con.getSalida();
                 double totalPersonas = 0;
                 if (reader.Read()) {
@@ -119,6 +119,34 @@ namespace CRM
 
         }
 
+        void CargarCategorias()
+        {
+            try
+            {
+                con.Abrir();
+                con.cargarQuery("Select id, categoria from Categoria;");
+                IDataReader reader = con.getSalida();
+
+
+
+                DataTable ventas = new DataTable();
+                ventas.Load(reader);
+                dropdownCategorias.DataSource = ventas;
+                dropdownCategorias.DataTextField = "categoria";
+                dropdownCategorias.DataValueField = "id";
+                dropdownCategorias.DataBind();
+
+            }
+            catch (MySqlException ex)
+            {
+                ShowMessage(ex.Message);
+            }
+            finally
+            {
+                con.Cerrar();
+            }
+        }
+
 
         private void BindGridView()
         {
@@ -136,7 +164,8 @@ namespace CRM
         {
             con.Abrir();
             double limite = pIndex * filasPorPagina;
-            con.cargarQuery("Select * from producto limit " + pIndex + "," + filasPorPagina + "");
+            con.cargarQuery("Select producto.Id as ID, Nombre, Precio, Categoria from producto inner join " +
+                    "Categoria on Categoria.id = producto.idCategoria limit " + pIndex + "," + filasPorPagina + ";");
             IDataReader reader = con.getSalida();
             DataTable table = new DataTable();
             table.Load(reader);
@@ -203,7 +232,7 @@ namespace CRM
             {
                 try
                 {
-                    InsertarProducto(txtNombre.Text, txtPrecio.Text);
+                    InsertarProducto(txtNombre.Text, txtPrecio.Text, dropdownCategorias.SelectedValue);
                     ShowMessage("Registro correcto");
                     clear();
                     LlenarListaPaginas();
@@ -216,13 +245,13 @@ namespace CRM
             }
         }
 
-        public bool InsertarProducto(string pTxtNobmre, string pTxtPrecio)
+        public bool InsertarProducto(string pTxtNobmre, string pTxtPrecio, string idCategoria)
         {
             try
             {
                 con.Abrir();
-                con.cargarQuery("INSERT INTO producto (nombre,precio)" +
-                        " VALUES ('" + pTxtNobmre.Trim() + "', '" + pTxtPrecio.Trim() + "');");
+                con.cargarQuery("INSERT INTO producto (nombre,precio,idCategoria)" +
+                        " VALUES ('" + pTxtNobmre.Trim() + "', '" + pTxtPrecio.Trim() + "', '" + idCategoria + "');");
                 con.getSalida().Close();
                 con.Cerrar();
                 return true;
@@ -242,6 +271,8 @@ namespace CRM
             lblId.Text = row.Cells[2].Text;
             txtNombre.Text = row.Cells[3].Text;
             txtPrecio.Text = row.Cells[4].Text;
+            dropdownCategorias.SelectedIndex = -1;
+            dropdownCategorias.Items.FindByText(row.Cells[5].Text).Selected = true;
             btnSubmit.Visible = false;
             btnSubmit.Enabled = false;
             btnUpdate.Visible = true;
@@ -315,7 +346,7 @@ namespace CRM
             {
                 try
                 {
-                    ActualizarProducto(lblId, txtNombre.Text, txtPrecio.Text);
+                    ActualizarProducto(lblId, txtNombre.Text, txtPrecio.Text, dropdownCategorias.SelectedValue);
  
                     ShowMessage("Producto actualizado");
                     GridViewProductos.EditIndex = -1;
@@ -330,14 +361,14 @@ namespace CRM
             }
         }
 
-        public bool ActualizarProducto(Label pLblID, string pTxtNobmre, string pTxtPrecio)
+        public bool ActualizarProducto(Label pLblID, string pTxtNobmre, string pTxtPrecio, string categoriaId)
         {
             try
             {
                 con.Abrir();
                 string id = pLblID.Text;
-                con.cargarQuery("UPDATE producto SET nombre = '" + pTxtNobmre.Trim() + "',precio = '" + pTxtPrecio.Trim() + "' " +
-                    " WHERE producto.id = '" + id + "'");
+                con.cargarQuery("UPDATE producto SET nombre = '" + pTxtNobmre.Trim() + "',precio = '" + pTxtPrecio.Trim() + 
+                    "',idCategoria = '" + categoriaId +  "' WHERE producto.id = '" + id + "'");
                 con.getSalida().Close();
                 con.Cerrar();
                 return true;

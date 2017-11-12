@@ -122,9 +122,26 @@ namespace CRM
             {
                 error += "*El campo correo no puede tener mas de 80 caracteres.<br />";
             }
+            if (pCorreo != "" && !IsValidEmail(pCorreo))
+            {
+                error += "*El correo es inválido.";
+            }
             labelError.Text = error;
             labelError.Visible = true;
             return error;
+        }
+
+        bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
 
@@ -150,7 +167,7 @@ namespace CRM
             try
             {
                 con.Abrir();
-                con.cargarQuery("Select  count(*) from persona");
+                con.cargarQuery("Select count(*) from Entidad where cedula is not NULL;");
                 IDataReader reader = con.getSalida();
                 double totalPersonas = 0;
                 if (reader.Read())
@@ -199,7 +216,8 @@ namespace CRM
         {
             con.Abrir();
             double limite = pIndex * personasPorPagina;
-            con.cargarQuery("Select * from persona limit " + limite + "," + personasPorPagina + "");
+            con.cargarQuery("Select Cedula, Nombre, Direccion, Telefono, Correo "+
+                "from Entidad where cedula is not NULL limit " + limite + "," + personasPorPagina + "");
             IDataReader reader = con.getSalida();
             DataTable table = new DataTable();
             table.Load(reader);
@@ -248,7 +266,7 @@ namespace CRM
             try
             {
                 con.Abrir();
-                con.cargarQuery("INSERT INTO persona (cedula,Nombre,Direccion,Telefono,Correo)" +
+                con.cargarQuery("INSERT INTO Entidad (cedula,Nombre,Direccion,Telefono,Correo)" +
                     " VALUES ('" + pTxtCedula.Trim() + "','" + pTxtNombre.Trim() +
                     "', '" + pTxtDireccion.Trim() + "','" + pTxtTelefono.Trim() +
                     "', '" + pTxtCorreo.Trim() + "');");
@@ -302,7 +320,7 @@ namespace CRM
             try
             {
                 con.Abrir();
-                con.cargarQuery("Delete From persona where cedula='" + id + "'");
+                con.cargarQuery("Delete From Entidad where cedula='" + id + "'");
                 con.getSalida().Close();
                 con.Cerrar();
                 return true;
@@ -355,8 +373,8 @@ namespace CRM
             {
                 con.Abrir();
                 string ced = pLblCedula.Text;
-                con.cargarQuery("UPDATE persona SET Nombre = '" + pTxtNombre.Trim() + "',Direccion = '" + pTxtDireccion.Trim() + "'," +
-                    "Telefono='" + pTxtTelefono.Trim() + "' ,Correo = '" + pTxtCorreo.Trim() + "' WHERE persona.cedula = '" + pTxtCedula.Trim() + "'");
+                con.cargarQuery("UPDATE Entidad SET Nombre = '" + pTxtNombre.Trim() + "',Direccion = '" + pTxtDireccion.Trim() + "'," +
+                    "Telefono='" + pTxtTelefono.Trim() + "' ,Correo = '" + pTxtCorreo.Trim() + "' WHERE Entidad.cedula = '" + pTxtCedula.Trim() + "'");
                 con.getSalida().Close();
                 con.Cerrar();
                 return true;

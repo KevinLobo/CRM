@@ -69,6 +69,7 @@ namespace CRM
             txtNombre.Text = string.Empty;
             txtDireccion.Text = string.Empty;
             txtTelefono.Text = string.Empty;
+            txtCorreo.Text = string.Empty;
             lblError.Text = string.Empty;
             btnSubmit.Visible = true;
             btnUpdate.Visible = false;
@@ -84,7 +85,7 @@ namespace CRM
             try
             {
                 con.Abrir();
-                con.cargarQuery("Select  count(*) from empresa");
+                con.cargarQuery("Select count(*) from Entidad where cedula is NULL;");
                 IDataReader reader = con.getSalida();
                 double totalPersonas = 0;
                 if (reader.Read())
@@ -133,7 +134,10 @@ namespace CRM
         {
             con.Abrir();
             double limite = pIndex * filasPorPagina;
-            con.cargarQuery("Select * from empresa limit " + pIndex + "," + filasPorPagina + "");
+            string query = "Select Id, Nombre, Direccion, Telefono, Correo " +
+                "from Entidad where cedula is NULL limit " + pIndex + "," + filasPorPagina + ";";
+            System.Diagnostics.Debug.WriteLine(query);
+            con.cargarQuery(query);
             IDataReader reader = con.getSalida();
             DataTable table = new DataTable();
             table.Load(reader);
@@ -167,7 +171,7 @@ namespace CRM
             return true;
         }
 
-        protected String revisarDatosLLenos(String pNombre, String pDireccion, String pTelefono, Label labelError)
+        protected String revisarDatosLLenos(String pNombre, String pDireccion, String pTelefono, Label labelError, String pCorreo)
         {
             error = "";
             labelError.Text = "";
@@ -202,19 +206,44 @@ namespace CRM
             {
                 error += "*El campo telefono no puede tener más de 8 caracteres.<br />";
             }
+            if (pCorreo == "")
+            {
+                error += "*El campo correo no puede estar vacio.<br />";
+            }
+            if (pCorreo.Length > 80)
+            {
+                error += "*El campo correo no puede tener mas de 80 caracteres.<br />";
+            }
+            if (pCorreo != "" && !IsValidEmail(pCorreo))
+            {
+                error += "*El correo es inválido.";
+            }
             labelError.Text = error;
             labelError.Visible = true;
             return error;
         }
 
+        bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         protected void BtnSubmit_Click(object sender, EventArgs e)
         {
-            error = revisarDatosLLenos(txtNombre.Text, txtDireccion.Text, txtTelefono.Text,lblError);
+            error = revisarDatosLLenos(txtNombre.Text, txtDireccion.Text, txtTelefono.Text,lblError, txtCorreo.Text);
             if (error  == "")
             {
                 try
                 {
-                    InsertarEmpresa(txtNombre.Text, txtDireccion.Text, txtTelefono.Text);
+                    InsertarEmpresa(txtNombre.Text, txtDireccion.Text, txtTelefono.Text, txtCorreo.Text);
                     ShowMessage("Registro correcto");
                     clear();
                     LlenarListaPaginas();
@@ -231,13 +260,13 @@ namespace CRM
             }
         }
 
-        public bool InsertarEmpresa(string pTxtNobmre, string pTxtDireccion, string pTxtTelefono)
+        public bool InsertarEmpresa(string pTxtNombre, string pTxtDireccion, string pTxtTelefono, string pTxtCorreo)
         {
             try
             {
                 con.Abrir();
-                con.cargarQuery("INSERT INTO empresa (Nombre,Direccion,Telefono)" +
-                    " VALUES ('" + pTxtNobmre.Trim() + "','" + pTxtDireccion.Trim() + "', '" + pTxtTelefono.Trim() + "');");
+                con.cargarQuery("INSERT INTO Entidad (Nombre,Direccion,Telefono,Correo)" +
+                    " VALUES ('" + pTxtNombre.Trim() + "','" + pTxtDireccion.Trim() + "', '" + pTxtTelefono.Trim() + "', '" + pTxtCorreo.Trim() + "');");
                 con.getSalida().Close();
                 con.Cerrar();
                 return true;
@@ -294,7 +323,7 @@ namespace CRM
             try
             {
                 con.Abrir();
-                con.cargarQuery("Delete From empresa where id='" + id + "'");
+                con.cargarQuery("Delete From Entidad where id='" + id + "'");
                 con.getSalida().Close();
                 con.Cerrar();
                 return true;
@@ -307,12 +336,12 @@ namespace CRM
 
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
-            error = revisarDatosLLenos(txtNombre.Text, txtDireccion.Text, txtTelefono.Text,lblError);
+            error = revisarDatosLLenos(txtNombre.Text, txtDireccion.Text, txtTelefono.Text,lblError, txtCorreo.Text);
             if (error == "")
             {
                 try
                 {
-                    ActualizarEmpresa(lblId, txtNombre.Text, txtDireccion.Text, txtTelefono.Text);
+                    ActualizarEmpresa(lblId, txtNombre.Text, txtDireccion.Text, txtTelefono.Text, txtCorreo.Text);
                     ShowMessage("Empresa actualizada");
                     GridViewEmpresa.EditIndex = -1;
                     LlenarListaPaginas();
@@ -334,15 +363,15 @@ namespace CRM
             }
         }
 
-        public bool ActualizarEmpresa(Label pLblID,string pTxtNobmre, string pTxtDireccion, string pTxtTelefono)
+        public bool ActualizarEmpresa(Label pLblID,string pTxtNobmre, string pTxtDireccion, string pTxtTelefono, string pTxtCorreo)
         {
             try
             {
                 con.Abrir();
                 string id = pLblID.Text;
-                con.cargarQuery("UPDATE empresa SET Nombre = '" + pTxtNobmre.Trim() +
+                con.cargarQuery("UPDATE Entidad SET Nombre = '" + pTxtNobmre.Trim() +
                         "',Direccion ='" + pTxtDireccion.Trim() + "', Telefono='" + pTxtTelefono.Trim() +
-                        "' WHERE empresa.id = '" + id + "'");
+                        "', Correo='" + pTxtCorreo.Trim() + "' WHERE Entidad.id = '" + id + "'");
                 con.getSalida().Close();
                 con.Cerrar();
                 return true;

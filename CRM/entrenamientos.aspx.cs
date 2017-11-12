@@ -222,6 +222,7 @@ namespace CRM
             finally
             {
                 con.Cerrar();
+                ShowMessage("Se ha suscrito correctamente al evento seleccionado.");
             }
         }
 
@@ -243,6 +244,7 @@ namespace CRM
             finally
             {
                 con.Cerrar();
+                ShowMessage("Se ha desuscrito correctamente del evento seleccionado.");
             }
         }
 

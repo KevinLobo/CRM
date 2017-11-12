@@ -61,6 +61,16 @@
                         onkeypress="return isNumberKey(event,this)" placeholder="Precio"
                         AutoPostBack="true" OnTextChanged="CambioPrecio" autocomplete="off"></asp:TextBox>
                 </div>
+
+                <div class="form-group ">
+                    <label for="dropdownCategorias">Categoria:</label>
+                    <asp:DropDownList ID="dropdownCategorias" AutoPostBack="true"
+                        runat="server"
+                        CssClass="form-control" />
+                </div>
+
+
+
                 <div class="form-group ">
                     <asp:Label ID="lblError" runat="server" Visible="false" ForeColor="Red"></asp:Label>
                 </div>

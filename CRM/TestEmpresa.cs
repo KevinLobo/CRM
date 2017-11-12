@@ -24,7 +24,7 @@ namespace CRM
         public void datosEmpresaCorrectos()
         {
 
-            Assert.AreEqual("",revisarDatosLLenos("KimberlyClark","San Jose Costa Rica","22222222", labelError));
+            Assert.AreEqual("",revisarDatosLLenos("KimberlyClark","San Jose Costa Rica","22222222", labelError, "kc@prueba.com"));
         }
 
         [TestCase]
@@ -33,7 +33,7 @@ namespace CRM
         {
             String nombre = new String('a', 210);
             Assert.AreEqual("*El campo nombre no puede tener mas de 80 caracteres.<br />",
-                revisarDatosLLenos(nombre, "San Jose Costa Rica", "84840496", labelError));
+                revisarDatosLLenos(nombre, "San Jose Costa Rica", "84840496", labelError, "kc@prueba.com"));
         }
 
         [TestCase]
@@ -41,7 +41,7 @@ namespace CRM
         public void datosEmpresaNombreVacio()
         {
             Assert.AreEqual("*El campo nombre no puede estar vacio.<br />",
-                revisarDatosLLenos("", "San Jose Costa Rica", "84840496", labelError));
+                revisarDatosLLenos("", "San Jose Costa Rica", "84840496", labelError, "kc@prueba.com"));
         }
 
         [TestCase]
@@ -50,7 +50,7 @@ namespace CRM
         {
             String direccion = new String('a', 210);
             Assert.AreEqual("*El campo direccion no puede tener más de 200 caracteres.<br />",
-                revisarDatosLLenos("KimberlyClark", direccion, "84840496", labelError));
+                revisarDatosLLenos("KimberlyClark", direccion, "84840496", labelError, "kc@prueba.com"));
         }
 
         [TestCase]
@@ -58,7 +58,7 @@ namespace CRM
         public void datosEmpresaDireccionVacia()
         {
             Assert.AreEqual("*El campo direccion no puede estar vacio.<br />", 
-                revisarDatosLLenos("KimberlyClark", "", "84840496", labelError));
+                revisarDatosLLenos("KimberlyClark", "", "84840496", labelError, "kc@prueba.com"));
         }
 
         [TestCase]
@@ -66,7 +66,7 @@ namespace CRM
         public void datosEmpresaTelefonoLargo()
         {
             Assert.AreEqual("*El campo telefono no puede tener más de 8 caracteres.<br />",
-                revisarDatosLLenos("KimberlyClark", "San Jose Costa Rica", "8484049600", labelError));
+                revisarDatosLLenos("KimberlyClark", "San Jose Costa Rica", "8484049600", labelError, "kc@prueba.com"));
         }
 
         [TestCase]
@@ -74,7 +74,7 @@ namespace CRM
         public void datosEmpresaTelefonoVacio()
         {
             Assert.AreEqual("*El campo telefono no puede estar vacio.<br />", 
-                revisarDatosLLenos("KimberlyClark", "San Jose Costa Rica", "", labelError));
+                revisarDatosLLenos("KimberlyClark", "San Jose Costa Rica", "", labelError, "kc@prueba.com"));
         }
 
         [TestCase]
@@ -82,7 +82,7 @@ namespace CRM
         public void datosEmpresaTelefonoLetras()
         {
             Assert.AreEqual("*El campo telefono solo puede contener numeros.<br />",
-                revisarDatosLLenos("KimberlyClark", "San Jose Costa Rica", "abc40496",labelError));
+                revisarDatosLLenos("KimberlyClark", "San Jose Costa Rica", "abc40496",labelError, "kc@prueba.com"));
         }
 
         [TestCase]
@@ -90,14 +90,14 @@ namespace CRM
         public void datosEmpresaDosErroneos()
         {
             Assert.AreEqual("*El campo direccion no puede estar vacio.<br />*El campo telefono no puede tener más de 8 caracteres.<br />",
-                revisarDatosLLenos("KimberlyClark", "", "8484049600", labelError));
+                revisarDatosLLenos("KimberlyClark", "", "8484049600", labelError, "kc@prueba.com"));
         }
 
         [TestCase]
         //Prueba si el error y el label de error coinciden en caso de error
         public void labelErrorIgualAError()
         {
-            revisarDatosLLenos("KimberlyClark", "San Jose Costa Rica", "abc40496", labelError);
+            revisarDatosLLenos("KimberlyClark", "San Jose Costa Rica", "abc40496", labelError, "kc@prueba.com");
             Assert.That(labelError.Text == "*El campo telefono solo puede contener numeros.<br />");
         }
 
@@ -161,7 +161,7 @@ namespace CRM
         public void empresaAgregarBaseDatos()
         {
             empresa empresaI = new empresa(fBD);
-            Assert.AreEqual(true, empresaI.InsertarEmpresa("", "", ""));
+            Assert.AreEqual(true, empresaI.InsertarEmpresa("", "", "", ""));
         }
 
         [TestCase]
@@ -179,7 +179,7 @@ namespace CRM
             empresa empresaI = new empresa(fBD);
             Label lblID = new Label();
             lblID.Text = "1";
-            Assert.AreEqual(true, empresaI.ActualizarEmpresa(lblID, "", "", ""));
+            Assert.AreEqual(true, empresaI.ActualizarEmpresa(lblID, "", "", "", ""));
         }
 
         [TestCase]
