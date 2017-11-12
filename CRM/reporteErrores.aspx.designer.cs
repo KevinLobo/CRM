@@ -10,7 +10,7 @@
 namespace CRM {
     
     
-    public partial class producto {
+    public partial class reporteErrores {
         
         /// <summary>
         /// Control form1.
@@ -31,31 +31,31 @@ namespace CRM {
         protected global::System.Web.UI.WebControls.LinkButton LinkButton2;
         
         /// <summary>
-        /// Control lblId.
+        /// Control lblCliente.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblId;
+        protected global::System.Web.UI.WebControls.Label lblCliente;
         
         /// <summary>
-        /// Control txtNombre.
+        /// Control ventaDropdown.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNombre;
+        protected global::System.Web.UI.WebControls.DropDownList ventaDropdown;
         
         /// <summary>
-        /// Control txtPrecio.
+        /// Control txtReporte.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPrecio;
+        protected global::System.Web.UI.WebControls.TextBox txtReporte;
         
         /// <summary>
         /// Control lblError.
@@ -76,15 +76,6 @@ namespace CRM {
         protected global::System.Web.UI.WebControls.Button btnSubmit;
         
         /// <summary>
-        /// Control btnUpdate.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnUpdate;
-        
-        /// <summary>
         /// Control btnCancel.
         /// </summary>
         /// <remarks>
@@ -92,59 +83,5 @@ namespace CRM {
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCancel;
-        
-        /// <summary>
-        /// Control lblInfo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblInfo;
-        
-        /// <summary>
-        /// Control lbltotalcount.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbltotalcount;
-        
-        /// <summary>
-        /// Control GridViewProductos.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridViewProductos;
-        
-        /// <summary>
-        /// Control MessageLabel.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label MessageLabel;
-        
-        /// <summary>
-        /// Control paginaDropDown.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList paginaDropDown;
-        
-        /// <summary>
-        /// Control CurrentPageLabel.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label CurrentPageLabel;
     }
 }

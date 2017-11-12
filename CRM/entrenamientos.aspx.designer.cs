@@ -10,7 +10,7 @@
 namespace CRM {
     
     
-    public partial class persona {
+    public partial class entrenamientos {
         
         /// <summary>
         /// Control form1.
@@ -31,58 +31,58 @@ namespace CRM {
         protected global::System.Web.UI.WebControls.LinkButton LinkButton2;
         
         /// <summary>
-        /// Control lblCedula.
+        /// Control lblCliente.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCedula;
+        protected global::System.Web.UI.WebControls.Label lblCliente;
         
         /// <summary>
-        /// Control txtCedula.
+        /// Control fechaInicio.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCedula;
+        protected global::System.Web.UI.WebControls.TextBox fechaInicio;
         
         /// <summary>
-        /// Control txtNombre.
+        /// Control fechaFinal.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNombre;
+        protected global::System.Web.UI.WebControls.TextBox fechaFinal;
         
         /// <summary>
-        /// Control txtDireccion.
+        /// Control chkbxFecha.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDireccion;
+        protected global::System.Web.UI.WebControls.CheckBox chkbxFecha;
         
         /// <summary>
-        /// Control txtTelefono.
+        /// Control txtNombreEvento.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTelefono;
+        protected global::System.Web.UI.WebControls.TextBox txtNombreEvento;
         
         /// <summary>
-        /// Control txtCorreo.
+        /// Control chkbxAsistido.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCorreo;
+        protected global::System.Web.UI.WebControls.CheckBox chkbxAsistido;
         
         /// <summary>
         /// Control lblError.
@@ -103,15 +103,6 @@ namespace CRM {
         protected global::System.Web.UI.WebControls.Button btnSubmit;
         
         /// <summary>
-        /// Control btnUpdate.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnUpdate;
-        
-        /// <summary>
         /// Control btnCancel.
         /// </summary>
         /// <remarks>
@@ -121,57 +112,12 @@ namespace CRM {
         protected global::System.Web.UI.WebControls.Button btnCancel;
         
         /// <summary>
-        /// Control lblInfo.
+        /// Control GridViewEmpresa.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblInfo;
-        
-        /// <summary>
-        /// Control lbltotalcount.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbltotalcount;
-        
-        /// <summary>
-        /// Control GridViewPersona.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridViewPersona;
-        
-        /// <summary>
-        /// Control MessageLabel.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label MessageLabel;
-        
-        /// <summary>
-        /// Control paginaDropDown.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList paginaDropDown;
-        
-        /// <summary>
-        /// Control CurrentPageLabel.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label CurrentPageLabel;
+        protected global::System.Web.UI.WebControls.GridView GridViewEmpresa;
     }
 }

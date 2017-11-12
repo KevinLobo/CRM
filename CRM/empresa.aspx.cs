@@ -13,8 +13,8 @@ namespace CRM
     public partial class empresa : System.Web.UI.Page
     {
         IBaseDatos con;
-        string  conexion =@"Data Source = localhost;port=3306;Initial"
-            + " Catalog=CRM;User Id=root;password = '' ";
+        string  conexion = @"Data Source = sql9.freesqldatabase.com;port=3306;Initial"
+            + " Catalog=sql9203199;User Id=sql9203199;password = '4xtW6PBmRm' ";
         public empresa() {
             con = new baseDatos(conexion);
         }
@@ -33,7 +33,7 @@ namespace CRM
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            if (string.IsNullOrEmpty(Session["username"] as string))
+            if (string.IsNullOrEmpty(Session["username"] as string) || Session["cliente"].ToString() == "True")
             {
                 Response.Redirect("logIn.aspx");
             }

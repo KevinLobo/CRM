@@ -11,8 +11,8 @@ namespace CRM
 {
     public partial class Default : System.Web.UI.Page
     {
-        MySqlConnection con = new MySqlConnection(@"Data Source = localhost;port=3306;Initial"
-        +" Catalog=CRM;User Id=root;password = '' ");
+        MySqlConnection con = new MySqlConnection(@"Data Source = sql9.freesqldatabase.com;port=3306;Initial"
+            + " Catalog=sql9203199;User Id=sql9203199;password = '4xtW6PBmRm' ");
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(Session["username"] as string))
@@ -34,9 +34,9 @@ namespace CRM
             da.Fill(dt);
             foreach (DataRow dr in dt.Rows) {
                 Session["username"] = dr["UserName"].ToString();
+                Session["cliente"] = dr["tipo"].ToString(); //0 Vendedor, 1 Cliente
+                Session["id"] = dr["idEntidad"];
                 Response.Redirect("principal.aspx");
-
-
             }
 
             mensaje.Text = "Usuario o contraseña invalida";
