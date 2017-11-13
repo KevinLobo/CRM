@@ -373,7 +373,7 @@ namespace CRM
     [TestFixture]
     class TestPropuestaBD
     {
-        fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
+        fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false, 1);
 
         [TestCase]
         //Prueba de cargar propuestas de la base de datos
@@ -405,7 +405,7 @@ namespace CRM
         //Prueba cuando da error
         public void propuestaErrorEnBaseDatos()
         {
-            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true);
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true, 1);
             propuesta propuestaI = new propuesta(fBD);
             var ex = Assert.Throws<Exception>(() => propuestaI.BorrarPropuesta("1"));
             Assert.That(ex.Message, Is.EqualTo("Error al acceder a la base de datos."));

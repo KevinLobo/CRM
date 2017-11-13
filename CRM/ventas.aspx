@@ -63,7 +63,9 @@
                     <asp:TextBox ID="txtIdProducto" runat="server" class="form-control"
                         onkeypress="return isNumberKey(event,this)" placeholder="ID producto"
                         AutoPostBack="true" OnTextChanged="CambioID" autocomplete="off"></asp:TextBox>
+                    <asp:Label ID="lblIdsProductos" runat="server" ></asp:Label>
                     <asp:Label ID="lblNombreProducto" runat="server" ></asp:Label>
+
                 </div>
 
                 <div class="form-group ">
@@ -78,12 +80,15 @@
                              OnCheckedChanged="MostrarPersona" AutoPostBack="True" runat="server" />
                         <asp:RadioButton id="rbEmpresa" GroupName="personaOempresa" Text="Empresa"
                               OnCheckedChanged="MostrarEmpresa" AutoPostBack="True" runat ="server"/>
+                    
                     <asp:TextBox ID="txtPersona" runat="server" class="form-control"
                         AutoPostBack="true" OnTextChanged="VerificarPersona" 
                         autocomplete="off" Visible ="false" placeholder="Cédula"></asp:TextBox>
                     <asp:TextBox ID="txtEmpresa" runat="server" class="form-control"
                         AutoPostBack="true" OnTextChanged="VerificarEmpresa"
                         autocomplete="off" Visible ="false" placeholder="Empresa ID"></asp:TextBox>
+
+                    <asp:Label ID="lblIdEntidad" runat="server" ></asp:Label>
                     <asp:Label ID="lblCliente" runat="server" ></asp:Label>
 
 
@@ -143,7 +148,7 @@
                 </div>
             </div>
 
-            <div class="container col-xs-12 col-sm-12 col-md-12 col-lg-8">
+            <div class="container col-xs-12 col-sm-12 col-md-12 col-lg-9">
                 <div class="form-group ">
                     <h3>
                         <span style="float: left;">

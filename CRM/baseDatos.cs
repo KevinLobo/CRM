@@ -20,6 +20,7 @@ namespace CRM
             command.Connection = conexion;
         }
 
+        
         public Boolean Abrir()
         {
             try
@@ -60,7 +61,12 @@ namespace CRM
         public IDataReader getSalida() {
             reader = command.ExecuteReader();
             return reader;
-
         }
+
+        public long LatestId()
+        {
+            return command.LastInsertedId;
+        }
+
     }
 }

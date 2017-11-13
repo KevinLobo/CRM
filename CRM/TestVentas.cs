@@ -319,7 +319,7 @@ namespace CRM
     [TestFixture]
     class TestVentasBD
     {
-        fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
+        fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false, 1);
 
         [TestCase]
         //Prueba de cargar ventas de la base de datos
@@ -343,7 +343,7 @@ namespace CRM
         //Prueba cuando da error
         public void ventasErrorEnBaseDatos()
         {
-            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true);
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true, 1);
             ventas ventasI = new ventas(fBD);
             var ex = Assert.Throws<Exception>(() => ventasI.InsertarVenta("", "", "", "", "", "", "", "", ""));
             Assert.That(ex.Message, Is.EqualTo("Error al acceder a la base de datos."));

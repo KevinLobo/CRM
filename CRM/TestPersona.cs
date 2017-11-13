@@ -174,7 +174,7 @@ namespace CRM
         //Prueba de cargar persona de la base de datos
         public void personaCargaGridView()
         {
-            fakeBaseDatos fBD = new fakeBaseDatos(true,true,true,true,false);
+            fakeBaseDatos fBD = new fakeBaseDatos(true,true,true,true,false, 1);
             persona personaI = new persona(fBD);
             GridView grid = new GridView();
             personaI.CargarPersona(0, grid);
@@ -185,7 +185,7 @@ namespace CRM
         //Prueba de insertar persona nueva a la base de datos
         public void personaAgregarBaseDatos()
         {
-            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false, 1);
             persona personaI = new persona(fBD);
             Assert.AreEqual(true, personaI.InsertarPersona("", "", "", "", ""));
         }
@@ -194,7 +194,7 @@ namespace CRM
         //Prueba de borrar borrar persona de la base de datos
         public void personaElminarBaseDatos()
         {
-            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false, 1);
             persona personaI = new persona(fBD);
             Assert.AreEqual(true, personaI.BorrarPersona("1"));
         }
@@ -203,7 +203,7 @@ namespace CRM
         //Prueba de actualizar persona de la base de datos
         public void personaActualizarBaseDatos()
         {
-            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false, 1);
             persona personaI = new persona(fBD);
             Label lblID = new Label();
             lblID.Text = "1";
@@ -214,7 +214,7 @@ namespace CRM
         //Prueba cuando da error
         public void personaErrorEnBaseDatos()
         {
-            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true);
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true, 1);
             persona personaI = new persona(fBD);
             var ex = Assert.Throws<Exception>(() => personaI.BorrarPersona("1"));
             Assert.That(ex.Message, Is.EqualTo("Error al acceder a la base de datos."));

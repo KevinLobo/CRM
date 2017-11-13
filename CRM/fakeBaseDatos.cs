@@ -12,15 +12,17 @@ namespace CRM
         private Boolean salidaCerrar;
         private Boolean salidaQuery;
         private Boolean error = false;
+        private long salidaId;
 
 
         public fakeBaseDatos(Boolean pSalidaAbrir, Boolean pSalidaCerrar, Boolean pSalidaQuery,
-                            Boolean pSaldaResultados, Boolean pError)
+                            Boolean pSaldaResultados, Boolean pError, long pSalidaId)
         {
             salidaAbrir = pSalidaAbrir;
             salidaCerrar = pSalidaCerrar;
             salidaQuery = pSalidaQuery;
             error = pError;
+            salidaId = pSalidaId;
         }
 
         public Boolean Abrir()
@@ -52,6 +54,11 @@ namespace CRM
             {
                 throw new System.Exception("Error al acceder a la base de datos.");
             }
+        }
+
+        public long LatestId()
+        {
+            return salidaId;
         }
     }
 }

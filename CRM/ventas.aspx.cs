@@ -12,8 +12,14 @@ namespace CRM
     public partial class ventas : System.Web.UI.Page
     {
         IBaseDatos con;
+        string error = "";
+        double filasPorPagina = 10;
+        double paginas = 0;
+        int paginaActual = 1;
+
         string conexion = @"Data Source = sql9.freesqldatabase.com;port=3306;Initial"
             + " Catalog=sql9203199;User Id=sql9203199;password = '4xtW6PBmRm' ";
+
         public ventas()
         {
             con = new baseDatos(conexion);
@@ -22,12 +28,10 @@ namespace CRM
         public ventas(fakeBaseDatos fakeDB)
         {
             con = fakeDB;
+
         }
 
-        string error = "";
-        double filasPorPagina = 10;
-        double paginas = 0;
-        int paginaActual = 1;
+        
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -44,6 +48,7 @@ namespace CRM
                     LlenarListaPaginas();
                     BindGridView();
                     CargarSession();
+                    lblIdsProductos.Visible = false;
 
 
                 }
@@ -83,7 +88,7 @@ namespace CRM
             datetimepicker.Text = string.Empty;
             lblNombreProducto.Text = string.Empty;
             lblCliente.Text = string.Empty;
-
+            lblIdsProductos.Text = string.Empty;
             btnCancel.Text = "Cancelar";
             lblError.Text = string.Empty;
             btnSubmit.Visible = true;
@@ -142,8 +147,17 @@ namespace CRM
                 if (reader.Read())
                 {
                     lblDatos.ForeColor = System.Drawing.Color.Green;
-                    lblDatos.Text = Convert.ToString(reader["nombre"]);
-                    pTxtPrecio.Text = Convert.ToString(reader["precio"]);
+                    lblDatos.Text += Convert.ToString(reader["nombre"]) + "<br />";
+                    if (pTxtPrecio.Text != "")
+                    {
+                        pTxtPrecio.Text = Convert.ToString(Convert.ToInt32(pTxtPrecio.Text) + Convert.ToInt32(reader["precio"]));
+                    } else
+                    {
+                        pTxtPrecio.Text = Convert.ToString(reader["precio"]);
+                    }
+                    
+                    lblIdsProductos.Text += entrada.Text + "-";                  
+
                 }
                 else
                 {
@@ -325,9 +339,8 @@ namespace CRM
         {
             con.Abrir();
             double limite = pIndex * filasPorPagina;
-            con.cargarQuery("SELECT venta.id,producto.nombre," +
-                "venta.fecha,venta.precio,venta.descuento,venta.vendedor,venta.respuesta" +
-                " FROM venta INNER JOIN producto ON venta.idProducto = producto.ID limit "
+            con.cargarQuery("SELECT venta.Id as ID, Fecha, Descuento, Comision, Precio, Vendedor, Entidad.Nombre as Cliente, Respuesta from "+
+                "venta inner join Entidad on Entidad.id = venta.idEntidad limit "
                 + pIndex + "," + filasPorPagina + "");
             IDataReader reader = con.getSalida();
             DataTable table = new DataTable();
@@ -353,7 +366,6 @@ namespace CRM
 
                 txtIdProducto.Text = row.Cells[3].Text;
                 lblIdVenta.Text = "ID: " + row.Cells[1].Text;
-                txtIdProducto.Text = Convert.ToString(reader["idProducto"]);
                 lblPrecioFinal.Text = Convert.ToString(reader["precio"]);
                 txtDescuento.Text = Convert.ToString(reader["descuento"]);
                 txtComision.Text = Convert.ToString(reader["comision"]);
@@ -368,7 +380,7 @@ namespace CRM
             {
                 txtEmpresa.Visible = true;
                 txtEmpresa.Text = empresaID;
-                VerificarCliente(txtEmpresa, "ID", "empresa");
+                VerificarCliente(txtEmpresa, false);
                 rbEmpresa.Checked = true;
             }
             else
@@ -376,7 +388,7 @@ namespace CRM
                 rbPersona.Checked = true;
                 txtPersona.Visible = true;
                 txtPersona.Text = personaID;
-                VerificarCliente(txtPersona, "cedula", "persona");
+                VerificarCliente(txtPersona, true);
                 
             }
 
@@ -405,17 +417,28 @@ namespace CRM
         }
 
 // ---------------Persona/Empresa-------------------
-        protected void VerificarCliente(TextBox entrada,string columnaNombre,string tablaNombre)
+        protected void VerificarCliente(TextBox entrada, bool persona)
         {
             try
             {
                 con.Abrir();
-                con.cargarQuery("Select nombre from " + tablaNombre + " where " +
-                    columnaNombre + " ='" + entrada.Text + "'");
+                string query = "Select id, nombre from Entidad where ";
+                if (persona)
+                {
+                    query += "cedula = " + entrada.Text;
+                } else
+                {
+                    query += "id = " + entrada.Text + " and cedula is NULL";
+                }
+                System.Diagnostics.Debug.WriteLine(query);
+                con.cargarQuery(query);
                 IDataReader reader = con.getSalida();
 
                 if (reader.Read())
                 {
+                    lblIdEntidad.ForeColor = System.Drawing.Color.Green;
+                    lblIdEntidad.Text = Convert.ToString(reader["id"]);
+
                     lblCliente.ForeColor = System.Drawing.Color.Green;
                     lblCliente.Text = Convert.ToString(reader["nombre"]);
                 }
@@ -440,13 +463,13 @@ namespace CRM
         protected void VerificarPersona(object sender, EventArgs e)
         {
             txtPersona.Text = txtPersona.Text.Trim();
-            VerificarCliente(txtPersona, "cedula", "persona");
+            VerificarCliente(txtPersona, true);
         }
 
         protected void VerificarEmpresa(object sender, EventArgs e)
         {
             txtEmpresa.Text = txtEmpresa.Text.Trim();
-            VerificarCliente(txtEmpresa, "ID", "empresa");
+            VerificarCliente(txtEmpresa, false);
         }
 
         protected void MostrarEmpresa(object sender, EventArgs e)
@@ -486,7 +509,7 @@ namespace CRM
                 try
                 {
                     InsertarVenta(txtIdProducto.Text, datetimepicker.Text, txtPrecio.Text, 
-                        txtDescuento.Text, txtComision.Text, txtPersona.Text, txtEmpresa.Text,
+                        txtDescuento.Text, txtComision.Text, lblIdEntidad.Text, txtEmpresa.Text,
                         lblVendedor.Text, txtRespuesta.Text);
                     ShowMessage("Registro correcto.");
                     clear();
@@ -501,32 +524,47 @@ namespace CRM
         }
 
         public bool InsertarVenta(string pTxtIDProducto, string pFecha, string pPrecio, string pDescuento,
-            string pComision, string pPersona, string pEmpresa, string pVendedor,string pRespuesta)
+            string pComision, string idCliente, string pEmpresa, string pVendedor,string pRespuesta)
         {
             try
             {
                 con.Abrir();
-                if (pPersona != "")
-                {
-                    con.cargarQuery("INSERT INTO venta (idProducto, fecha, precio, descuento, comision" +
-                    ", personaVenta, empresaID, vendedor, respuesta) VALUES " +
-                    "('" + pTxtIDProducto.Trim() + "', '" + pFecha.Trim() +
-                    "', '" + pPrecio.Trim() + "', '" + pDescuento.Trim() +
-                    "', '" + pComision.Trim() + "'," + " '" + pPersona.Trim() + "', null, '"
-                    + pVendedor.Trim() + "', '" + pRespuesta.Trim() + "');");
-                }
-                else
-                {
-                    con.cargarQuery("INSERT INTO venta (idProducto, fecha, precio, descuento, comision" +
-                    ", personaVenta, empresaID, vendedor, respuesta) VALUES " +
-                    "('" + pTxtIDProducto.Trim() + "', '" + pFecha.Trim() +
-                    "', '" + pPrecio.Trim() + "', '" + pDescuento.Trim() +
-                    "', '" + pComision.Trim() + "',null, '"+ pEmpresa.Trim() +"', '"
-                    + pVendedor.Trim() + "', '" + pRespuesta.Trim() + "');");
+                string query = "INSERT INTO venta (fecha, precio, descuento, comision, idEntidad, vendedor, respuesta) " +
+                    "VALUES ('" + pFecha.Trim() + "', '" + pPrecio.Trim() + "', '" + pDescuento.Trim() + "', '" + pComision.Trim() +
+                    "', " + idCliente +", '"+pVendedor.Trim()+"', '"+pRespuesta.Trim()+"');";
 
-                }
+                con.cargarQuery(query);
 
                 con.getSalida().Close();
+
+                long latestId = con.LatestId();
+
+                string queryProductos = "INSERT INTO ProductoXVenta (idProducto, idVenta) VALUES ";
+
+                System.Diagnostics.Debug.WriteLine(lblIdsProductos.Text);
+
+                lblIdsProductos.Text = lblIdsProductos.Text.Remove(lblIdsProductos.Text.Length - 1);
+
+                string[] productos = lblIdsProductos.Text.Split('-');
+
+
+                
+
+                foreach(string idProducto in productos)
+                {
+                    System.Diagnostics.Debug.WriteLine(idProducto);
+                    queryProductos += "(" + idProducto + ", " + latestId.ToString() + "),";
+                }
+
+                queryProductos = queryProductos.Remove(queryProductos.Length - 1);
+                queryProductos += ";";
+
+                System.Diagnostics.Debug.WriteLine(queryProductos);
+
+                con.cargarQuery(queryProductos);
+
+                con.getSalida().Close();
+
                 con.Cerrar();
                 return true;
             }

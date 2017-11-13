@@ -12,6 +12,7 @@ namespace CRM
         Boolean Cerrar();
         Boolean cargarQuery(String query);
         IDataReader getSalida();
+        long LatestId();
     }
 
 }

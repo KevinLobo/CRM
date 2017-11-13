@@ -89,7 +89,7 @@ namespace CRM
     [TestFixture]
     class TestProductoBD
     {
-        fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false);
+        fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, false, 1);
 
         [TestCase]
         //Prueba de cargar productos de la base de datos
@@ -131,7 +131,7 @@ namespace CRM
         //Prueba cuando da error
         public void productoErrorEnBaseDatos()
         {
-            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true);
+            fakeBaseDatos fBD = new fakeBaseDatos(true, true, true, true, true, 1);
             producto productoI = new producto(fBD);
             var ex = Assert.Throws<Exception>(() => productoI.BorrarProducto("1"));
             Assert.That(ex.Message, Is.EqualTo("Error al acceder a la base de datos."));
