@@ -202,50 +202,46 @@ namespace CRM
             }
             if (suscribirse)
             {
-                SuscribirseAEntrenamiento(row.Cells[1].Text);
+                ShowMessage(SuscribirseAEntrenamiento(row.Cells[1].Text, Session["id"].ToString()));
             } else
             {
-                DesuscribirseAEntrenamiento(row.Cells[1].Text);
+                ShowMessage(DesuscribirseAEntrenamiento(row.Cells[1].Text, Session["id"].ToString()));
             }
         }
 
-        public Boolean SuscribirseAEntrenamiento(string idEvento)
+        public String SuscribirseAEntrenamiento(string idEvento, string idSession)
         {
             try
             {
                 con.Abrir();
-                con.cargarQuery("INSERT INTO ParticipanteXEvento (idEvento, idEntidad) VALUES("+idEvento+","+Session["id"]+")");
+                con.cargarQuery("INSERT INTO ParticipanteXEvento (idEvento, idEntidad) VALUES("+idEvento+","+idSession+ ")");
                 con.getSalida().Close();
 
-                ShowMessage("Se ha suscrito correctamente al evento seleccionado.");
                 con.Cerrar();
-                return true;
+                return "Se ha suscrito correctamente al evento seleccionado.";
 
             }
             catch (MySqlException ex)
             {
-                ShowMessage(ex.Message);
-                return false;
+                return ex.Message;
             }
         }
 
-        public Boolean DesuscribirseAEntrenamiento(string idEvento)
+        public String DesuscribirseAEntrenamiento(string idEvento, string idSession)
         {
             try
             {
                 con.Abrir();
-                con.cargarQuery("DELETE FROM ParticipanteXEvento where idEvento = " + idEvento + " AND idEntidad = " + Session["id"] + ";");
+                con.cargarQuery("DELETE FROM ParticipanteXEvento where idEvento = " + idEvento + " AND idEntidad = " + idSession + ";");
                 con.getSalida().Close();
 
-                ShowMessage("Se ha desuscrito correctamente al evento seleccionado.");
                 con.Cerrar();
-                return true;
+                return "Se ha desuscrito correctamente al evento seleccionado.";
 
             }
             catch (MySqlException ex)
             {
-                ShowMessage(ex.Message);
-                return false;
+                return ex.Message;
             }
         }
     
@@ -257,7 +253,7 @@ namespace CRM
             if (asistido)
             {
                 query += " inner join ParticipanteXEvento ON ParticipanteXEvento.idEvento = Entrenamiento.id where ParticipanteXEvento.idEntidad = " +
-                    Session["id"];
+                    idCliente;
             }
             if (!cualquierFecha && asistido)
             {

@@ -49,24 +49,29 @@ namespace CRM
             Assert.AreEqual(resultado, entrenamientos.RevisarDatosLlenos(fechaInicial, fechaFinal, cualquierFecha, "", new Label()));
         }
 
+
+        [TestCase]
         public void SuscribirseAEntrenamiento_TC()
         {
             fakeBaseDatos fakeBD = new fakeBaseDatos(true, true, true, true, false, 1);
             entrenamientos entrenamientos = new entrenamientos(fakeBD);
 
-            Assert.AreEqual(true, entrenamientos.SuscribirseAEntrenamiento("1"));
+            Assert.AreEqual("Se ha suscrito correctamente al evento seleccionado.", entrenamientos.SuscribirseAEntrenamiento("1", "1"));
         }
 
+        [TestCase]
         public void DesuscribirseAEntrenamiento_TC()
         {
             fakeBaseDatos fakeBD = new fakeBaseDatos(true, true, true, true, false, 1);
             entrenamientos entrenamientos = new entrenamientos(fakeBD);
 
-            Assert.AreEqual(true, entrenamientos.DesuscribirseAEntrenamiento("1"));
+            Assert.AreEqual("Se ha desuscrito correctamente al evento seleccionado.", entrenamientos.DesuscribirseAEntrenamiento("1", "1"));
         }
 
 
         [TestCase("01/01/2017 2:54 PM", "11/22/2017 2:55 PM", false, "Productos HP", "1", false, true)]
+        [TestCase("01/01/2017 2:54 PM", "11/22/2017 2:55 PM", false, "Productos HP", "1", true, true)]
+        [TestCase("01/01/2017 2:54 PM", "11/22/2017 2:55 PM", true, "Productos HP", "1", true, true)]
         public void BuscarEntrenamientos_TC(string fechaInicio, string fechaFinal, Boolean cualquierFecha, string nombreEvento, string idCliente, Boolean asistido, Boolean respuesta)
         {
             fakeBaseDatos fakeBD = new fakeBaseDatos(true, true, true, true, false, 1);
