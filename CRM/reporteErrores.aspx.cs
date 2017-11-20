@@ -20,7 +20,7 @@ namespace CRM
             con = new baseDatos(conexion);
         }
 
-        public reporteErrores(fakeBaseDatos fakeDB)
+        public reporteErrores(IBaseDatos fakeDB)
         {
             con = fakeDB;
         }
@@ -184,10 +184,10 @@ namespace CRM
             }
         }
 
-        protected string RevisarDatosLlenos(string reporte, string idVenta)
+        public string RevisarDatosLlenos(string reporte, string idVenta, Label labelError)
         {
             error = "";
-            lblError.Text = "";
+            labelError.Text = "";
             
 
             //respuesta
@@ -205,8 +205,8 @@ namespace CRM
             }
 
 
-            lblError.Text = error;
-            lblError.Visible = true;
+            labelError.Text = error;
+            labelError.Visible = true;
             return error;
 
         }
@@ -218,7 +218,7 @@ namespace CRM
             {
                 try
                 {
-                    error = RevisarDatosLlenos(txtReporte.Text.Trim(), ventaDropdown.SelectedValue);
+                    error = RevisarDatosLlenos(txtReporte.Text.Trim(), ventaDropdown.SelectedValue, lblError);
                     if (error == "")
                     {
                         InsertarReporte(DateTime.Now, txtReporte.Text.Trim(), ventaDropdown.SelectedValue, Session["id"].ToString());

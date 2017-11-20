@@ -61,6 +61,8 @@ namespace CRM
             chkbxFecha.Checked = false;
             chkbxAsistido.Checked = false;
             txtNombreEvento.Text = string.Empty;
+            fechaInicio.Text = string.Empty;
+            fechaFinal.Text = string.Empty;
             btnCancel.Text = "Cancelar";
             lblError.Text = string.Empty;
             btnSubmit.Visible = true;
@@ -100,12 +102,15 @@ namespace CRM
             Response.Redirect("principal.aspx");
         }
 
-        protected string RevisarDatosLlenos(string fechaInicio, string fechaFinal, Boolean cualquierFecha, string nombreEvento)
+        public string RevisarDatosLlenos(string fechaInicio, string fechaFinal, Boolean cualquierFecha, string nombreEvento, Label labelError)
         {
+
+
             error = "";
-            lblError.Text = "";
+            labelError.Text = "";
             bool fechasValidas = true;
 
+            System.Diagnostics.Debug.WriteLine("Fecha: " + fechaInicio);
             System.Diagnostics.Debug.WriteLine("Cualquiera: "+cualquierFecha);
             if (!cualquierFecha)
             {
@@ -139,8 +144,8 @@ namespace CRM
                 }
             }
 
-            lblError.Text = error;
-            lblError.Visible = true;
+            labelError.Text = error;
+            labelError.Visible = true;
             return error;
         }
 
@@ -204,52 +209,49 @@ namespace CRM
             }
         }
 
-        public void SuscribirseAEntrenamiento(string idEvento)
+        public Boolean SuscribirseAEntrenamiento(string idEvento)
         {
             try
             {
                 con.Abrir();
-
                 con.cargarQuery("INSERT INTO ParticipanteXEvento (idEvento, idEntidad) VALUES("+idEvento+","+Session["id"]+")");
-
                 con.getSalida().Close();
+
+                ShowMessage("Se ha suscrito correctamente al evento seleccionado.");
+                con.Cerrar();
+                return true;
 
             }
             catch (MySqlException ex)
             {
                 ShowMessage(ex.Message);
-            }
-            finally
-            {
-                con.Cerrar();
-                ShowMessage("Se ha suscrito correctamente al evento seleccionado.");
+                return false;
             }
         }
 
-        public void DesuscribirseAEntrenamiento(string idEvento)
+        public Boolean DesuscribirseAEntrenamiento(string idEvento)
         {
             try
             {
                 con.Abrir();
-
                 con.cargarQuery("DELETE FROM ParticipanteXEvento where idEvento = " + idEvento + " AND idEntidad = " + Session["id"] + ";");
-
                 con.getSalida().Close();
+
+                ShowMessage("Se ha desuscrito correctamente al evento seleccionado.");
+                con.Cerrar();
+                return true;
 
             }
             catch (MySqlException ex)
             {
                 ShowMessage(ex.Message);
-            }
-            finally
-            {
-                con.Cerrar();
-                ShowMessage("Se ha desuscrito correctamente del evento seleccionado.");
+                return false;
             }
         }
+    
 
 
-        public bool BuscarEventos(string fechaInicio, string fechaFinal, Boolean cualquierFecha, string nombreEvento, string idCliente, Boolean asistido)
+        public bool BuscarEventos(string fechaInicio, string fechaFinal, Boolean cualquierFecha, string nombreEvento, string idCliente, Boolean asistido, GridView gridViewEmpresa)
         {
             string query = "SELECT Id, Nombre, Descripcion, fechaHora as FechaYHora from Entrenamiento";
             if (asistido)
@@ -288,8 +290,8 @@ namespace CRM
                 IDataReader reader = con.getSalida();
                 DataTable table = new DataTable();
                 table.Load(reader);
-                GridViewEmpresa.DataSource = table;
-                GridViewEmpresa.DataBind();
+                gridViewEmpresa.DataSource = table;
+                gridViewEmpresa.DataBind();
                 con.Cerrar();
                 return true;
             }
@@ -309,7 +311,7 @@ namespace CRM
 
         protected void BtnSubmit_Click(object sender, EventArgs e)
         {
-            string error = RevisarDatosLlenos(fechaInicio.Text, fechaFinal.Text, chkbxFecha.Checked, txtNombreEvento.Text);
+            string error = RevisarDatosLlenos(fechaInicio.Text, fechaFinal.Text, chkbxFecha.Checked, txtNombreEvento.Text, lblError);
 
             if (error == "")
             {
@@ -317,7 +319,7 @@ namespace CRM
                 {
 
                     BuscarEventos(fechaInicio.Text, fechaFinal.Text, chkbxFecha.Checked, txtNombreEvento.Text, Session["id"].ToString(),
-                    chkbxAsistido.Checked);
+                    chkbxAsistido.Checked, GridViewEmpresa);
 
                 }
                 catch (MySqlException ex)

@@ -510,7 +510,7 @@ namespace CRM
                 {
                     InsertarVenta(txtIdProducto.Text, datetimepicker.Text, txtPrecio.Text, 
                         txtDescuento.Text, txtComision.Text, lblIdEntidad.Text, txtEmpresa.Text,
-                        lblVendedor.Text, txtRespuesta.Text);
+                        lblVendedor.Text, txtRespuesta.Text, lblIdsProductos);
                     ShowMessage("Registro correcto.");
                     clear();
                     LlenarListaPaginas();
@@ -524,10 +524,13 @@ namespace CRM
         }
 
         public bool InsertarVenta(string pTxtIDProducto, string pFecha, string pPrecio, string pDescuento,
-            string pComision, string idCliente, string pEmpresa, string pVendedor,string pRespuesta)
+            string pComision, string idCliente, string pEmpresa, string pVendedor,string pRespuesta, Label idProductos)
         {
             try
             {
+
+
+
                 con.Abrir();
                 string query = "INSERT INTO venta (fecha, precio, descuento, comision, idEntidad, vendedor, respuesta) " +
                     "VALUES ('" + pFecha.Trim() + "', '" + pPrecio.Trim() + "', '" + pDescuento.Trim() + "', '" + pComision.Trim() +
@@ -541,11 +544,11 @@ namespace CRM
 
                 string queryProductos = "INSERT INTO ProductoXVenta (idProducto, idVenta) VALUES ";
 
-                System.Diagnostics.Debug.WriteLine(lblIdsProductos.Text);
+                System.Diagnostics.Debug.WriteLine(idProductos.Text);
 
-                lblIdsProductos.Text = lblIdsProductos.Text.Remove(lblIdsProductos.Text.Length - 1);
+                idProductos.Text = idProductos.Text.Remove(idProductos.Text.Length - 1);
 
-                string[] productos = lblIdsProductos.Text.Split('-');
+                string[] productos = idProductos.Text.Split('-');
 
 
                 
