@@ -197,6 +197,7 @@
     <Content Include="productosRelacionados.aspx" />
     <Content Include="propuesta.aspx" />
     <Content Include="puntosContacto.aspx" />
+    <Content Include="registrarCliente.aspx" />
     <Content Include="reporteErrores.aspx" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
@@ -304,6 +305,13 @@
     </Compile>
     <Compile Include="puntosContacto.aspx.designer.cs">
       <DependentUpon>puntosContacto.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="registrarCliente.aspx.cs">
+      <DependentUpon>registrarCliente.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="registrarCliente.aspx.designer.cs">
+      <DependentUpon>registrarCliente.aspx</DependentUpon>
     </Compile>
     <Compile Include="reporteErrores.aspx.cs">
       <DependentUpon>reporteErrores.aspx</DependentUpon>
