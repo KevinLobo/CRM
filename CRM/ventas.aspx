@@ -158,13 +158,13 @@
                     </h3>
 
                     <asp:GridView ID="GridViewEmpresa" runat="server" DataKeyNames="id"
-                        OnSelectedIndexChanged="GridViewEmpresa_SelectedIndexChanged"
+                        OnRowDeleting="GridViewEmpresa_RowDeleting"
                         CssClass="table table-bordered bs-table">
                         <HeaderStyle BackColor="#337ab7" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
 
                         <Columns>
-                            <asp:CommandField HeaderText="Seleccionar" ShowSelectButton="True" />
+                            <asp:CommandField HeaderText="Eliminar" ShowDeleteButton="True" />
                         </Columns>
                     </asp:GridView>
                 </div>

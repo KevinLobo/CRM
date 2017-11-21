@@ -12,6 +12,10 @@ namespace CRM
     public partial class propuesta : System.Web.UI.Page
     {
         IBaseDatos con;
+        string error = "";
+        double filasPorPagina = 10;
+        double paginas = 0;
+        int paginaActual = 1;
         string conexion = @"Data Source = sql9.freesqldatabase.com;port=3306;Initial"
             + " Catalog=sql9203199;User Id=sql9203199;password = '4xtW6PBmRm' ";
         public propuesta()
@@ -23,11 +27,6 @@ namespace CRM
         {
             con = fakeDB;
         }
-
-        string error = "";
-        double filasPorPagina = 10;
-        double paginas = 0;
-        int paginaActual = 1;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -44,7 +43,7 @@ namespace CRM
                     LlenarListaPaginas();
                     BindGridView();
                     CargarSession();
-
+                    lblIdsProductos.Visible = false;
 
                 }
             }
@@ -110,6 +109,7 @@ namespace CRM
                 {
                     totalPersonas = Convert.ToDouble(reader["count(*)"]);
                 }
+
                 lbltotalcount.Text = totalPersonas.ToString();
                 paginas = totalPersonas / filasPorPagina;
                 paginas = Math.Ceiling(paginas);
@@ -118,11 +118,16 @@ namespace CRM
                     paginas + ".";
 
                 paginaDropDown.Items.Clear();
-                for (int i = 0; i < paginas; i++)
+                if (paginas != 0)
                 {
-                    paginaDropDown.Items.Add((i + 1).ToString());
+                    for (int i = 0; i < paginas; i++)
+                    {
+                        paginaDropDown.Items.Add((i + 1).ToString());
+                    }
+                    paginaDropDown.SelectedIndex = paginaActual - 1;
                 }
-                paginaDropDown.SelectedIndex = paginaActual - 1;
+                
+
             }
             catch (MySqlException ex)
             {
@@ -146,13 +151,24 @@ namespace CRM
                 if (reader.Read())
                 {
                     lblDatos.ForeColor = System.Drawing.Color.Green;
-                    lblDatos.Text = Convert.ToString(reader["nombre"]);
-                    pTxtPrecio.Text = Convert.ToString(reader["precio"]);
+                    lblDatos.Text += Convert.ToString(reader["nombre"]) + "<br />";
+                    if (pTxtPrecio.Text != "")
+                    {
+                        pTxtPrecio.Text = Convert.ToString(Convert.ToInt32(pTxtPrecio.Text) + Convert.ToInt32(reader["precio"]));
+                    }
+                    else
+                    {
+                        pTxtPrecio.Text = Convert.ToString(reader["precio"]);
+                    }
+
+                    lblIdsProductos.Text += entrada.Text + "-";
+                    lblNoProducto.Text = "";
+
                 }
                 else
                 {
-                    lblDatos.ForeColor = System.Drawing.Color.Red;
-                    lblDatos.Text = "No se encontro el producto";
+                    lblNoProducto.ForeColor = System.Drawing.Color.Red;
+                    lblNoProducto.Text = "No se encontro el producto";
                 }
 
             }
@@ -337,11 +353,15 @@ namespace CRM
 
         public void CargarPropuesta(int pIndex, GridView pGrid)
         {
+            System.Diagnostics.Debug.WriteLine(pIndex);
             con.Abrir();
+            if (pIndex == -1)
+            {
+                pIndex = 0;
+            }
             double limite = pIndex * filasPorPagina;
-            con.cargarQuery("SELECT propuesta.id,producto.nombre," +
-                "propuesta.fecha,propuesta.precio,propuesta.descuento,propuesta.vendedor,propuesta.respuesta" +
-                " FROM propuesta INNER JOIN producto ON propuesta.idProducto = producto.ID limit "
+            con.cargarQuery("SELECT propuesta.Id as ID, Fecha, Descuento, Comision, Precio, Vendedor, Estado, Entidad.Nombre as Cliente, Respuesta from " +
+                "propuesta inner join Entidad on Entidad.id = propuesta.idEntidad limit "
                 + pIndex + "," + filasPorPagina + "");
             IDataReader reader = con.getSalida();
             DataTable table = new DataTable();
@@ -349,61 +369,6 @@ namespace CRM
             pGrid.DataSource = table;
             pGrid.DataBind();
             con.Cerrar();
-        }
-
-        protected void GridViewEmpresa_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            clear();
-            GridViewRow row = GridViewEmpresa.SelectedRow;
-            con.Abrir();
-            con.cargarQuery("SELECT * FROM `propuesta` where id = " +
-                row.Cells[2].Text + "");
-            IDataReader reader = con.getSalida();
-            lblIdVenta.Text = row.Cells[2].Text;
-            txtIdProducto.Text = row.Cells[3].Text;
-            string empresaID = "";
-            string personaID = "";
-            int estado = 0;
-            if (reader.Read()) {
-                txtIdProducto.Text = Convert.ToString(reader["idProducto"]);
-                lblPrecioFinal.Text = Convert.ToString(reader["precio"]);
-                txtDescuento.Text = Convert.ToString(reader["descuento"]);
-                txtComision.Text = Convert.ToString(reader["comision"]);
-                datetimepicker.Text = Convert.ToString(reader["fecha"]);
-                txtRespuesta.Text = Convert.ToString(reader["respuesta"]);
-                empresaID = Convert.ToString(reader["empresaID"]);
-                personaID = Convert.ToString(reader["personaVenta"]);
-                estado = Convert.ToInt32(reader["estado"]);
-            }
-            con.Cerrar();
-            if (empresaID != "")
-            {
-                txtEmpresa.Visible = true;
-                txtEmpresa.Text = empresaID;
-                VerificarCliente(txtEmpresa, "ID", "empresa");
-                rbEmpresa.Checked = true;
-            }
-            else
-            {
-                rbPersona.Checked = true;
-                txtPersona.Visible = true;
-                txtPersona.Text = personaID;
-                VerificarCliente(txtPersona, "cedula", "persona");
-
-            }
-
-            if (estado == 1) rbAprovado.Checked = true;
-            if (estado == 0) rbRechazado.Checked = true;
-
-
-            VerificarProducto(txtIdProducto, lblNombreProducto, txtPrecio);
-            lblIdVenta.Visible = true;
-            btnSubmit.Visible = false;
-            btnSubmit.Enabled = false;
-            btnUpdate.Visible = true;
-            btnUpdate.Enabled = true;
-
-
         }
 
         protected void GridViewPropuesta_RowDeleting(object sender, GridViewDeleteEventArgs e)
@@ -431,6 +396,10 @@ namespace CRM
             try
             {
                 con.Abrir();
+                con.cargarQuery("Delete From ProductoXPropuesta where idPropuesta='" + id + "'");
+                con.getSalida().Close();
+                con.Cerrar();
+                con.Abrir();
                 con.cargarQuery("Delete From propuesta where id='" + id + "'");
                 con.getSalida().Close();
                 con.Cerrar();
@@ -443,17 +412,29 @@ namespace CRM
         }
 
         // ---------------Persona/Empresa-------------------
-        protected void VerificarCliente(TextBox entrada, string columnaNombre, string tablaNombre)
+        protected void VerificarCliente(TextBox entrada, bool persona)
         {
             try
             {
                 con.Abrir();
-                con.cargarQuery("Select nombre from " + tablaNombre + " where " +
-                    columnaNombre + " ='" + entrada.Text + "'");
+                string query = "Select id, nombre from Entidad where ";
+                if (persona)
+                {
+                    query += "cedula = " + entrada.Text;
+                }
+                else
+                {
+                    query += "id = " + entrada.Text + " and cedula is NULL";
+                }
+                System.Diagnostics.Debug.WriteLine(query);
+                con.cargarQuery(query);
                 IDataReader reader = con.getSalida();
 
                 if (reader.Read())
                 {
+                    lblIdEntidad.ForeColor = System.Drawing.Color.Green;
+                    lblIdEntidad.Text = Convert.ToString(reader["id"]);
+
                     lblCliente.ForeColor = System.Drawing.Color.Green;
                     lblCliente.Text = Convert.ToString(reader["nombre"]);
                 }
@@ -478,13 +459,13 @@ namespace CRM
         protected void VerificarPersona(object sender, EventArgs e)
         {
             txtPersona.Text = txtPersona.Text.Trim();
-            VerificarCliente(txtPersona, "cedula", "persona");
+            VerificarCliente(txtPersona, true);
         }
 
         protected void VerificarEmpresa(object sender, EventArgs e)
         {
             txtEmpresa.Text = txtEmpresa.Text.Trim();
-            VerificarCliente(txtEmpresa, "ID", "empresa");
+            VerificarCliente(txtEmpresa, false);
         }
 
         protected void MostrarEmpresa(object sender, EventArgs e)
@@ -507,55 +488,7 @@ namespace CRM
         // ---------------Botones-------------------
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
-            string error = revisarDatosLLenos(txtIdProducto, datetimepicker, txtPrecio, txtDescuento,
-                txtComision, txtRespuesta, lblCliente, rbAprovado, rbRechazado, lblError);
-            if (error == "")
-            {
-                try
-                {
-                    con.Abrir();
-
-                    string estado = "";
-                    if (rbAprovado.Checked)
-                    {
-                        estado = "1";
-                    }
-                    else
-                    {
-                        estado = "0";
-                    }
-
-                    if (txtPersona.Text != "")
-                    {
-                        con.cargarQuery("UPDATE propuesta SET idProducto = '"+ txtIdProducto.Text + "'," +
-                        "fecha = '"+ datetimepicker.Text + "', precio = '"+ txtPrecio.Text + 
-                        "', descuento = '"+ txtDescuento.Text + "', comision = '" + txtComision.Text + "'," +
-                        "empresaID = null, personaVenta = '"+ txtPersona.Text + "', vendedor = '"+ lblVendedor.Text + "'," +
-                        "estado = '"+ estado +"', respuesta = '"+ txtRespuesta.Text + "' WHERE propuesta.id = " + lblIdVenta.Text + ";");
-                    }
-                    else
-                    {
-                        con.cargarQuery("UPDATE propuesta SET idProducto = '" + txtIdProducto.Text + "'," +
-                        "fecha = '" + datetimepicker.Text + "', precio = '" + txtPrecio.Text +
-                        "', descuento = '" + txtDescuento.Text + "', comision = '" + txtComision.Text + "'," +
-                        "empresaID = '"+ txtEmpresa.Text +"', personaVenta = null, vendedor = '" + lblVendedor.Text + "'," +
-                        "estado = '" + estado + "', respuesta = '" + txtRespuesta.Text + "' WHERE propuesta.id = " + lblIdVenta.Text + ";");
-                    }
-                    con.getSalida().Close();
-                    ShowMessage("Actualización correcta.");
-                    clear();
-                    LlenarListaPaginas();
-                    BindGridView();
-                }
-                catch (MySqlException ex)
-                {
-                    ShowMessage(ex.Message);
-                }
-                finally
-                {
-                    con.Cerrar();
-                }
-            }
+            
         }
 
         protected void BtnCancel_Click(object sender, EventArgs e)
@@ -571,7 +504,6 @@ namespace CRM
             {
                 try
                 {
-                    con.Abrir();
                     string estado = "";
                     if (rbAprovado.Checked)
                     {
@@ -581,8 +513,10 @@ namespace CRM
                     {
                         estado = "0";
                     }
-                    InsertarPropuesta(txtIdProducto.Text, datetimepicker.Text, txtPrecio.Text, txtDescuento.Text, txtComision.Text, txtPersona.Text,
-                        txtEmpresa.Text, lblVendedor.Text, txtRespuesta.Text, estado);
+
+                    InsertarPropuesta(txtIdProducto.Text, datetimepicker.Text, txtPrecio.Text,
+                        txtDescuento.Text, txtComision.Text, lblIdEntidad.Text, txtEmpresa.Text,
+                        lblVendedor.Text, txtRespuesta.Text, lblIdsProductos, estado);
                     ShowMessage("Registro correcto.");
                     clear();
                     LlenarListaPaginas();
@@ -592,39 +526,51 @@ namespace CRM
                 {
                     ShowMessage(ex.Message);
                 }
-                finally
-                {
-                    con.Cerrar();
-                }
             }
         }
 
         public bool InsertarPropuesta(string pTxtIDProducto, string pFecha, string pPrecio, string pDescuento,
-            string pComision, string pPersona, string pEmpresa, string pVendedor, string pRespuesta,string estado)
+            string pComision, string idCliente, string pEmpresa, string pVendedor, string pRespuesta, Label idProductos, string estado)
         {
             try
             {
+
+
+
                 con.Abrir();
-                if (pPersona != "")
-                {
-                    con.cargarQuery("INSERT INTO propuesta" +
-                    " (idProducto, fecha, precio, descuento, comision" +
-                    ", personaVenta, empresaID, vendedor,estado, respuesta) " +
-                    "VALUES ('" + pTxtIDProducto.Trim() + "', '" + pFecha.Trim() + "', '" + pPrecio.Trim() +
-                    "', '" + pDescuento.Trim() + "', '" + pComision.Trim() + "'," +
-                    " '" + pPersona.Trim() + "', null, '" + pVendedor.Trim() + "','" + estado + "','" + pRespuesta.Trim() + "');");
-                }
-                else
-                {
-                    con.cargarQuery("INSERT INTO propuesta" +
-                    " (idProducto, fecha, precio, descuento, comision" +
-                    ", personaVenta, empresaID, vendedor,estado, respuesta) " +
-                    "VALUES ('" + pTxtIDProducto.Trim() + "', '" + pFecha.Trim() + "', '" + pPrecio.Trim() +
-                    "', '" + pDescuento.Trim() + "', '" + pComision.Trim() + "'," +
-                    " null, '"+ pEmpresa.Trim() + "', '" + pVendedor.Trim() + "','" + estado + "','" + pRespuesta.Trim() + "');");
-                }
+                string query = "INSERT INTO propuesta (fecha, precio, descuento, comision, idEntidad, vendedor, estado, respuesta) " +
+                    "VALUES ('" + pFecha.Trim() + "', '" + pPrecio.Trim() + "', '" + pDescuento.Trim() + "', '" + pComision.Trim() +
+                    "', " + idCliente + ", '" + pVendedor.Trim() + "', " + estado + ", '"  + pRespuesta.Trim() + "');";
+                System.Diagnostics.Debug.WriteLine(query);
+                con.cargarQuery(query);
 
                 con.getSalida().Close();
+
+                long latestId = con.LatestId();
+
+                string queryProductos = "INSERT INTO ProductoXPropuesta (idProducto, idPropuesta) VALUES ";
+
+                System.Diagnostics.Debug.WriteLine(idProductos.Text);
+
+                idProductos.Text = idProductos.Text.Remove(idProductos.Text.Length - 1);
+
+                string[] productos = idProductos.Text.Split('-');
+
+                foreach (string idProducto in productos)
+                {
+                    System.Diagnostics.Debug.WriteLine(idProducto);
+                    queryProductos += "(" + idProducto + ", " + latestId.ToString() + "),";
+                }
+
+                queryProductos = queryProductos.Remove(queryProductos.Length - 1);
+                queryProductos += ";";
+
+                System.Diagnostics.Debug.WriteLine(queryProductos);
+
+                con.cargarQuery(queryProductos);
+
+                con.getSalida().Close();
+
                 con.Cerrar();
                 return true;
             }

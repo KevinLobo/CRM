@@ -58,6 +58,15 @@ namespace CRM {
         protected global::System.Web.UI.WebControls.TextBox txtIdProducto;
         
         /// <summary>
+        /// Control lblIdsProductos.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblIdsProductos;
+        
+        /// <summary>
         /// Control lblNombreProducto.
         /// </summary>
         /// <remarks>
@@ -65,6 +74,15 @@ namespace CRM {
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblNombreProducto;
+        
+        /// <summary>
+        /// Control lblNoProducto.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNoProducto;
         
         /// <summary>
         /// Control datetimepicker.
@@ -110,6 +128,15 @@ namespace CRM {
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtEmpresa;
+        
+        /// <summary>
+        /// Control lblIdEntidad.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblIdEntidad;
         
         /// <summary>
         /// Control lblCliente.

@@ -119,11 +119,14 @@ namespace CRM
                     paginas + ".";
 
                 paginaDropDown.Items.Clear();
-                for (int i = 0; i < paginas; i++)
+                if (paginas != 0)
                 {
-                    paginaDropDown.Items.Add((i + 1).ToString());
+                    for (int i = 0; i < paginas; i++)
+                    {
+                        paginaDropDown.Items.Add((i + 1).ToString());
+                    }
+                    paginaDropDown.SelectedIndex = paginaActual - 1;
                 }
-                paginaDropDown.SelectedIndex = paginaActual - 1;
             }
             catch (MySqlException ex)
             {
@@ -338,6 +341,10 @@ namespace CRM
         public void CargarVenta(int pIndex, GridView pGrid)
         {
             con.Abrir();
+            if (pIndex == -1)
+            {
+                pIndex = 0;
+            }
             double limite = pIndex * filasPorPagina;
             con.cargarQuery("SELECT venta.Id as ID, Fecha, Descuento, Comision, Precio, Vendedor, Entidad.Nombre as Cliente, Respuesta from "+
                 "venta inner join Entidad on Entidad.id = venta.idEntidad limit "
@@ -350,59 +357,16 @@ namespace CRM
             con.Cerrar();
         }
 
-
-        protected void GridViewEmpresa_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            clear();
-            GridViewRow row = GridViewEmpresa.SelectedRow;
-            con.Abrir();
-            con.cargarQuery("SELECT * FROM `venta` where id = " +
-                row.Cells[1].Text + "");
-            IDataReader reader = con.getSalida();
-            string empresaID = "";
-            string personaID = "";
-            if (reader.Read())
-            {
-
-                txtIdProducto.Text = row.Cells[3].Text;
-                lblIdVenta.Text = "ID: " + row.Cells[1].Text;
-                lblPrecioFinal.Text = Convert.ToString(reader["precio"]);
-                txtDescuento.Text = Convert.ToString(reader["descuento"]);
-                txtComision.Text = Convert.ToString(reader["comision"]);
-                datetimepicker.Text = Convert.ToString(reader["fecha"]);
-                txtRespuesta.Text = Convert.ToString(reader["respuesta"]);
-                empresaID = Convert.ToString(reader["empresaID"]);
-                personaID = Convert.ToString(reader["personaVenta"]);
-
-            }
-            con.Cerrar();
-            if (empresaID != "")
-            {
-                txtEmpresa.Visible = true;
-                txtEmpresa.Text = empresaID;
-                VerificarCliente(txtEmpresa, false);
-                rbEmpresa.Checked = true;
-            }
-            else
-            {
-                rbPersona.Checked = true;
-                txtPersona.Visible = true;
-                txtPersona.Text = personaID;
-                VerificarCliente(txtPersona, true);
-                
-            }
-
-            VerificarProducto(txtIdProducto, lblNombreProducto, txtPrecio);
-            btnCancel.Text = "Volver";
-            lblIdVenta.Visible = true;
-            btnSubmit.Visible = false;
-            btnSubmit.Enabled = false;
-        }
-
         protected void GridViewEmpresa_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
             try
             {
+                string id = GridViewEmpresa.DataKeys[e.RowIndex].Value.ToString();
+                BorrarVenta(id);
+                ShowMessage("Venta eliminada");
+                GridViewEmpresa.EditIndex = -1;
+                LlenarListaPaginas();
+                BindGridView();
 
             }
             catch (MySqlException ex)
@@ -416,7 +380,27 @@ namespace CRM
 
         }
 
-// ---------------Persona/Empresa-------------------
+        public bool BorrarVenta(string id)
+        {
+            try
+            {
+                con.Abrir();
+                con.cargarQuery("Delete From ProductoXVenta where idVenta='" + id + "'");
+                con.getSalida().Close();
+                con.Cerrar();
+                con.Abrir();
+                con.cargarQuery("Delete From venta where id='" + id + "'");
+                con.getSalida().Close();
+                con.Cerrar();                
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
+            }
+        }
+
+        // ---------------Persona/Empresa-------------------
         protected void VerificarCliente(TextBox entrada, bool persona)
         {
             try

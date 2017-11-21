@@ -64,7 +64,9 @@
                     <asp:TextBox ID="txtIdProducto" runat="server" class="form-control"
                         onkeypress="return isNumberKey(event,this)" placeholder="ID producto"
                         AutoPostBack="true" OnTextChanged="CambioID" autocomplete="off"></asp:TextBox>
+                    <asp:Label ID="lblIdsProductos" runat="server" ></asp:Label>
                     <asp:Label ID="lblNombreProducto" runat="server" ></asp:Label>
+                    <asp:Label ID="lblNoProducto" runat="server" ></asp:Label>
                 </div>
 
                 <div class="form-group ">
@@ -85,6 +87,8 @@
                     <asp:TextBox ID="txtEmpresa" runat="server" class="form-control"
                         AutoPostBack="true" OnTextChanged="VerificarEmpresa"
                         autocomplete="off" Visible ="false" placeholder="Empresa ID"></asp:TextBox>
+
+                    <asp:Label ID="lblIdEntidad" runat="server" ></asp:Label>
                     <asp:Label ID="lblCliente" runat="server" ></asp:Label>
 
 
@@ -156,18 +160,16 @@
                     <h3>
                         <span style="float: left;">
                             <asp:Label ID="lblInfo" runat="server" /></span>
-                        <span><small>Total ventas:</small>
+                        <span><small>Total propuestas:</small>
                             <asp:Label ID="lbltotalcount" runat="server" CssClass="label label-warning" /></span>
                     </h3>
 
                     <asp:GridView ID="GridViewEmpresa" runat="server" DataKeyNames="id"
-                        OnSelectedIndexChanged="GridViewEmpresa_SelectedIndexChanged"
                         OnRowDeleting ="GridViewPropuesta_RowDeleting"
                         CssClass="table table-bordered bs-table">
                         <HeaderStyle BackColor="#337ab7" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
                         <Columns>
-                            <asp:CommandField HeaderText="Seleccionar" ShowSelectButton="True" />
                             <asp:CommandField HeaderText="Eliminar" ShowDeleteButton="True" />
                         </Columns>
                     </asp:GridView>

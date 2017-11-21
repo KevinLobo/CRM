@@ -98,14 +98,18 @@ namespace CRM
                     paginas + ".";
 
                 paginaDropDown.Items.Clear();
-                for (int i = 0; i < paginas; i++)
+                if (paginas == 0)
                 {
-                    paginaDropDown.Items.Add((i + 1).ToString());
+                    for (int i = 0; i < paginas; i++)
+                    {
+                        paginaDropDown.Items.Add((i + 1).ToString());
+                    }
+                    if (totalPersonas > 0)
+                    {
+                        paginaDropDown.SelectedIndex = paginaActual - 1;
+                    }
                 }
-                if (totalPersonas > 0)
-                {
-                    paginaDropDown.SelectedIndex = paginaActual - 1;
-                }
+                
 
             }
             catch (MySqlException ex)
@@ -163,6 +167,10 @@ namespace CRM
         public void CargarProductos(int pIndex, GridView pGrid)
         {
             con.Abrir();
+            if (pIndex == -1)
+            {
+                pIndex = 0;
+            }
             double limite = pIndex * filasPorPagina;
             con.cargarQuery("Select producto.Id as ID, Nombre, Precio, Categoria from producto inner join " +
                     "Categoria on Categoria.id = producto.idCategoria limit " + pIndex + "," + filasPorPagina + ";");

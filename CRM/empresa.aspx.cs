@@ -100,11 +100,14 @@ namespace CRM
                     paginas + ".";
 
                 paginaDropDown.Items.Clear();
-                for (int i = 0; i < paginas; i++)
+                if (paginas != 0)
                 {
-                    paginaDropDown.Items.Add((i + 1).ToString());
+                    for (int i = 0; i < paginas; i++)
+                    {
+                        paginaDropDown.Items.Add((i + 1).ToString());
+                    }
+                    paginaDropDown.SelectedIndex = paginaActual - 1;
                 }
-                paginaDropDown.SelectedIndex = paginaActual-1;
             }
             catch (MySqlException ex)
             {
@@ -132,6 +135,10 @@ namespace CRM
 
         public void CargarEmpresa(int pIndex, GridView pGrid)
         {
+            if (pIndex == -1)
+            {
+                pIndex = 0;
+            }
             con.Abrir();
             double limite = pIndex * filasPorPagina;
             string query = "Select Id, Nombre, Direccion, Telefono, Correo " +

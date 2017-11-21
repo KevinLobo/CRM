@@ -390,7 +390,9 @@ namespace CRM
         public void propuestaAgregarBaseDatos()
         {
             propuesta propuestaI = new propuesta(fBD);
-            Assert.AreEqual(true, propuestaI.InsertarPropuesta("", "", "", "", "", "", "", "", "", ""));
+            Label label = new Label();
+            label.Text = "8-5-1";
+            Assert.AreEqual(true, propuestaI.InsertarPropuesta("", "", "", "", "", "", "", "", "", label, ""));
         }
 
         [TestCase]
