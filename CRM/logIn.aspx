@@ -41,6 +41,8 @@
             </div>
             <div class="form">
                 <h2>Create an account</h2>
+                <asp:Label ID="pore" runat="server" Text="Persona o Empresa: "></asp:Label>
+                <asp:DropDownList ID="personaDropdown" runat="server" ValidationGroup="Two"/>
                 <asp:TextBox type="text" placeholder="Usuario" ID="txtUsuarioRegistro" runat="server" ValidationGroup="Two"></asp:TextBox>
                 <asp:TextBox type="password" placeholder="Contraseña" ID="txtPasswordRegistro" runat="server" ValidationGroup="Two"></asp:TextBox>
                 <asp:TextBox type="password" placeholder="Confirmar contraseña" ID="txtPasswordRegistroConfirmar" runat="server" ValidationGroup="Two"></asp:TextBox>

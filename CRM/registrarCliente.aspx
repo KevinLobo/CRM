@@ -50,12 +50,12 @@
             <div class="container col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
                 <div class="form-group ">
-                    <label for="ID">Cliente:</label>
+                    <label for="ID">Usuario Actual: </label>
                     <asp:Label ID="lblCliente" runat="server" ></asp:Label>
                 </div>
 
                <div class="form-group ">
-                    <label for="dropdownVentas">Usuario Actual:</label>
+                    <label for="dropdownVentas">Cliente:</label>
                     <asp:DropDownList ID="clienteDropdown" AutoPostBack="true"
                         runat="server"
                         CssClass="form-control" />
