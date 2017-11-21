@@ -325,6 +325,7 @@
     <Compile Include="TestPropuesta.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="TestRegistrarCliente.cs" />
     <Compile Include="TestReporteErrores.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
